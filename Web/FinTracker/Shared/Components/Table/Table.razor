@@ -1,0 +1,39 @@
+﻿@typeparam TItem
+@inject IJSRuntime JS
+
+<table id="@TableId" class="table nowrap w-100">
+    <thead>
+        <tr>
+            @HeaderTemplate
+        </tr>
+    </thead>
+    <tbody>
+        @if (Items is not null)
+        {
+            @foreach (var item in Items)
+            {
+                if (RowTemplate is not null)
+                {
+                    <tr>@RowTemplate(item)</tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public string? TableId { get; set; } = "defaultTable";
+    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public RenderFragment<TItem>? RowTemplate { get; set; }
+    [Parameter] public IReadOnlyList<TItem>? Items { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize datatables
+            await JS.InvokeAsync<string>("initializeDataTables", TableId);
+
+        }
+    }
+}

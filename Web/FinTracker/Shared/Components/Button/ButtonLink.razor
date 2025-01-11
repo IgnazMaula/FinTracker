@@ -1,0 +1,25 @@
+﻿@inject IJSRuntime JS
+
+<NavLink class="@Class" href="@Url">
+    @if (Icon is not null)
+    {
+        <i class="me-1" data-feather="@Icon"></i>
+    }
+    @Label
+</NavLink>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Url { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Icon { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Activate feather
+            await JS.InvokeVoidAsync("feather.replace");
+        }
+    }
+}

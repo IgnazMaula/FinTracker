@@ -1,0 +1,37 @@
+﻿@page "/CustomerDetail/{Id:int}"
+@inject IJSRuntime JS
+
+<PageHeader Title="Customer" Icon="user-plus">
+    <ButtonLink Label="Back to Users List" Url="Customers" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Customer Detail</CardHeader>
+                <CardBody>
+                    <Row>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Name" Value="@Customer.Name" />
+                        </Column>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Gender" Value="@Customer.Gender" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Email" Value="@Customer.Email" />
+                        </Column>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Phone" Value="@Customer.Phone" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <InfoForm Label="Address" Value="@Customer.Address" />
+                    </Row>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

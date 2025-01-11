@@ -1,0 +1,38 @@
+﻿@page "/AccountDetail/{Id:int}"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="Account" Icon="user-plus">
+    <ButtonLink Label="Back to Users List" Url="Accounts" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Account Detail</CardHeader>
+                <CardBody>
+                    <Row>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Name" Value="@Account.Name" />
+                        </Column>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Type" Value="@Account.Type.ToString()" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Institution" Value="@Account.Institution" />
+                        </Column>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Description" Value="@Account.Description" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <InfoForm Label="CurrentBalance" Value="@Account.CurrentBalance.ToString("N2")" />
+                    </Row>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

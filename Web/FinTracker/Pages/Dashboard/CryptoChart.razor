@@ -1,0 +1,108 @@
+﻿ @* @page "/crypto-chart"
+ @using ApexCharts
+ @inject HttpClient Http
+
+ <ApexChart TItem="ChartDataPoint" Title="Crypto Prices Over Time">
+     <ApexPointSeries TItem="ChartDataPoint"
+                      Items="@chartData"
+                      Name="Price (USD)"
+                      SeriesType="SeriesType.Line"
+                      XValue="@(e => e.Timestamp)"
+                      YValue="@(e => e.Price)" />
+ </ApexChart>
+
+ @code {
+     private List<ChartDataPoint> chartData = new();
+
+     protected override async Task OnInitializedAsync()
+     {
+         // Load the JSON data from the local file
+         await LoadChartData();
+     }
+
+     private async Task LoadChartData()
+     {
+         // Load the JSON file from wwwroot/data/cryptoData.json
+         var jsonResponse = await Http.GetStringAsync("sample-data/cryp.json");
+
+
+         // Parse the JSON response
+         var response = JsonSerializer.Deserialize<CoinGeckoMarketChart>(jsonResponse);
+
+         if (response?.prices != null)
+         {
+             chartData = response.prices.Select(p => new ChartDataPoint
+                 {
+                     Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0]).ToString("yyyy-MM-dd HH:mm"),
+                     Price = (decimal)p[1]
+                 }).ToList();
+         }
+     }
+
+     public class ChartDataPoint
+     {
+         public string Timestamp { get; set; }
+         public decimal Price { get; set; }
+     }
+
+     public class CoinGeckoMarketChart
+     {
+         public List<List<double>> prices { get; set; } = new();
+     }
+ } *@
+
+@page "/crypto-chart"
+@using ApexCharts
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<ApexChart TItem="StockPrice" Title="Crypto Prices Over Time">
+    <ApexCandleSeries TItem="StockPrice"
+                      Items="@stockPrices"
+                      Name="Crypto OHLC"
+                      XValue="@(e => e.Timestamp)"
+                      Open="@(e => e.Open)"
+                      High="@(e => e.High)"
+                      Low="@(e => e.Low)"
+                      Close="@(e => e.Close)" />
+</ApexChart>
+
+@code {
+    private List<StockPrice> stockPrices = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch OHLC data from CoinGecko
+        await LoadChartData();
+    }
+
+    private async Task LoadChartData()
+    {
+        //var url = $"https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=7";
+        //var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
+        var jsonResponse = await Http.GetStringAsync("sample-data/cryp.json");
+        var response = JsonSerializer.Deserialize <List<List<double>>>(jsonResponse);
+
+        if (response != null)
+        {
+            stockPrices = response.Select(p => new StockPrice
+                {
+                    Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0]).ToString("yyyy-MM-dd HH:mm"),
+                    Open = (decimal)p[1],
+                    High = (decimal)p[2],
+                    Low = (decimal)p[3],
+                    Close = (decimal)p[4]
+                }).ToList();
+        }
+    }
+
+    public class StockPrice
+    {
+        public string Timestamp { get; set; }
+        public decimal Open { get; set; }
+        public decimal High { get; set; }
+        public decimal Low { get; set; }
+        public decimal Close { get; set; }
+    }
+}
+

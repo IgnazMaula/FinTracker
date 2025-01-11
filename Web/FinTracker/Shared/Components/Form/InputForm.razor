@@ -1,0 +1,82 @@
+﻿@using System.Linq.Expressions
+
+@typeparam TValue
+
+@inherits InputBase<TValue>
+
+<div class="mb-3">
+    <label class="small mb-1 fw-bold" for="@Id">@Label</label>
+    <input type="@Type"
+           class="form-control @CssClass"
+           id="@Id"
+           @bind="@CurrentValue"
+           placeholder="@Placeholder"
+           disabled="@Disabled"
+           readonly="@ReadOnly" />
+    @if (ValidationFor is not null)
+    {
+        <ValidationMessage For="@ValidationFor" />
+    }
+</div>
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Type { get; set; } = "text";
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public bool? Disabled { get; set; } = false;
+    [Parameter] public bool? ReadOnly { get; set; } = false;
+    [Parameter, EditorRequired] public Expression<Func<TValue>>? ValidationFor { get; set; } = default!;
+
+    protected override bool TryParseValueFromString(string? value, out TValue result, out string? validationErrorMessage)
+    {
+        try
+        {
+            if (typeof(TValue) == typeof(string))
+            {
+                result = (TValue)(object)(value ?? string.Empty);
+                validationErrorMessage = null;
+                return true;
+            }
+            else if (typeof(TValue) == typeof(int))
+            {
+                if (int.TryParse(value, out var intValue))
+                {
+                    result = (TValue)(object)intValue;
+                    validationErrorMessage = null;
+                    return true;
+                }
+            }
+            else if (typeof(TValue) == typeof(decimal))
+            {
+                if (decimal.TryParse(value, out var decimalValue))
+                {
+                    result = (TValue)(object)decimalValue;
+                    validationErrorMessage = null;
+                    return true;
+                }
+            }
+            else if (typeof(TValue) == typeof(bool))
+            {
+                if (bool.TryParse(value, out var boolValue))
+                {
+                    result = (TValue)(object)boolValue;
+                    validationErrorMessage = null;
+                    return true;
+                }
+            }
+
+            // Fallback for unsupported types
+            result = default!;
+            validationErrorMessage = $"The value '{value}' is not valid for type {typeof(TValue).Name}.";
+            return false;
+        }
+        catch
+        {
+            result = default!;
+            validationErrorMessage = "An error occurred while parsing the value.";
+            return false;
+        }
+    }
+}

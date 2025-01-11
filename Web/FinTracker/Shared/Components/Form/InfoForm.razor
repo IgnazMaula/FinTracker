@@ -1,0 +1,11 @@
+﻿<div class="mb-3">
+    <label class="small mb-1 fw-bold" for="@Id">@Label</label>
+    <h6>@Value</h6>
+</div>
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Value { get; set; }
+}

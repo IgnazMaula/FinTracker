@@ -1,0 +1,52 @@
+﻿@inject IJSRuntime JS
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <Container>
+                <Card>
+                    <CardBody>
+                        <p role="alert">Sorry, there's nothing at this address.</p>
+                    </CardBody>
+                </Card>
+            </Container>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Activate feather
+            await JS.InvokeVoidAsync("feather.replace");
+
+            // Enable tooltips globally
+            await JS.InvokeVoidAsync("enableTooltips");
+
+            // Enable popovers globally
+            await JS.InvokeVoidAsync("enablePopovers");
+
+            // Activate Bootstrap scrollspy for the sticky nav component
+            await JS.InvokeVoidAsync("activateScrollSpy");
+
+            // Toggle the side navigation
+            await JS.InvokeVoidAsync("toggleSidebar");
+
+            // Close side navigation when width < LG
+            await JS.InvokeVoidAsync("closeSidebar");
+
+            // Add active state to sidebar nav links
+            await JS.InvokeVoidAsync("addActiveState");
+
+            // Initialize Toast
+            await JS.InvokeVoidAsync("initializeToasts");
+        }
+    }
+}

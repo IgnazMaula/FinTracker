@@ -1,0 +1,31 @@
+﻿@inject IJSRuntime JS
+
+<button class="@Class" type="button" data-bs-toggle="modal" data-bs-target="#@Target" @onclick="ActionHandler">
+    @if (Icon is not null)
+    {
+        <i class="me-1" data-feather="@Icon"></i>
+    }
+    @Label
+</button>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Target { get; set; }
+    [Parameter] public EventCallback Action { get; set; }
+
+    private async Task ActionHandler()
+    {
+        await Action.InvokeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Activate feather
+            await JS.InvokeVoidAsync("feather.replace");
+        }
+    }
+}

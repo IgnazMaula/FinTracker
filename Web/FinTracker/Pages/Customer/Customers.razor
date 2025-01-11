@@ -1,0 +1,46 @@
+﻿@page "/Customers"
+
+<PageHeader Title="Customer" Icon="user-plus">
+    <ButtonLink Label="Add New User" Url="/CreateCustomer" class="btn btn-sm btn-primary" Icon="user-plus" />
+    <ButtonLink Label="Back to Dashboard" Url="/Dashboard" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+@if (DataLoaded)
+{
+    <ContainerFluid>
+        <Card>
+            <CardBody>
+                <Table TableId="defaultTable" Items="@CustomerList" Context="Customer">
+                    <HeaderTemplate>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Occupation</th>
+                        <th>Phone</th>
+                        <th></th>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <td>@Customer.Name</td>
+                        <td>@Customer.Email</td>
+                        <td>@Customer.Address</td>
+                        <td>@Customer.Gender</td>
+                        <td>@Customer.Phone</td>
+                        <td>
+                            <div class="text-center">
+                                <ButtonLink Label="Details" Url=@($"/CustomerDetail/{Customer.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
+                                <ButtonLink Label="Edit" Url=@($"/EditCustomer/{Customer.Id}") class="btn btn-sm btn-primary" Icon="edit" />
+                                <ButtonModal Label="Delete" class="btn btn-sm btn-danger" Icon="trash-2" Target="deleteModal" Action="() => SetId(Customer.Id)" />
+                            </div>
+                        </td>
+                    </RowTemplate>
+                </Table>
+            </CardBody>
+        </Card>
+    </ContainerFluid>
+}
+
+<Modal Id="deleteModal" Title="Confirm Delete" Message="Are you sure you want to delete this customer?">
+    <ModalButtons>
+        <ButtonAction Label="Confirm Delete" class="btn btn-sm btn-danger" Action="DeleteCustomerHandler" />
+    </ModalButtons>
+</Modal>

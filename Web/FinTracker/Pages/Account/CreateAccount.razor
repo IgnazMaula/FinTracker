@@ -1,0 +1,45 @@
+﻿@page "/CreateAccount"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="Account" Icon="user-plus">
+    <ButtonLink Label="Back to Users List" Url="Accounts" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Create Account</CardHeader>
+                <CardBody>
+                    <EditForm Model="Account" OnValidSubmit="PostAccount">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column class="col-md-6">
+                                <InputForm Label="Name" Id="Name" Placeholder="Enter name" @bind-Value="@Account.Name" ValidationFor="@(()=>Account.Name)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputOption Label="Account Type" Id="Type" Placeholder="Choose An Option" @bind-Value="@Account.Type" Items="AccountTypeList" Context="item" ValidationFor="@(()=>Account.Type)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Institution" Id="Institution" Placeholder="Enter institution" @bind-Value="@Account.Institution" ValidationFor="@(()=>Account.Institution)" />
+                            </Column>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Description" Id="Description" Placeholder="Enter description" @bind-Value="@Account.Description" ValidationFor="@(()=>Account.Description)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <InputForm Label="Initial Balance" Id="InitialBalance" Placeholder="Enter initial balance" @bind-Value="@Account.InitialBalance" ValidationFor="@(()=>Account.InitialBalance)" />
+                        </Row>
+                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="Accounts" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

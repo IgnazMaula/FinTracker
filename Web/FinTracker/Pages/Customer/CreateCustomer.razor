@@ -1,0 +1,44 @@
+﻿@page "/CreateCustomer"
+@inject IJSRuntime JS
+
+<PageHeader Title="Customer" Icon="user-plus">
+    <ButtonLink Label="Back to Users List" Url="Customers" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Create Customer</CardHeader>
+                <CardBody>
+                    <EditForm Model="Customer" OnValidSubmit="CreateCustomerHandler">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column class="col-md-6">
+                                <InputForm Label="Name" Id="Name" Placeholder="Enter your name" @bind-Value="@Customer.Name" ValidationFor="@(()=>Customer.Name)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputOption Label="Gender" Id="Gender" Placeholder="Choose An Option" @bind-Value="@Customer.Gender" Items="GenderList" Context="item" ValidationFor="@(()=>Customer.Gender)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Email" Id="Email" Placeholder="Enter your email" @bind-Value="@Customer.Email" ValidationFor="@(()=>Customer.Email)" />
+                            </Column>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Phone" Id="Phone" Placeholder="Enter your phone number" @bind-Value="@Customer.Phone" ValidationFor="@(()=>Customer.Phone)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <InputForm Label="Address" Id="Address" Placeholder="Enter your address" @bind-Value="@Customer.Address" ValidationFor="@(()=>Customer.Address)" />
+                        </Row>
+                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="Customers" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

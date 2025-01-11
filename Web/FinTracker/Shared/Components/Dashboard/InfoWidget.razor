@@ -1,0 +1,20 @@
+﻿<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-start-lg border-start-@Color h-100">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="small fw-bold text-@Color mb-1">@Label</div>
+                    <div class="h5">@Quantity</div>
+                </div>
+                <div class="ms-2"><i class="fas @Icon fa-2x text-gray-200"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Quantity { get; set; }
+    [Parameter] public string? Color { get; set; } = "primary";
+    [Parameter] public string? Icon { get; set; }
+}

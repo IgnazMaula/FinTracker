@@ -1,0 +1,35 @@
+﻿@inject IJSRuntime JS
+
+<div class="col-xl-3 mb-4">
+    <a class="card lift h-100" href="@Link">
+        <div class="card-body d-flex justify-content-center flex-column">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="me-3">
+                    <div class="d-flex">
+                        <i class="feather-xl m-1 text-@Color" data-feather="@Icon"></i>
+                        <h1 class="text-xl fw-600">@Quantity</h1>
+                    </div>
+                    <h5 class="fw-600">@Label</h5>
+                    <div class="text-muted small">Go to @Label page</div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public int? Quantity { get; set; }
+    [Parameter] public string? Color { get; set; } = "primary";
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Link { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Activate feather
+            await JS.InvokeVoidAsync("feather.replace");
+        }
+    }
+}

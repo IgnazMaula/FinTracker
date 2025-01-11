@@ -1,0 +1,47 @@
+﻿@page "/Accounts"
+@inherits BasePage
+
+<PageHeader Title="Account" Icon="user-plus">
+    <ButtonLink Label="Add New User" Url="/CreateAccount" class="btn btn-sm btn-primary" Icon="user-plus" />
+    <ButtonLink Label="Back to Dashboard" Url="/Dashboard" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+@if (DataLoaded)
+{
+    <ContainerFluid>
+        <Card>
+            <CardBody>
+                <Table TableId="defaultTable" Items="@AccountList" Context="Account">
+                    <HeaderTemplate>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Institution</th>
+                        <th>Description</th>
+                        <th>CurrentBalance</th>
+                        <th></th>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <td>@Account.Name</td>
+                        <td>@Account.Type</td>
+                        <td>@Account.Institution</td>
+                        <td>@Account.Description</td>
+                        <td>@Account.CurrentBalance</td>
+                        <td>
+                            <div class="text-center">
+                                <ButtonLink Label="Details" Url=@($"/AccountDetail/{Account.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
+                                <ButtonLink Label="Edit" Url=@($"/EditAccount/{Account.Id}") class="btn btn-sm btn-primary" Icon="edit" />
+                                <ButtonModal Label="Delete" class="btn btn-sm btn-danger" Icon="trash-2" Target="deleteModal" Action="() => SetId(Account.Id)" />
+                            </div>
+                        </td>
+                    </RowTemplate>
+                </Table>
+            </CardBody>
+        </Card>
+    </ContainerFluid>
+}
+
+<Modal Id="deleteModal" Title="Confirm Delete" Message="Are you sure you want to delete this account?">
+    <ModalButtons>
+        <ButtonAction Label="Confirm Delete" class="btn btn-sm btn-danger" Action="DeleteAccountHandler" />
+    </ModalButtons>
+</Modal>

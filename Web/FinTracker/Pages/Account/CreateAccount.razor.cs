@@ -22,6 +22,9 @@ namespace FinTracker.Pages.Account
                 return;
             }
 
+            //Placeholder
+            Account.UserId = new Guid("32B125C1-F3B0-4ECC-9F39-FCC7A9234918");
+
             var (model, urlLookupResult, statusCode) = await PostAccountDataAsync(Account);
             if (statusCode == HttpStatusCode.Created)
             {

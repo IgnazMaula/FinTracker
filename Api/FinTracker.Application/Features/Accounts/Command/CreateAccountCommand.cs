@@ -16,17 +16,20 @@ public class CreateAccountCommand : IRequest<BaseResponse<AccountDTO>>
     public string Type { get; set; }
     public string Institution { get; set; }
     public string Description { get; set; }
+    public Guid UserId { get; set; }
 }
 
 public class CreateAccountHandler : IRequestHandler<CreateAccountCommand, BaseResponse<AccountDTO>>
 {
     private readonly IAccountRepository _repository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public CreateAccountHandler(IAccountRepository repository, IMapper mapper)
+    public CreateAccountHandler(IAccountRepository repository, IMapper mapper, IUserRepository userRepository)
     {
         _repository = repository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     public async Task<BaseResponse<AccountDTO>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -41,6 +44,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccountCommand, BaseRe
                 Name = request.Name,
                 Type = request.Type,
                 Institution = request.Institution,
+                UserId = request.UserId,
             };
 
             await _repository.CreateAccountAsync(newAccount);

@@ -4,6 +4,7 @@ using MediatR;
 using FinTracker.Application.Features.Accounts.Query;
 using FinTracker.Application.Features.Accounts.Command;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinTracker.Api.Controllers;
 

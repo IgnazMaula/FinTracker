@@ -22,15 +22,11 @@ public class CryptoCurrencyController : ControllerBase
     {
         try
         {
-            // Call the CryptoCurrencyFeedService to fetch the news feed
             var newsFeed = await _coinGeckoApiService.GetCryptoChartData();
-
-            // Return the news feed as a JSON response
             return Ok(newsFeed);
         }
         catch (Exception ex)
         {
-            // Handle any errors (optional)
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }

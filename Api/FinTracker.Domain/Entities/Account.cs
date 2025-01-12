@@ -15,7 +15,7 @@ namespace FinTracker.Domain.Entities
         public string Type { get; set; }
         public string? Institution { get; set; }
         public string? Description { get; set; }
-        public decimal InitialBalance { get; set; }
-        public decimal CurrentBalance { get; set; }
+        public decimal InitialBalance { get; set; } = 0;
+        public decimal CurrentBalance { get; set; } = 0;
     }
 }

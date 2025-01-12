@@ -28,7 +28,7 @@ namespace FinTracker.Infrastructure.Persistence
             modelBuilder.Entity<Account>()
                 .HasOne(p => p.User)
                 .WithMany()
-                .HasForeignKey(p => p.Id);
+                .HasForeignKey(p => p.UserId);
 
         }
     }

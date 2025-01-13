@@ -33,7 +33,14 @@
                             </Column>
                         </Row>
                         <Row>
-                            <InputForm Label="Initial Balance" Id="InitialBalance" Placeholder="Enter initial balance" @bind-Value="@Account.InitialBalance" ValidationFor="@(()=>Account.InitialBalance)" />
+                            <Column class="col-sm-6">
+                                <InputOption Label="Currency" Id="Currency" Placeholder="Choose An Option" @bind-Value="@Account.Currency" Items="CurrencyList" Context="item" ValidationFor="@(()=>Account.Currency)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Initial Balance" Id="InitialBalance" Placeholder="Enter initial balance" @bind-Value="@Account.InitialBalance" ValidationFor="@(()=>Account.InitialBalance)" />
+                            </Column>
                         </Row>
                         <ButtonSubmit Label="Create" class="btn btn-primary" />
                         <ButtonLink Label="Cancel" Url="Accounts" class="btn btn-outline-primary" />

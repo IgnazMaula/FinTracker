@@ -13,8 +13,6 @@ namespace FinTracker.Pages.Account
 
         private AccountModel Account = new AccountModel();
 
-        private List<string> AccountTypeList = Enum.GetNames(typeof(AccountType)).ToList();
-
         private async Task PostAccount(EditContext editContext)
         {
             if (!editContext.Validate())
@@ -23,7 +21,7 @@ namespace FinTracker.Pages.Account
             }
 
             //Placeholder
-            Account.UserId = new Guid("32B125C1-F3B0-4ECC-9F39-FCC7A9234918");
+            Account.UserId = new Guid("DF269D5B-B34B-425D-A9A1-701A606D6393");
 
             var (model, urlLookupResult, statusCode) = await PostAccountDataAsync(Account);
             if (statusCode == HttpStatusCode.Created)

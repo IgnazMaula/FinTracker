@@ -8,11 +8,10 @@ using FinTracker.Domain.Entities;
 
 namespace FinTracker.Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext
+    public class DatabaseContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
-        public DbSet<Project> Projects { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
@@ -20,16 +19,10 @@ namespace FinTracker.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Project>()
-                .HasOne(p => p.AssignedToUser)
-                .WithMany()
-                .HasForeignKey(p => p.AssignedToUserId);
-
             modelBuilder.Entity<Account>()
                 .HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserId);
-
         }
     }
 }

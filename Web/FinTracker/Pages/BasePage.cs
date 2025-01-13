@@ -13,6 +13,19 @@ namespace FinTracker.Pages
         protected string PageStatus { get; set; } = "Loading page, please wait...";
         protected bool PageIsValid { get; set; } = true;
 
+        #region Dropdown Content
+        protected List<string> AccountTypeList = new List<string>
+        {
+            "Bank","Cryptocurrency","Mutual Funds"
+        };
+
+        protected List<string> CurrencyList = new List<string>
+        {
+            "IDR", "USD", "EUR", "JPY", "GBP", "AUD", 
+            "CAD", "CNY", "SGD", "HKD", "KRW", "RUB",
+        };
+        #endregion
+
         #region Account Helper Methods
         //-----------------------------------------------------------------
         // Account Helper Methods
@@ -32,7 +45,7 @@ namespace FinTracker.Pages
         protected async Task<(AccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostAccountDataAsync(AccountModel request)
         {
             var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<AccountModel>($"{Configuration["BaseUrl"]}{Configuration["AccountUrl"]}", request);
-                return (model, urlLookupResult, statusCode);
+            return (model, urlLookupResult, statusCode);
         }
 
         protected async Task<(AccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PutAccountDataAsync(Guid id, AccountModel request)

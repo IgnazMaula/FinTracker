@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace FinTracker.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly DatabaseContext _context;
 
-    public UserRepository(AppDbContext context)
+    public UserRepository(DatabaseContext context)
     {
         _context = context;
     }

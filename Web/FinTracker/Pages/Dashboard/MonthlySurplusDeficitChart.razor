@@ -1,0 +1,62 @@
+﻿<ApexChart TItem="MonthlyTransactionModel"
+           Title="Basic Sample"
+           Options="options">
+
+    <ApexPointSeries TItem="MonthlyTransactionModel"
+                     Items="monthlyData"
+                     SeriesType="@SeriesType.Line"
+                     Name="Gross Value"
+                     XValue="@(e => e.Month)"
+                     YAggregate="@(e => e.Sum(item => item.Income - item.Expense))" />
+
+</ApexChart>
+
+@code {
+    private List<MonthlyTransactionModel> monthlyData;
+
+    private ApexChartOptions<MonthlyTransactionModel> options { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        options.PlotOptions = new PlotOptions
+        {
+            Line = new PlotOptionsLine
+            {
+                Colors = new LineColors
+                {
+                    Threshold = 0,
+                    ColorAboveThreshold = "#0161F2",
+                    ColorBelowThreshold = "#E81500"
+                }
+            }
+        };
+
+        options.Chart = new Chart
+        {
+            Zoom = new Zoom
+            {
+                Enabled = false
+            },
+            Toolbar = new Toolbar
+            {
+                Show = false
+            }
+        };
+
+        monthlyData = new List<MonthlyTransactionModel>
+        {
+            new MonthlyTransactionModel { Month = "January", Income = 3000, Expense = 2500 },
+            new MonthlyTransactionModel { Month = "February", Income = 2800, Expense = 3200 },
+            new MonthlyTransactionModel { Month = "March", Income = 3500, Expense = 3000 },
+            new MonthlyTransactionModel { Month = "April", Income = 4000, Expense = 3800 },
+            new MonthlyTransactionModel { Month = "May", Income = 3100, Expense = 2900 },
+            new MonthlyTransactionModel { Month = "June", Income = 3200, Expense = 3300 },
+            new MonthlyTransactionModel { Month = "July", Income = 3500, Expense = 3100 },
+            new MonthlyTransactionModel { Month = "August", Income = 3700, Expense = 3600 },
+            new MonthlyTransactionModel { Month = "September", Income = 3900, Expense = 3400 },
+            new MonthlyTransactionModel { Month = "October", Income = 3800, Expense = 3700 },
+            new MonthlyTransactionModel { Month = "November", Income = 4100, Expense = 3900 },
+            new MonthlyTransactionModel { Month = "December", Income = 4200, Expense = 4000 }
+        };
+    }
+}

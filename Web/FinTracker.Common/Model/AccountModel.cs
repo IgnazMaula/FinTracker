@@ -12,14 +12,15 @@ namespace FinTracker.Common.Model
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-
+        public UserModel? User { get; set; }
         [Required]
         public string Name { get; set; }
-
         [Required]
         public string Type { get; set; }
-
-        public string? Institution { get; set; }
+        [Required]
+        public string Institution { get; set; }
+        [Required]
+        public string Currency { get; set; }
         public string? Description { get; set; }
         public decimal InitialBalance { get; set; }
         public decimal CurrentBalance { get; set; }

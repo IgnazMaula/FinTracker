@@ -84,7 +84,16 @@
                 <div class="card mb-4">
                     <div class="card-body py-5">
                         <div class="d-flex flex-column justify-content-center">
-                           <CryptoChart/>
+                                 <MonthlyIncomeExpenseChart />
+@*                            <CryptoChart/> *@
+                        </div>
+                    </div>
+                </div>
+                 <div class="card mb-4">
+                    <div class="card-body py-5">
+                        <div class="d-flex flex-column justify-content-center">
+                                     <MonthlySurplusDeficitChart />
+@*                            <CryptoChart/> *@
                         </div>
                     </div>
                 </div>
@@ -100,6 +109,26 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <Column class="col-xl-6 mb-4">
+                        <!-- Pie chart with legend example-->
+                        <Card class="h-100">
+                            <CardHeader>Traffic Sources</CardHeader>
+                            <CardBody>
+                               <MonthlyIncomeExpenseChart />
+                            </CardBody>
+                        </Card>
+                    </Column>
+                        <Column class="col-xl-6 mb-4">
+                            <!-- Pie chart with legend example-->
+                            <Card class="h-100">
+                                <CardHeader>Traffic Sources</CardHeader>
+                                <CardBody>
+                                    <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
+                                </CardBody>
+                            </Card>
+                        </Column>
                 </div>
                 <div class="row">
                     <div class="col-xl-6 mb-4">

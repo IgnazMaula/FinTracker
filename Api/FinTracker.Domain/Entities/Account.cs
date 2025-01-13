@@ -13,7 +13,7 @@ namespace FinTracker.Domain.Entities
         public User User { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
-        public string? Institution { get; set; }
+        public string Institution { get; set; }
         public string? Description { get; set; }
         public decimal InitialBalance { get; set; } = 0;
         public decimal CurrentBalance { get; set; } = 0;

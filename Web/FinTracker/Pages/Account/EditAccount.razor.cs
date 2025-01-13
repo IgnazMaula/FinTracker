@@ -14,7 +14,6 @@ namespace FinTracker.Pages.Account
         [Parameter] public Guid Id { get; set; }
 
         private AccountModel Account = new AccountModel();
-        private List<string> AccountTypeList = Enum.GetNames(typeof(AccountType)).ToList();
 
         protected override async Task OnInitializedAsync() => await GetAccount();
 

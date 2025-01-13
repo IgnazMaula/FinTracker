@@ -18,6 +18,75 @@
     </header>
 
     <div class="container-xl px-4 mt-n10">
+        <div class="row">
+            <div class="col-xl-4 mb-4">
+                <!-- Dashboard example card 1-->
+                <a class="card lift h-100" href="#!">
+                    <div class="card-body d-flex justify-content-center flex-column">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="me-3">
+                                <i class="feather-xl text-primary mb-3" data-feather="package"></i>
+                                <h5>Powerful Components</h5>
+                                <div class="text-muted small">To create informative visual elements on your pages</div>
+                            </div>
+                            <img src="assets/img/illustrations/browser-stats.svg" alt="..." style="width: 8rem" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-4 mb-4">
+                <!-- Dashboard example card 2-->
+                <a class="card lift h-100" href="#!">
+                    <div class="card-body d-flex justify-content-center flex-column">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="me-3">
+                                <i class="feather-xl text-secondary mb-3" data-feather="book"></i>
+                                <h5>Documentation</h5>
+                                <div class="text-muted small">To keep you on track when working with our toolkit</div>
+                            </div>
+                            <img src="assets/img/illustrations/processing.svg" alt="..." style="width: 8rem" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-4 mb-4">
+                <!-- Dashboard example card 3-->
+                <a class="card lift h-100" href="#!">
+                    <div class="card-body d-flex justify-content-center flex-column">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="me-3">
+                                <i class="feather-xl text-green mb-3" data-feather="layout"></i>
+                                <h5>Pages &amp; Layouts</h5>
+                                <div class="text-muted small">To help get you started when building your new UI</div>
+                            </div>
+                            <img src="assets/img/illustrations/windows.svg" alt="..." style="width: 8rem" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-header">
+                        Earnings Breakdown
+                    </div>
+                    <div class="card-body">
+                        <MonthlyIncomeExpenseChart />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-header">
+                        Monthly Revenue
+                    </div>
+                    <div class="card-body">
+                        <MonthlySurplusDeficitChart />
+                    </div>
+                </div>
+            </div>
+        </div>
         <Row>
             <DashboardCard Label="Customer" Quantity="@DashboardData.CustomerCount" Color="primary" Icon="users" Link="Customers"/>
             <DashboardCard Label="Product" Quantity="@DashboardData.ProductCount" Color="success" Icon="box" Link="Product"/>
@@ -84,7 +153,7 @@
                 <div class="card mb-4">
                     <div class="card-body py-5">
                         <div class="d-flex flex-column justify-content-center">
-                                 <MonthlyIncomeExpenseChart />
+                                @*  <MonthlyIncomeExpenseChart /> *@
 @*                            <CryptoChart/> *@
                         </div>
                     </div>
@@ -92,7 +161,7 @@
                  <div class="card mb-4">
                     <div class="card-body py-5">
                         <div class="d-flex flex-column justify-content-center">
-                                     <MonthlySurplusDeficitChart />
+                                   @*   <MonthlySurplusDeficitChart /> *@
 @*                            <CryptoChart/> *@
                         </div>
                     </div>

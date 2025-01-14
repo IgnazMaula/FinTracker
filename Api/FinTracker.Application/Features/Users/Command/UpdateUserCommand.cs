@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using FinTracker.Application.Common;
-using FinTracker.Application.DTOs;
+using FinTracker.Application.Models.DTOs;
 using FinTracker.Domain.Entities;
 using FinTracker.Domain.Interfaces;
 using System;
@@ -21,10 +21,10 @@ public class UpdateUserCommand : IRequest<BaseResponse<UserDTO>>
 
 public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, BaseResponse<UserDTO>>
 {
-    private readonly IUserRepository _repository;
+    private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
 
-    public UpdateUserHandler(IUserRepository repository, IMapper mapper)
+    public UpdateUserHandler(IRepository<User> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -36,7 +36,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, BaseResponse
 
         try
         {
-            var user = await _repository.GetUserByIdAsync(request.Id);
+            var user = await _repository.GetByIdAsync(request.Id);
             if (user == null)
             {
                 response.SetReturnErrorStatus("User not found");
@@ -48,7 +48,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, BaseResponse
             user.PasswordHash = request.PasswordHash;
             user.Role = request.Role;
 
-            await _repository.UpdateUserAsync(user);
+            await _repository.UpdateAsync(user);
 
             var updatedUserDto = _mapper.Map<UserDTO>(user);
             response.Data = updatedUserDto;

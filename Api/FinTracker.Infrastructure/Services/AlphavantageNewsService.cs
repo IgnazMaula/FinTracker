@@ -10,6 +10,8 @@ using FinTracker.Infrastructure.Persistence;
 using System.Net.Http;
 using System.Text.Json;
 using System.Net;
+using FinTracker.Application.Interfaces;
+using FinTracker.Application.Models;
 
 namespace FinTracker.Infrastructure.Services;
 public class AlphavantageNewsService : IAlphavantageNewsService

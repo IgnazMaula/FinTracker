@@ -1,4 +1,5 @@
 using FinTracker.Application.Interfaces;
+using FinTracker.Application.Models;
 using FinTracker.Application.Services;
 using FinTracker.Domain.Entities;
 using FinTracker.Domain.Interfaces;
@@ -37,7 +38,6 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
-
     [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
             Email = model.Email
         };
 
-        await _userRepository.CreateUserAsync(user);
+        await _userRepository.CreateAsync(user);
 
         return CreatedAtAction(nameof(UserController.GetUserById), "User", new { id = user.Id }, user);
     }

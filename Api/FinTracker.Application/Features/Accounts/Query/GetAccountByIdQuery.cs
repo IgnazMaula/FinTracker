@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using FinTracker.Application.Common;
-using FinTracker.Application.DTOs;
 using FinTracker.Domain.Entities;
 using MediatR;
 using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FinTracker.Application.Models.DTOs;
 
 namespace FinTracker.Application.Features.Accounts.Query;
 
@@ -22,10 +22,10 @@ public class GetAccountByIdQuery : IRequest<BaseResponse<AccountDTO>>
 
 public class GetAccountByIdHandler : IRequestHandler<GetAccountByIdQuery, BaseResponse<AccountDTO>>
 {
-    private readonly IAccountRepository _repository;
+    private readonly IRepository<Account> _repository;
     private readonly IMapper _mapper;
 
-    public GetAccountByIdHandler(IAccountRepository repository, IMapper mapper)
+    public GetAccountByIdHandler(IRepository<Account> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -37,7 +37,7 @@ public class GetAccountByIdHandler : IRequestHandler<GetAccountByIdQuery, BaseRe
 
         try
         {
-            var user = await _repository.GetAccountByIdAsync(request.Id);
+            var user = await _repository.GetByIdAsync(request.Id);
 
             if (user == null)
             {

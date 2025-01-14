@@ -7,10 +7,6 @@
             <div class="page-header-content pt-4">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-auto mt-4">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="activity"></i></div>
-                            Dashboard
-                        </h1>
                     </div>
                 </div>
             </div>
@@ -68,9 +64,6 @@
         <div class="row">
             <div class="col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
-                    <div class="card-header">
-                        Earnings Breakdown
-                    </div>
                     <div class="card-body">
                         <MonthlyIncomeExpenseChart />
                     </div>
@@ -78,9 +71,6 @@
             </div>
             <div class="col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
-                    <div class="card-header">
-                        Monthly Revenue
-                    </div>
                     <div class="card-body">
                         <MonthlySurplusDeficitChart />
                     </div>
@@ -88,10 +78,10 @@
             </div>
         </div>
         <Row>
-            <DashboardCard Label="Customer" Quantity="@DashboardData.CustomerCount" Color="primary" Icon="users" Link="Customers"/>
-            <DashboardCard Label="Product" Quantity="@DashboardData.ProductCount" Color="success" Icon="box" Link="Product"/>
-            <DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location"/>
-            <DashboardCard Label="Order" Quantity="@DashboardData.LocationCount" Color="warning" Icon="book" Link="Order"/>
+            <DashboardCard Label="Saving Accounts" Quantity="@DashboardData.CustomerCount" Color="primary" Icon="users" Link="Customers" />
+            <DashboardCard Label="Investment Assets" Quantity="@DashboardData.ProductCount" Color="warning" Icon="box" Link="Product" />
+@*             <DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
+            <DashboardCard Label="Overal Assets" Quantity="@DashboardData.LocationCount" Color="success" Icon="book" Link="Order" />
         </Row>
 
         <Row>
@@ -153,16 +143,16 @@
                 <div class="card mb-4">
                     <div class="card-body py-5">
                         <div class="d-flex flex-column justify-content-center">
-                                @*  <MonthlyIncomeExpenseChart /> *@
-@*                            <CryptoChart/> *@
+                            @*  <MonthlyIncomeExpenseChart /> *@
+                            @*                            <CryptoChart/> *@
                         </div>
                     </div>
                 </div>
-                 <div class="card mb-4">
+                <div class="card mb-4">
                     <div class="card-body py-5">
                         <div class="d-flex flex-column justify-content-center">
-                                   @*   <MonthlySurplusDeficitChart /> *@
-@*                            <CryptoChart/> *@
+                            @*   <MonthlySurplusDeficitChart /> *@
+                            @*                            <CryptoChart/> *@
                         </div>
                     </div>
                 </div>
@@ -185,19 +175,19 @@
                         <Card class="h-100">
                             <CardHeader>Traffic Sources</CardHeader>
                             <CardBody>
-                               <MonthlyIncomeExpenseChart />
+                                <MonthlyIncomeExpenseChart />
                             </CardBody>
                         </Card>
                     </Column>
-                        <Column class="col-xl-6 mb-4">
-                            <!-- Pie chart with legend example-->
-                            <Card class="h-100">
-                                <CardHeader>Traffic Sources</CardHeader>
-                                <CardBody>
-                                    <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
-                                </CardBody>
-                            </Card>
-                        </Column>
+                    <Column class="col-xl-6 mb-4">
+                        <!-- Pie chart with legend example-->
+                        <Card class="h-100">
+                            <CardHeader>Traffic Sources</CardHeader>
+                            <CardBody>
+                                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
+                            </CardBody>
+                        </Card>
+                    </Column>
                 </div>
                 <div class="row">
                     <div class="col-xl-6 mb-4">

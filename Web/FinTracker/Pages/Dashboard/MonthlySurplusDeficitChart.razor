@@ -1,5 +1,5 @@
 ﻿<ApexChart TItem="MonthlyTransactionModel"
-           Title="Basic Sample"
+           Title="Monthly Surplus and Deficit"
            Options="options">
 
     <ApexPointSeries TItem="MonthlyTransactionModel"
@@ -19,29 +19,29 @@
     protected override void OnInitialized()
     {
         options.PlotOptions = new PlotOptions
-        {
-            Line = new PlotOptionsLine
             {
-                Colors = new LineColors
+                Line = new PlotOptionsLine
                 {
-                    Threshold = 0,
-                    ColorAboveThreshold = "#0161F2",
-                    ColorBelowThreshold = "#E81500"
+                    Colors = new LineColors
+                    {
+                        Threshold = 0,
+                        ColorAboveThreshold = "#0161F2",
+                        ColorBelowThreshold = "#E81500"
+                    }
                 }
-            }
-        };
+            };
 
         options.Chart = new Chart
-        {
-            Zoom = new Zoom
             {
-                Enabled = false
-            },
-            Toolbar = new Toolbar
-            {
-                Show = false
-            }
-        };
+                Zoom = new Zoom
+                {
+                    Enabled = false
+                },
+                Toolbar = new Toolbar
+                {
+                    Show = false
+                }
+            };
 
         monthlyData = new List<MonthlyTransactionModel>
         {

@@ -19,13 +19,16 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register repositories
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpClient<IAlphavantageNewsService, AlphavantageNewsService>();
 builder.Services.AddHttpClient<ICoinGeckoApiService, CoinGeckoApiService>();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add controllers to the DI container
 builder.Services.AddControllers();
@@ -54,11 +57,11 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme.",
+        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

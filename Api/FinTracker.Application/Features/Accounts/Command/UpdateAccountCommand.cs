@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using FinTracker.Application.Common;
-using FinTracker.Application.DTOs;
+using FinTracker.Application.Models.DTOs;
 using FinTracker.Domain.Entities;
 using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FinTracker.Application.Models.DTOs;
 
 namespace FinTracker.Application.Features.Accounts.Command;
 
@@ -21,10 +22,10 @@ public class UpdateAccountCommand : IRequest<BaseResponse<AccountDTO>>
 
 public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, BaseResponse<AccountDTO>>
 {
-    private readonly IAccountRepository _repository;
+    private readonly IRepository<Account> _repository;
     private readonly IMapper _mapper;
 
-    public UpdateAccountHandler(IAccountRepository repository, IMapper mapper)
+    public UpdateAccountHandler(IRepository<Account> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -36,21 +37,21 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, BaseRe
 
         try
         {
-            var user = await _repository.GetAccountByIdAsync(request.Id);
-            if (user == null)
+            var account = await _repository.GetByIdAsync(request.Id);
+            if (account == null)
             {
                 response.SetReturnErrorStatus("Account not found");
                 return response;
             }
 
-            user.Name = request.Name;
-            user.Type = request.Type;
-            user.Institution = request.Institution;
-            user.Description = request.Description;
+            account.Name = request.Name;
+            account.Type = request.Type;
+            account.Institution = request.Institution;
+            account.Description = request.Description;
 
-            await _repository.UpdateAccountAsync(user);
+            await _repository.UpdateAsync(account);
 
-            var updatedAccountDto = _mapper.Map<AccountDTO>(user);
+            var updatedAccountDto = _mapper.Map<AccountDTO>(account);
             response.Data = updatedAccountDto;
             response.SetReturnSuccessStatus();
         }

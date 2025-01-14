@@ -1,4 +1,5 @@
-﻿using FinTracker.Domain.Entities;
+﻿using FinTracker.Application.Models;
+using FinTracker.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace FinTracker.Application.Interfaces
 {
-    public interface IAuthService
+    public interface IAlphavantageNewsService
     {
-        Task<TokenResponse> AuthenticateAsync(string username, string password);
+        Task<NewsArticle> GetNewsFeed();
     }
 }

@@ -5,7 +5,7 @@
                      XValue="@(e => e.Month)"
                      YValue="@(e => e.Income)"
                      SeriesType="SeriesType.Bar"
-                     Color="#2DAC69" />
+                     Color="#0161F2" />
 
     <ApexPointSeries TItem="MonthlyTransactionModel"
                      Items="monthlyData"
@@ -40,46 +40,6 @@
             new MonthlyTransactionModel { Month = "November", Income = 4100, Expense = 3900 },
             new MonthlyTransactionModel { Month = "December", Income = 4200, Expense = 4000 }
         };
-
-    }
-
-
-
-    private List<decimal> GetIncomeData()
-
-    {
-
-        return monthlyData.Select(d => d.Income).ToList();
-
-    }
-
-
-
-    private List<decimal> GetExpenseData()
-
-    {
-
-        return monthlyData.Select(d => d.Expense).ToList();
-
-    }
-
-
-
-    // private List<decimal> GetGapData()
-
-    // {
-
-    //     return monthlyData.Select(d => d.Gap).ToList();
-
-    // }
-
-
-
-    private List<string> GetMonthLabels()
-
-    {
-
-        return monthlyData.Select(d => d.Month).ToList();
 
     }
 }

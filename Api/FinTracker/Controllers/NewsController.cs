@@ -3,6 +3,7 @@ using FinTracker.Domain.Interfaces;
 using MediatR;
 using FinTracker.Application.Services;
 using FinTracker.Domain.Entities;
+using FinTracker.Application.Interfaces;
 
 namespace FinTracker.Api.Controllers;
 

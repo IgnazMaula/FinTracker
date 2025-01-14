@@ -5,7 +5,7 @@ using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTracker.Application.DTOs;
+using FinTracker.Application.Models.DTOs;
 using FinTracker.Application.Common;
 
 namespace FinTracker.Application.Features.Accounts.Command;
@@ -23,13 +23,13 @@ public class CreateAccountCommand : IRequest<BaseResponse<AccountDTO>>
 
 public class CreateAccountHandler : IRequestHandler<CreateAccountCommand, BaseResponse<AccountDTO>>
 {
-    private readonly IAccountRepository _repository;
-    private readonly IUserRepository _userRepository;
+    private readonly IRepository<Account> _accountRepository;
+    private readonly IRepository<User> _userRepository;
     private readonly IMapper _mapper;
 
-    public CreateAccountHandler(IAccountRepository repository, IMapper mapper, IUserRepository userRepository)
+    public CreateAccountHandler(IRepository<Account> repository, IRepository<User> userRepository, IMapper mapper)
     {
-        _repository = repository;
+        _accountRepository = repository;
         _mapper = mapper;
         _userRepository = userRepository;
     }
@@ -40,7 +40,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccountCommand, BaseRe
 
         try
         {
-            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+            var user = await _userRepository.GetByIdAsync(request.UserId);
 
             var newAccount = new Account
             {
@@ -55,7 +55,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccountCommand, BaseRe
                 CurrentBalance = request.CurrentBalance,
             };
 
-            await _repository.CreateAccountAsync(newAccount);
+            await _accountRepository.CreateAsync(newAccount);
             var projectDto = _mapper.Map<AccountDTO>(newAccount);
 
             response.Data = projectDto;

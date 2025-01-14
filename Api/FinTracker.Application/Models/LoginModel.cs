@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinTracker.Domain.Entities;
+namespace FinTracker.Application.Models;
 
 public class LoginModel
 {

@@ -4,6 +4,7 @@ using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FinTracker.Domain.Entities;
 
 namespace FinTracker.Application.Features.Accounts.Command;
 
@@ -19,9 +20,9 @@ public class DeleteAccountCommand : IRequest<BaseResponse<bool>>
 
 public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, BaseResponse<bool>>
 {
-    private readonly IAccountRepository _repository;
+    private readonly IRepository<Account> _repository;
 
-    public DeleteAccountHandler(IAccountRepository repository)
+    public DeleteAccountHandler(IRepository<Account> repository)
     {
         _repository = repository;
     }
@@ -32,7 +33,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, BaseRe
 
         try
         {
-            var project = await _repository.GetAccountByIdAsync(request.Id);
+            var project = await _repository.GetByIdAsync(request.Id);
             if (project == null)
             {
                 response.SetReturnErrorStatus("Account not found");
@@ -40,7 +41,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, BaseRe
                 return response;
             }
 
-            await _repository.DeleteAccountAsync(request.Id);
+            await _repository.DeleteAsync(request.Id);
 
             response.Data = true;
             response.SetReturnSuccessStatus();

@@ -6,6 +6,7 @@ using System.Text;
 using FinTracker.Application.Interfaces;
 using FinTracker.Domain.Entities;
 using FinTracker.Domain.Interfaces;
+using FinTracker.Application.Models;
 
 namespace FinTracker.Application.Services
 {

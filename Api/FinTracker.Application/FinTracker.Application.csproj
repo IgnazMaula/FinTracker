@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Projects\**" />
+    <EmbeddedResource Remove="Features\Projects\**" />
+    <None Remove="Features\Projects\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
@@ -17,10 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FinTracker.Domain\FinTracker.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Projects\Query\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FinTracker.Application.Common;
-using FinTracker.Application.DTOs;
+using FinTracker.Application.Models.DTOs;
 using FinTracker.Domain.Entities;
 using MediatR;
 using FinTracker.Domain.Interfaces;
@@ -18,10 +18,10 @@ public class GetAllUsersQuery : IRequest<BaseResponse<List<UserDTO>>>
 
 public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, BaseResponse<List<UserDTO>>>
 {
-    private readonly IUserRepository _repository;
+    private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
 
-    public GetAllUsersHandler(IUserRepository repository, IMapper mapper)
+    public GetAllUsersHandler(IRepository<User> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -33,7 +33,7 @@ public class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, BaseResponse
 
         try
         {
-            var result = await _repository.GetAllUsersAsync();
+            var result = await _repository.GetAllAsync();
             var data = _mapper.Map<List<UserDTO>>(result);
 
             response.Data = data;

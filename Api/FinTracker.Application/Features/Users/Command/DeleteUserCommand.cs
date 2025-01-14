@@ -4,6 +4,7 @@ using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FinTracker.Domain.Entities;
 
 namespace FinTracker.Application.Features.Users.Command;
 
@@ -19,9 +20,9 @@ public class DeleteUserCommand : IRequest<BaseResponse<bool>>
 
 public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, BaseResponse<bool>>
 {
-    private readonly IUserRepository _repository;
+    private readonly IRepository<User> _repository;
 
-    public DeleteUserHandler(IUserRepository repository)
+    public DeleteUserHandler(IRepository<User> repository)
     {
         _repository = repository;
     }
@@ -32,7 +33,7 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, BaseResponse
 
         try
         {
-            var project = await _repository.GetUserByIdAsync(request.Id);
+            var project = await _repository.GetByIdAsync(request.Id);
             if (project == null)
             {
                 response.SetReturnErrorStatus("User not found");
@@ -40,7 +41,7 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, BaseResponse
                 return response;
             }
 
-            await _repository.DeleteUserAsync(request.Id);
+            await _repository.DeleteAsync(request.Id);
 
             response.Data = true;
             response.SetReturnSuccessStatus();

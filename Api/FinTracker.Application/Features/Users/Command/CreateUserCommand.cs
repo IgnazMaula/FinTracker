@@ -5,7 +5,7 @@ using FinTracker.Domain.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTracker.Application.DTOs;
+using FinTracker.Application.Models.DTOs;
 using FinTracker.Application.Common;
 
 namespace FinTracker.Application.Features.Users.Command;
@@ -20,10 +20,10 @@ public class CreateUserCommand : IRequest<BaseResponse<UserDTO>>
 
 public class CreateUserHandler : IRequestHandler<CreateUserCommand, BaseResponse<UserDTO>>
 {
-    private readonly IUserRepository _repository;
+    private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
 
-    public CreateUserHandler(IUserRepository repository, IMapper mapper)
+    public CreateUserHandler(IRepository<User> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -44,7 +44,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, BaseResponse
                 Role = request.Role,
             };
 
-            await _repository.CreateUserAsync(newUser);
+            await _repository.CreateAsync(newUser);
             var projectDto = _mapper.Map<UserDTO>(newUser);
 
             response.Data = projectDto;

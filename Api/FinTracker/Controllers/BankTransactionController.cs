@@ -9,6 +9,7 @@ using System.Globalization;
 using FinTracker.Domain.Entities;
 using FinTracker.Application.Interfaces;
 using FinTracker.Common.Shared.Model;
+using FinTracker.Utilities.Helper;
 
 namespace FinTracker.Api.Controllers
 {
@@ -73,7 +74,15 @@ namespace FinTracker.Api.Controllers
 
             try
             {
-                await _transactionCsvService.ProcessCsvAsync(file.OpenReadStream(), Id);
+
+                var (isValid, year) = YearMonthFormatValidator.ValidateAndExtractYear(file.FileName);
+
+                if (!isValid)
+                {
+                    return BadRequest(new { message = "Filename must be in 'YYYYMM' format." });
+                }
+
+                await _transactionCsvService.ProcessCsvAsync(file.OpenReadStream(), year, Id);
 
                 return Ok(new { message = "File uploaded and processed successfully." });
             }

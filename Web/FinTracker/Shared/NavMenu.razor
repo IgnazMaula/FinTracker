@@ -25,6 +25,19 @@
                     </nav>
                 </div>
 
+                 <!-- Sidenav Menu (Bank Transaction)-->
+                <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBankTransaction" aria-expanded="false" aria-controls="collapseBankTransaction">
+                    <div class="nav-link-icon"><i data-feather="users"></i></div>
+                    Bank Transaction
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </NavLink>
+                <div class="collapse" id="collapseBankTransaction" data-bs-parent="#accordionSidenav">
+                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                        <NavLink class="nav-link" href="/BankTransactions">Bank Transaction List</NavLink>
+                        <NavLink class="nav-link" href="/CreateBankTransaction">Create Bank Transaction</NavLink>
+                    </nav>
+                </div>
+
                 <!-- Sidenav Menu (Customer)-->
                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseCustomer" aria-expanded="false" aria-controls="collapseCustomer">
                     <div class="nav-link-icon"><i data-feather="users"></i></div>

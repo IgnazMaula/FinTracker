@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\FinTracker.Shared\FinTracker.Shared.csproj" />
+    <ProjectReference Include="..\..\Common\FinTracker.Utilities\FinTracker.Utilities.csproj" />
     <ProjectReference Include="..\FinTracker.Domain\FinTracker.Domain.csproj" />
   </ItemGroup>
 

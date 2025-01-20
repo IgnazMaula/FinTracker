@@ -14,24 +14,17 @@
                 <Table TableId="defaultTable" Items="@BankTransactionList" Context="BankTransaction">
                     <HeaderTemplate>
                         <th>Transaction Date</th>
-                        <th>Bank</th>
+@*                      <th>Bank</th> *@
                         <th>Description</th>
                         <th>TransactionType</th>
                         <th>Amount</th>
-                        <th></th>
                     </HeaderTemplate>
                     <RowTemplate>
-                        <td>@BankTransaction.TransactionDate</td>
-                        <td>@BankTransaction.BankAccountId</td>
+                        <td>@BankTransaction.TransactionDate.ToString("dd/MM/yy")</td>
+@*                         <td>@BankTransaction.BankAccountId</td> *@
                         <td>@BankTransaction.Description</td>
                         <td>@BankTransaction.TransactionType</td>
                         <td>@BankTransaction.TransactionAmount.ToString("N2")</td>
-                        <td>
-                            <div class="text-center">
-                                <ButtonLink Label="Details" Url=@($"/BankTransactionDetail/{BankTransaction.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
-                                <ButtonLink Label="Edit" Url=@($"/EditBankTransaction/{BankTransaction.Id}") class="btn btn-sm btn-primary" Icon="edit" />
-                            </div>
-                        </td>
                     </RowTemplate>
                 </Table>
             </CardBody>

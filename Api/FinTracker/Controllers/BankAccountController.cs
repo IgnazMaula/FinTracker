@@ -20,29 +20,29 @@ public class BankAccountController : BaseApiController
     {
         try
         {
-            //var result = await Mediator.Send(new GetAllBankAccountsQuery());
+            var result = await Mediator.Send(new GetAllBankAccountsQuery());
 
-            //if (result.Status != 200)
-            //    return StatusCode(result.Status, new { message = result.Message });
+            if (result.Status != 200)
+                return StatusCode(result.Status, new { message = result.Message });
 
-            //return Ok(result.Data);
+            return Ok(result.Data);
 
-            var bankAccounts = new List<BankAccount>()
-            {
-                new BankAccount
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = Guid.NewGuid(),
-                    Name = "Main Saving Account",
-                    BankName = "BCA",
-                    AccountNo = "69696969",
-                    Currency = "IDR",
-                    CurrentBalance = 124000000,
-                    InitialBalance = 124000000
-                }
-            };
+            //var bankAccounts = new List<BankAccount>()
+            //{
+            //    new BankAccount
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        UserId = Guid.NewGuid(),
+            //        Name = "Main Saving Account",
+            //        BankName = "BCA",
+            //        AccountNo = "69696969",
+            //        Currency = "IDR",
+            //        CurrentBalance = 124000000,
+            //        InitialBalance = 124000000
+            //    }
+            //};
 
-            return Ok(bankAccounts);
+            //return Ok(bankAccounts);
         }
         catch (Exception ex)
         {
@@ -55,27 +55,27 @@ public class BankAccountController : BaseApiController
     {
         try
         {
-            //var query = new GetBankAccountByIdQuery(id);
-            //var result = await Mediator.Send(query);
+            var query = new GetBankAccountByIdQuery(id);
+            var result = await Mediator.Send(query);
 
-            //if (result.Status != 200)
-            //    return StatusCode(result.Status, new { message = result.Message });
+            if (result.Status != 200)
+                return StatusCode(result.Status, new { message = result.Message });
 
-            //return Ok(result.Data);
+            return Ok(result.Data);
 
-            var bankAccount = new BankAccount
-            {
-                Id = Guid.NewGuid(),
-                UserId = Guid.NewGuid(),
-                Name = "Main Saving Account",
-                BankName = "BCA",
-                AccountNo = "69696969",
-                Currency = "IDR",
-                CurrentBalance = 124000000,
-                InitialBalance = 124000000
-            };
+            //var bankAccount = new BankAccount
+            //{
+            //    Id = Guid.NewGuid(),
+            //    UserId = Guid.NewGuid(),
+            //    Name = "Main Saving Account",
+            //    BankName = "BCA",
+            //    AccountNo = "69696969",
+            //    Currency = "IDR",
+            //    CurrentBalance = 124000000,
+            //    InitialBalance = 124000000
+            //};
 
-            return Ok(bankAccount);
+            //return Ok(bankAccount);
         }
         catch (Exception ex)
         {

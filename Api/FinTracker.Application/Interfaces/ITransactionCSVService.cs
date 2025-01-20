@@ -10,6 +10,6 @@ namespace FinTracker.Application.Interfaces
 {
     public interface ITransactionCSVService
     {
-        Task ProcessCsvAsync(Stream csvStream, Guid Id);
+        Task ProcessCsvAsync(Stream csvStream, int year, Guid I7d);
     }
 }

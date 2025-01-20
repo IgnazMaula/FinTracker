@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Net;
 
-namespace FinTracker.Pages.Account
+namespace FinTracker.Pages.BankAccount
 {
-    public partial class CreateAccount : BasePage
+    public partial class CreateBankAccount : BasePage
     {
         [Inject] private ToastService Toast { get; set; }
         [Inject] private NavigationManager NavManager { get; set; }
 
-        private AccountModel Account = new AccountModel();
+        private BankAccountModel BankAccount = new BankAccountModel();
 
-        private async Task PostAccount(EditContext editContext)
+        private async Task PostBankAccount(EditContext editContext)
         {
             if (!editContext.Validate())
             {
@@ -21,21 +21,21 @@ namespace FinTracker.Pages.Account
             }
 
             //Placeholder
-            Account.UserId = new Guid("DF269D5B-B34B-425D-A9A1-701A606D6393");
+            BankAccount.UserId = new Guid("DF269D5B-B34B-425D-A9A1-701A606D6393");
 
-            var (model, urlLookupResult, statusCode) = await PostAccountDataAsync(Account);
+            var (model, urlLookupResult, statusCode) = await PostBankAccountDataAsync(BankAccount);
             if (statusCode == HttpStatusCode.Created)
             {
                 PageStatus = string.Empty;
                 PageIsValid = true;
-                await Toast.ShowSuccess("Account successfuly created");
-                NavManager.NavigateTo("/Accounts");
+                await Toast.ShowSuccess("Bank Account successfuly created");
+                NavManager.NavigateTo("/BankAccounts");
             }
             else
             {
                 PageStatus = urlLookupResult.Message;
                 PageIsValid = false;
-                await Toast.ShowError("failed to create Account");
+                await Toast.ShowError("failed to create Bank Account");
             }
 
             StateHasChanged();

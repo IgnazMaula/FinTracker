@@ -15,4 +15,8 @@
 		<PackageReference Include="Serilog" Version="3.1.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\FinTracker.Shared\FinTracker.Shared.csproj" />
+	</ItemGroup>
+
 </Project>

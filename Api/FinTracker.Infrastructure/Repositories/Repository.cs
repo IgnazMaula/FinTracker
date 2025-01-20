@@ -51,4 +51,10 @@ public class Repository<T> : IRepository<T> where T : class
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task CreateMultipleAsync(IEnumerable<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
+    }
 }

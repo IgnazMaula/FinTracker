@@ -1,0 +1,46 @@
+﻿@page "/EditBankAccount/{Id:guid}"
+@inherits BasePage
+
+<PageHeader Title="BankAccount" Icon="user-plus">
+    <ButtonLink Label="Back" Url="BankAccounts" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Edit Bank Account</CardHeader>
+                <CardBody>
+                    <EditForm Model="BankAccount" OnValidSubmit="EditBankAccountHandler">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column class="col-md-6">
+                                <InputForm Label="Name" Id="Name" Placeholder="Enter Name" @bind-Value="@BankAccount.Name" ValidationFor="@(()=>BankAccount.Name)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputForm Label="Bank Name" Id="BankName" Placeholder="Enter Bank Name" @bind-Value="@BankAccount.BankName" ValidationFor="@(()=>BankAccount.BankName)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="AccountNo" Id="AccountNo" Placeholder="Enter Account No" @bind-Value="@BankAccount.AccountNo" ValidationFor="@(()=>BankAccount.AccountNo)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputOption Label="Currency" Id="Currency" Placeholder="Choose An Option" @bind-Value="@BankAccount.Currency" Items="CurrencyList" Context="item" ValidationFor="@(()=>BankAccount.Currency)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Current Balance" Id="CurrentBalance" Placeholder="Enter Current Balance" @bind-Value="@BankAccount.CurrentBalance" ValidationFor="@(()=>BankAccount.CurrentBalance)" />
+                            </Column>
+                        </Row>
+                        <ButtonSubmit Label="Save Edit" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="BankAccounts" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

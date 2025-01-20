@@ -14,5 +14,6 @@ namespace FinTracker.Domain.Interfaces
         Task CreateAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(object id);
+        Task CreateMultipleAsync(IEnumerable<T> entities);
     }
 }

@@ -1,0 +1,38 @@
+﻿@page "/BankTransactionDetail/{Id:guid}"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="BankTransaction" Icon="user-plus">
+    <ButtonLink Label="Back" Url="BankTransactions" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>BankTransaction Detail</CardHeader>
+                <CardBody>
+                    <Row>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Bank" Value="@BankTransaction.BankAccountId.ToString()" />
+                        </Column>
+                        <Column class="col-md-6">
+                            <InfoForm Label="Transaction Date" Value="@BankTransaction.TransactionDate.ToString()" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Description" Value="@BankTransaction.Description" />
+                        </Column>
+                        <Column class="col-sm-6">
+                            <InfoForm Label="Transaction Type" Value="@BankTransaction.TransactionType" />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <InfoForm Label="Transaction Amount" Value="@BankTransaction.TransactionAmount.ToString("N2")" />
+                    </Row>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

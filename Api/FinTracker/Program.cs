@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITransactionCSVService, TransactionCSVService>();
 builder.Services.AddHttpClient<IAlphavantageNewsService, AlphavantageNewsService>();
 builder.Services.AddHttpClient<ICoinGeckoApiService, CoinGeckoApiService>();
 

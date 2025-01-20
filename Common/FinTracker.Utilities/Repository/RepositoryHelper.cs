@@ -1,9 +1,12 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Net;
 using System.Collections.Generic;
+using System.Net.Http.Json;
+using FinTracker.Common.Shared.Model;
 
 namespace FinTracker.Utilities.Repository
 {
@@ -11,10 +14,10 @@ namespace FinTracker.Utilities.Repository
     {
         private static readonly HttpClient HttpClient = new HttpClient();
 
-        // URL Lookup Result for consistent error handling
         public class UrlLookupResult
         {
             public string Message { get; set; }
+            public string Url { get; set; }
             public bool Success { get; set; }
         }
 
@@ -23,13 +26,10 @@ namespace FinTracker.Utilities.Repository
         {
             try
             {
-                var response = await HttpClient.GetAsync(url);
-                var content = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<T>(content);
-
-                return (model, new UrlLookupResult { Success = response.IsSuccessStatusCode, Message = content }, response.StatusCode);
+                var model = await HttpClient.GetFromJsonAsync<T>(url);
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
@@ -41,13 +41,10 @@ namespace FinTracker.Utilities.Repository
             try
             {
                 var requestUrl = string.IsNullOrEmpty(queryString) ? url : $"{url}?{queryString}";
-                var response = await HttpClient.GetAsync(requestUrl);
-                var content = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<List<T>>(content);
-
-                return (model, new UrlLookupResult { Success = response.IsSuccessStatusCode, Message = content }, response.StatusCode);
+                var model = await HttpClient.GetFromJsonAsync<List<T>>(requestUrl);
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, HttpStatusCode.OK);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 return (null, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
@@ -60,12 +57,12 @@ namespace FinTracker.Utilities.Repository
             {
                 var jsonContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 var response = await HttpClient.PostAsync(url, jsonContent);
-                var content = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<T>(content);
+                response.EnsureSuccessStatusCode();
 
-                return (model, new UrlLookupResult { Success = response.IsSuccessStatusCode, Message = content }, response.StatusCode);
+                var model = await response.Content.ReadFromJsonAsync<T>();
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, response.StatusCode);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
@@ -78,12 +75,12 @@ namespace FinTracker.Utilities.Repository
             {
                 var jsonContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 var response = await HttpClient.PutAsync($"{url}/{id}", jsonContent);
-                var content = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<T>(content);
+                response.EnsureSuccessStatusCode();
 
-                return (model, new UrlLookupResult { Success = response.IsSuccessStatusCode, Message = content }, response.StatusCode);
+                var model = await response.Content.ReadFromJsonAsync<T>();
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, response.StatusCode);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
@@ -95,15 +92,52 @@ namespace FinTracker.Utilities.Repository
             try
             {
                 var response = await HttpClient.DeleteAsync($"{url}/{id}");
-                var content = await response.Content.ReadAsStringAsync();
-                var model = JsonSerializer.Deserialize<T>(content);
+                response.EnsureSuccessStatusCode();
 
-                return (model, new UrlLookupResult { Success = response.IsSuccessStatusCode, Message = content }, response.StatusCode);
+                var model = await response.Content.ReadFromJsonAsync<T>();
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, response.StatusCode);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
         }
+
+        public static async Task<(T model, UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostBankTransaction<T>(string url, Guid id, Stream fileContentStream)
+        {
+            try
+            {
+
+                // Create the multipart form data content
+                var multipartContent = new MultipartFormDataContent();
+
+                // Add the file content
+                if (fileContentStream != null)
+                {
+                    var fileContent = new StreamContent(fileContentStream);
+                    fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
+                    {
+                        Name = "file",
+                        FileName = "uploaded_file.csv"
+                    };
+                    multipartContent.Add(fileContent, "file", "uploaded_file.csv");
+                }
+
+                // Send the HTTP POST request
+                var response = await HttpClient.PostAsync($"{url}?id={id}", multipartContent);
+                response.EnsureSuccessStatusCode();
+
+                // Deserialize the response to the specified type
+                var responseModel = await response.Content.ReadFromJsonAsync<T>();
+                return (responseModel, new UrlLookupResult { Success = true, Message = "Request succeeded." }, response.StatusCode);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+
     }
 }

@@ -1,35 +1,35 @@
-﻿@page "/AccountDetail/{Id:int}"
+﻿@page "/BankAccountDetail/{Id:guid}"
 @inherits BasePage
 @inject IJSRuntime JS
 
-<PageHeader Title="Account" Icon="user-plus">
-    <ButtonLink Label="Back to Users List" Url="Accounts" class="btn btn-sm btn-outline-primary" Icon="users" />
+<PageHeader Title="BankAccount" Icon="user-plus">
+    <ButtonLink Label="Back" Url="BankAccounts" class="btn btn-sm btn-outline-primary" Icon="users" />
 </PageHeader>
 
 <Container>
     <Row>
         <Column>
             <Card>
-                <CardHeader>Account Detail</CardHeader>
+                <CardHeader>BankAccount Detail</CardHeader>
                 <CardBody>
                     <Row>
                         <Column class="col-md-6">
-                            <InfoForm Label="Name" Value="@Account.Name" />
+                            <InfoForm Label="Name" Value="@BankAccount.Name" />
                         </Column>
                         <Column class="col-md-6">
-                            <InfoForm Label="Type" Value="@Account.Type.ToString()" />
+                            <InfoForm Label="Bank Name" Value="@BankAccount.BankName" />
                         </Column>
                     </Row>
                     <Row>
                         <Column class="col-sm-6">
-                            <InfoForm Label="Institution" Value="@Account.Institution" />
+                            <InfoForm Label="Account No" Value="@BankAccount.AccountNo" />
                         </Column>
                         <Column class="col-sm-6">
-                            <InfoForm Label="Description" Value="@Account.Description" />
+                            <InfoForm Label="Currency" Value="@BankAccount.Currency" />
                         </Column>
                     </Row>
                     <Row>
-                        <InfoForm Label="CurrentBalance" Value="@Account.CurrentBalance.ToString("N2")" />
+                        <InfoForm Label="CurrentBalance" Value="@BankAccount.CurrentBalance.ToString("N2")" />
                     </Row>
                 </CardBody>
             </Card>

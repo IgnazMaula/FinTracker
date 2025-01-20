@@ -3,57 +3,114 @@ using FinTracker.Domain.Interfaces;
 using MediatR;
 using FinTracker.Application.Features.Users.Query;
 using FinTracker.Application.Features.Users.Command;
+using System;
+using System.Threading.Tasks;
 
-namespace FinTracker.Api.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class UserController : ControllerBase
+namespace FinTracker.Api.Controllers
 {
-    private readonly IMediator _mediator;
-
-    public UserController(IMediator mediator)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        _mediator = mediator;
-    }
+        private readonly IMediator _mediator;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        var query = new GetAllUsersQuery();
-        var result = await _mediator.Send(query);
-        return Ok(result.Data);
-    }
+        public UserController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserById(Guid id)
-    {
-        var query = new GetUserByIdQuery(id);
-        var result = await _mediator.Send(query);
-        if (result == null) return NotFound();
-        return Ok(result.Data);
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var query = new GetAllUsersQuery();
+                var result = await _mediator.Send(query);
 
-    [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetUserById), new { id = result.Data.Id }, result.Data);
-    }
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
-    {
-        command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(result.Data);
-    }
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(Guid id)
-    {
-        var command = new DeleteUserCommand(id);
-        await _mediator.Send(command);
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            try
+            {
+                var query = new GetUserByIdQuery(id);
+                var result = await _mediator.Send(query);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return CreatedAtAction(nameof(GetUserById), new { id = result.Data.Id }, result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        {
+            try
+            {
+                command.Id = id;
+                var result = await _mediator.Send(command);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                var command = new DeleteUserCommand(id);
+                var result = await _mediator.Send(command);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

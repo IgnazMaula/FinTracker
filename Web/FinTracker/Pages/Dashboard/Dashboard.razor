@@ -21,11 +21,11 @@
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
-                                <i class="feather-xl text-primary mb-3" data-feather="package"></i>
-                                <h5>Powerful Components</h5>
+                                <i class="feather-xl text-primary mb-3" data-feather="dollar-sign"></i>
+                                <h5>Cashflow Tracker</h5>
                                 <div class="text-muted small">To create informative visual elements on your pages</div>
                             </div>
-                            <img src="assets/img/illustrations/browser-stats.svg" alt="..." style="width: 8rem" />
+                            <img src="assets/img/illustrations/cashflow.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
                 </a>
@@ -36,11 +36,11 @@
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
-                                <i class="feather-xl text-secondary mb-3" data-feather="book"></i>
-                                <h5>Documentation</h5>
+                                <i class="feather-xl text-green mb-3" data-feather="bar-chart-2"></i>
+                                <h5>Investment Portfolio</h5>
                                 <div class="text-muted small">To keep you on track when working with our toolkit</div>
                             </div>
-                            <img src="assets/img/illustrations/processing.svg" alt="..." style="width: 8rem" />
+                            <img src="assets/img/illustrations/invest.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
                 </a>
@@ -51,11 +51,11 @@
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
-                                <i class="feather-xl text-green mb-3" data-feather="layout"></i>
-                                <h5>Pages &amp; Layouts</h5>
+                                <i class="feather-xl text-warning mb-3" data-feather="award"></i>
+                                <h5>Financial Goal Planner</h5>
                                 <div class="text-muted small">To help get you started when building your new UI</div>
                             </div>
-                            <img src="assets/img/illustrations/windows.svg" alt="..." style="width: 8rem" />
+                            <img src="assets/img/illustrations/goals.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
                 </a>
@@ -78,10 +78,10 @@
             </div>
         </div>
         <Row>
-            <DashboardCard Label="Saving Accounts" Quantity="@DashboardData.CustomerCount" Color="primary" Icon="users" Link="Customers" />
-            <DashboardCard Label="Investment Assets" Quantity="@DashboardData.ProductCount" Color="warning" Icon="box" Link="Product" />
+            <DashboardCard Label="Total Cash (IDR)" Quantity="124.000.000" Color="primary" Icon="dollar-sign" Link="Customers" />
+            <DashboardCard Label="Total Investment" Quantity="10.000.000" Color="success" Icon="bar-chart-2" Link="Product" />
 @*             <DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
-            <DashboardCard Label="Overal Assets" Quantity="@DashboardData.LocationCount" Color="success" Icon="book" Link="Order" />
+            <DashboardCard Label="Ongoing Goals" Quantity="4" Color="warning" Icon="award" Link="Order" />
         </Row>
 
         <Row>
@@ -91,22 +91,22 @@
                     <div class="card-header border-bottom">
                         <!-- Dashboard card navigation-->
                         <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
-                            <li class="nav-item me-1"><a class="nav-link active" id="overview-pill" href="#overview" data-bs-toggle="tab" role="tab" aria-controls="overview" aria-selected="true">Overview</a></li>
+                            <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Last Bank Transactions</a></li>
                             <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="dashboardNavContent">
                             <!-- Dashboard Tab Pane 1-->
-                            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-pill">
+                            <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
                                 @if (DataLoaded)
                                 {
                                     <Table TableId="dashboardTable2" Items="@CustomerList" Context="customer">
                                         <HeaderTemplate>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Address</th>
-                                            <th>Phone</th>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
                                         </HeaderTemplate>
                                         <RowTemplate>
                                             <td>@customer.Name</td>
@@ -170,15 +170,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <Column class="col-xl-6 mb-4">
-                        <!-- Pie chart with legend example-->
-                        <Card class="h-100">
-                            <CardHeader>Traffic Sources</CardHeader>
-                            <CardBody>
-                                <MonthlyIncomeExpenseChart />
-                            </CardBody>
-                        </Card>
-                    </Column>
                     <Column class="col-xl-6 mb-4">
                         <!-- Pie chart with legend example-->
                         <Card class="h-100">
@@ -306,6 +297,49 @@
             <div class="col-xxl-4">
                 <div class="row">
                     <div class="col-xl-6 col-xxl-12">
+                        <div class="card card-header-actions mb-4">
+                            <div class="card-header">
+                                Asset Distribution
+                                <a class="btn btn-sm btn-primary-soft text-primary" href="#!">Create New</a>
+                            </div>
+                            <div class="card-body">
+                                <!-- Progress item 1-->
+                                <div class="d-flex align-items-center justify-content-between small mb-1">
+                                    <div class="fw-bold">Cash on Banks</div>
+                                    <div class="small">70%</div>
+                                </div>
+                                <div class="progress mb-3"><div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div></div>
+                                <!-- Progress item 2-->
+                                <div class="d-flex align-items-center justify-content-between small mb-1">
+                                    <div class="fw-bold">Cryptocurrencies</div>
+                                    <div class="small">20%</div>
+                                </div>
+                                <div class="progress mb-3"><div class="progress-bar bg-warning" role="progressbar" style="width: 20%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>
+                                <!-- Progress item 3-->
+                                <div class="d-flex align-items-center justify-content-between small mb-1">
+                                    <div class="fw-bold">Stocks</div>
+                                    <div class="small">10%</div>
+                                </div>
+                                <div class="progress mb-3"><div class="progress-bar bg-success" role="progressbar" style="width: 10%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
+                                <!-- Progress item 4-->
+                                <div class="d-flex align-items-center justify-content-between small mb-1">
+                                    <div class="fw-bold">Mutual Funds</div>
+                                    <div class="small">0%</div>
+                                </div>
+                                <div class="progress"><div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-xl-6 col-xxl-12">
+                        <!-- Pie chart with legend example-->
+                        <Card class="h-100">
+                            <CardHeader>Traffic Sources</CardHeader>
+                            <CardBody>
+                                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
+                            </CardBody>
+                        </Card>
+                    </div>
+                    <div class="col-xl-6 col-xxl-12">
                         <!-- Team members / people dashboard card example-->
                         <div class="card mb-4">
                             <div class="card-header">People</div>
@@ -418,41 +452,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-xxl-12">
-                        <!-- Project tracker card example-->
-                        <div class="card card-header-actions mb-4">
-                            <div class="card-header">
-                                Projects
-                                <a class="btn btn-sm btn-primary-soft text-primary" href="#!">Create New</a>
-                            </div>
-                            <div class="card-body">
-                                <!-- Progress item 1-->
-                                <div class="d-flex align-items-center justify-content-between small mb-1">
-                                    <div class="fw-bold">Server Setup</div>
-                                    <div class="small">25%</div>
-                                </div>
-                                <div class="progress mb-3"><div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div></div>
-                                <!-- Progress item 2-->
-                                <div class="d-flex align-items-center justify-content-between small mb-1">
-                                    <div class="fw-bold">Database Migration</div>
-                                    <div class="small">50%</div>
-                                </div>
-                                <div class="progress mb-3"><div class="progress-bar bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>
-                                <!-- Progress item 3-->
-                                <div class="d-flex align-items-center justify-content-between small mb-1">
-                                    <div class="fw-bold">Version Release</div>
-                                    <div class="small">75%</div>
-                                </div>
-                                <div class="progress mb-3"><div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
-                                <!-- Progress item 4-->
-                                <div class="d-flex align-items-center justify-content-between small mb-1">
-                                    <div class="fw-bold">Product Listings</div>
-                                    <div class="small">100%</div>
-                                </div>
-                                <div class="progress"><div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
                             </div>
                         </div>
                     </div>

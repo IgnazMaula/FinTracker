@@ -15,4 +15,5 @@ public class BankTransaction
     public string Description { get; set; }
     public string TransactionType { get; set; }
     public decimal? TransactionAmount { get; set; }
+    public decimal? Balance { get; set; }
 }

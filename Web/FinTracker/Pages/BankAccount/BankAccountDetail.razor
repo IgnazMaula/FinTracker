@@ -3,6 +3,7 @@
 @inject IJSRuntime JS
 
 <PageHeader Title="BankAccount" Icon="user-plus">
+    <ButtonLink Label="Upload Bank Transaction" Url="@($"CreateBankTransaction/{Id}")" class="btn btn-sm btn-primary" Icon="users" />
     <ButtonLink Label="Back" Url="BankAccounts" class="btn btn-sm btn-outline-primary" Icon="users" />
 </PageHeader>
 
@@ -10,29 +11,72 @@
     <Row>
         <Column>
             <Card>
-                <CardHeader>BankAccount Detail</CardHeader>
+                <CardHeader>Bank Account Detail</CardHeader>
                 <CardBody>
                     <Row>
-                        <Column class="col-md-6">
+                        <Column class="col-md-3">
                             <InfoForm Label="Name" Value="@BankAccount.Name" />
                         </Column>
-                        <Column class="col-md-6">
+                        <Column class="col-md-3">
                             <InfoForm Label="Bank Name" Value="@BankAccount.BankName" />
                         </Column>
-                    </Row>
-                    <Row>
-                        <Column class="col-sm-6">
+                        <Column class="col-md-3">
                             <InfoForm Label="Account No" Value="@BankAccount.AccountNo" />
                         </Column>
-                        <Column class="col-sm-6">
-                            <InfoForm Label="Currency" Value="@BankAccount.Currency" />
+                        <Column class="col-sm-3">
+                            <InfoForm Label="CurrentBalance" Value="@(BankAccount.Currency + ' ' + BankAccount.CurrentBalance.ToString("N2"))" />
                         </Column>
-                    </Row>
-                    <Row>
-                        <InfoForm Label="CurrentBalance" Value="@BankAccount.CurrentBalance.ToString("N2")" />
                     </Row>
                 </CardBody>
             </Card>
         </Column>
     </Row>
 </Container>
+
+@if (DataLoaded)
+{
+    <Container>
+        <Card>
+            <CardHeader>Bank Account Transactions</CardHeader>
+            <CardBody>
+                <Table TableId="bankTransactionTable" Items="@BankTransactionList" Context="BankTransaction">
+                    <HeaderTemplate>
+                        <th>Transaction Date</th>
+                        <th>Description</th>
+                        <th>TransactionType</th>
+                        <th>Amount</th>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <td>@BankTransaction.TransactionDate.ToString("dd/MM/yy")</td>
+                        <td>@(BankTransaction.Description.Length > 50 ? BankTransaction.Description.Substring(0, 50) + "..." : BankTransaction.Description)</td>
+
+                        @if (BankTransaction.TransactionType == "Debit")
+                        {
+                            <td><div class="badge bg-danger text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                        }
+                        else if (BankTransaction.TransactionType == "Credit")
+                        {
+                            <td><div class="badge bg-success text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                        }
+                        else
+                        {
+                            <td><div class="badge bg-warning text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                        }
+                        @if (BankTransaction.TransactionType == "Debit")
+                        {
+                            <td class="text-danger">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                        else if (BankTransaction.TransactionType == "Credit")
+                        {
+                            <td class="text-success">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                        else
+                        {
+                            <td class="text-warning">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                    </RowTemplate>
+                </Table>
+            </CardBody>
+        </Card>
+    </Container>
+}

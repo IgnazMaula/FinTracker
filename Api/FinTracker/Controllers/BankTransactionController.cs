@@ -64,6 +64,44 @@ namespace FinTracker.Api.Controllers
             }
         }
 
+        [HttpGet("ByBankId/{id}")]
+        public async Task<IActionResult> GetBankTransactionByBankId(Guid id)
+        {
+            try
+            {
+                var query = new GetBankTransactionByBankIdQuery(id);
+                var result = await _mediator.Send(query);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetMonthlyBankTransactionByUserId/{id}")]
+        public async Task<IActionResult> GetMonthlyBankTransactionByUserId(Guid id)
+        {
+            try
+            {
+                var query = new GetMonthlyBankTransactionByUserIdQuery(id);
+                var result = await _mediator.Send(query);
+
+                if (result.Status != 200)
+                    return StatusCode(result.Status, new { message = result.Message });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
         [HttpPost("Upload/{id}")]
         public async Task<IActionResult> UploadCsv(Guid Id, [FromForm] IFormFile? file)
         {

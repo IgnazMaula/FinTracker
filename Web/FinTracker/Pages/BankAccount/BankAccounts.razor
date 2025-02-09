@@ -28,7 +28,7 @@
                         <td>@BankAccount.CurrentBalance.ToString("N2")</td>
                         <td>
                             <div class="text-center">
-                                <ButtonLink Label="Details" Url=@($"/BankAccountDetail/{BankAccount.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
+                                <ButtonLink Label="Transactions" Url=@($"/BankAccountDetail/{BankAccount.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
                                 <ButtonLink Label="Edit" Url=@($"/EditBankAccount/{BankAccount.Id}") class="btn btn-sm btn-primary" Icon="edit" />
                                 <ButtonModal Label="Delete" class="btn btn-sm btn-danger" Icon="trash-2" Target="deleteModal" Action="() => SetId(BankAccount.Id)" />
                             </div>

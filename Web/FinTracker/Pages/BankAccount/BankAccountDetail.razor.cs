@@ -14,12 +14,29 @@ namespace FinTracker.Pages.BankAccount
 
         private BankAccountModel BankAccount = new BankAccountModel();
 
-        protected override async Task OnInitializedAsync() => await GetBankAccount();
+        public bool DataLoaded { get; set; }
+        private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
+
+        protected override async Task OnInitializedAsync()
+        {
+            await GetBankAccount();
+            await GetBankTransactions();
+            DataLoaded = true;
+            StateHasChanged();
+        }
 
         private async Task GetBankAccount()
         {
             var (model, urlLookupResult, statusCode) = await GetBankAccountDataAsync(Id);
             if (statusCode == HttpStatusCode.OK) { BankAccount = model; PageStatus = string.Empty; PageIsValid = true; }
+            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+            StateHasChanged();
+        }
+
+        private async Task GetBankTransactions()
+        {
+            var (model, urlLookupResult, statusCode) = await GetBankTransactionByBankIdDataAsync(Id);
+            if (statusCode == HttpStatusCode.OK) { BankTransactionList = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();
         }

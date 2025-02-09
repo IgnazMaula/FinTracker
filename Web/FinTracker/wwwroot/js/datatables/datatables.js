@@ -18,6 +18,12 @@ window.addEventListener('DOMContentLoaded', event => {
                 searching: false,
             });
         }
+        else if (tableId == "bankTransactionTable") {
+            const dataTable = new DataTable(datatables, {
+                responsive: true,
+                order: [],
+            });
+        }
 
         //Add another type of table here
 

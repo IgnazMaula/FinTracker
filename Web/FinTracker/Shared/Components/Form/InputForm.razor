@@ -67,6 +67,16 @@
                 }
             }
 
+            else if (typeof(TValue) == typeof(DateTime))
+            {
+                if (DateTime.TryParse(value, out var dateTimeValue))
+                {
+                    result = (TValue)(object)dateTimeValue;
+                    validationErrorMessage = null;
+                    return true;
+                }
+            }
+
             // Fallback for unsupported types
             result = default!;
             validationErrorMessage = $"The value '{value}' is not valid for type {typeof(TValue).Name}.";

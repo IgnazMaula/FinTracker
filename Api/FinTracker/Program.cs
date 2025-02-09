@@ -21,6 +21,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+builder.Services.AddScoped<IBankTransactionRepository, BankTransactionRepository>();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();

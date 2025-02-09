@@ -74,6 +74,11 @@ namespace FinTracker.Pages
             var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
+        protected async Task<(List<BankTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankTransactionByBankIdDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/ByBankId/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
         protected async Task<(BankTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostBankTransactionDataAsync(BankTransactionModel request)
         {
             var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}", request);

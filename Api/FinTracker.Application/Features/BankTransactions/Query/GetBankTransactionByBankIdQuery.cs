@@ -10,34 +10,34 @@ using FinTracker.Application.Models.DTOs;
 
 namespace FinTracker.Application.Features.BankTransactions.Query;
 
-public class GetBankTransactionByIdQuery : IRequest<BaseResponse<BankTransactionDTO>>
+public class GetBankTransactionByBankIdQuery : IRequest<BaseResponse<List<BankTransactionDTO>>>
 {
     public Guid Id { get; set; }
 
-    public GetBankTransactionByIdQuery(Guid id)
+    public GetBankTransactionByBankIdQuery(Guid id)
     {
         Id = id;
     }
 }
 
-public class GetTransactionByIdHandler : IRequestHandler<GetBankTransactionByIdQuery, BaseResponse<BankTransactionDTO>>
+public class GetBankTransactionByBankIdHandler : IRequestHandler<GetBankTransactionByBankIdQuery, BaseResponse<List<BankTransactionDTO>>>
 {
-    private readonly IRepository<BankTransaction> _repository;
+    private readonly IBankTransactionRepository _repository;
     private readonly IMapper _mapper;
 
-    public GetTransactionByIdHandler(IRepository<BankTransaction> repository, IMapper mapper)
+    public GetBankTransactionByBankIdHandler(IBankTransactionRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
 
-    public async Task<BaseResponse<BankTransactionDTO>> Handle(GetBankTransactionByIdQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<List<BankTransactionDTO>>> Handle(GetBankTransactionByBankIdQuery request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<BankTransactionDTO>();
+        var response = new BaseResponse<List<BankTransactionDTO>>();
 
         try
         {
-            var result = await _repository.GetByIdAsync(request.Id);
+            var result = await _repository.GetBankTransactionByBankIdAsync(request.Id);
 
             if (result == null)
             {
@@ -45,7 +45,7 @@ public class GetTransactionByIdHandler : IRequestHandler<GetBankTransactionByIdQ
             }
             else
             {
-                response.Data = _mapper.Map<BankTransactionDTO>(result);
+                response.Data = _mapper.Map<List<BankTransactionDTO>>(result);
                 response.SetReturnSuccessStatus();
             }
         }

@@ -1,0 +1,36 @@
+﻿@page "/CreateBankTransaction/{Id:guid}"
+@inherits BasePage
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<PageHeader Title="Bank Transaction" Icon="user-plus">
+    <ButtonLink Label="Back" Url="@($"BankAccountDetail/{Id}")" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Create Bank Transaction</CardHeader>
+                <CardBody>
+                    <EditForm Model="UploadBankTransaction" OnValidSubmit="PostBankTransaction">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column class="col-md-6">
+                                <InputForm Label="Name" Id="Name" Placeholder="Enter Name" @bind-Value="@BankAccount.Name" ValidationFor="@(()=>BankAccount.Name)" ReadOnly="true" Disabled="true"/>
+                            </Column>
+                            <Column class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="small mb-1 fw-bold" for="file">Upload Bank Statement Csv</label> <br />
+                                    <InputFile OnChange="OnFileSelected" />
+                                </div>
+                            </Column>
+                        </Row>
+                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="@($"BankAccountDetail/{Id}")" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

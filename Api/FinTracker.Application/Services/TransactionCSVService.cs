@@ -14,10 +14,10 @@ namespace FinTracker.Application.Services
     public class TransactionCSVService : ITransactionCSVService
     {
         private readonly IConfiguration _configuration;
-        private readonly IRepository<BankTransaction> _bankTransactionRepository;
+        private readonly IBankTransactionRepository _bankTransactionRepository;
         private readonly IRepository<BankAccount> _bankAccountRepository;
 
-        public TransactionCSVService(IConfiguration configuration, IRepository<BankTransaction> bankTransactionRepository, IRepository<BankAccount> bankAccountRepository)
+        public TransactionCSVService(IConfiguration configuration, IBankTransactionRepository bankTransactionRepository, IRepository<BankAccount> bankAccountRepository)
         {
             _configuration = configuration;
             _bankTransactionRepository = bankTransactionRepository;
@@ -31,23 +31,44 @@ namespace FinTracker.Application.Services
             using (var reader = new StreamReader(csvStream))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                // Pass the year parameter to the BankTransactionMap
                 csv.Context.RegisterClassMap(new BankTransactionMap(year));
                 transactions = csv.GetRecords<BankTransaction>().ToList();
             }
 
-            transactions.RemoveAll(transaction => transaction.Description.Contains("SALDO AWAL"));
-            foreach (var transaction in transactions)
-            {
-                var bank = await _bankAccountRepository.GetByIdAsync(Id);
+            // Remove transactions that contain "SALDO AWAL"
+            transactions.RemoveAll(transaction => transaction.Description.Contains("SALDO AWAL", StringComparison.OrdinalIgnoreCase));
 
+            // Retrieve existing transactions from the database for the given bank account
+            var existingTransactions = await _bankTransactionRepository.GetBankTransactionByBankIdAsync(Id);
+
+            // Filter out duplicates (transactions with the same Date and Description)
+            var uniqueTransactions = transactions
+                .Where(newTransaction =>
+                    !existingTransactions.Any(existing =>
+                        existing.TransactionDate.Date == newTransaction.TransactionDate.Date &&
+                        existing.Description.Trim().Equals(newTransaction.Description.Trim(), StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            if (!uniqueTransactions.Any())
+                return;
+
+            var bank = await _bankAccountRepository.GetByIdAsync(Id);
+
+            foreach (var transaction in uniqueTransactions)
+            {
                 transaction.Id = Guid.NewGuid();
                 transaction.BankAccount = bank;
                 transaction.BankAccountId = Id;
-                transaction.TransactionType = transaction.TransactionAmount < 0 ? TransactionType.Debit.ToString() : TransactionType.Credit.ToString();
+                transaction.TransactionType = transaction.TransactionAmount < 0 ?
+                    TransactionType.Debit.ToString() : TransactionType.Credit.ToString();
             }
 
-            await _bankTransactionRepository.CreateMultipleAsync(transactions);
+            // Insert only unique transactions
+            await _bankTransactionRepository.CreateMultipleAsync(uniqueTransactions);
+
+            //Edit current balance based on the latest transaction
+            bank.CurrentBalance = uniqueTransactions.Last().Balance ?? 0;
+            await _bankAccountRepository.UpdateAsync(bank);
         }
     }
 
@@ -60,6 +81,7 @@ namespace FinTracker.Application.Services
                 .TypeConverter(new TransactionDateConverter(year));
             Map(m => m.Description).Index(1);
             Map(m => m.TransactionAmount).Index(3).TypeConverterOption.NullValues(string.Empty);
+            Map(m => m.Balance).Index(4).TypeConverterOption.NullValues(string.Empty);
         }
     }
 

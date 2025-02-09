@@ -21,7 +21,7 @@ namespace FinTracker.Pages.BankAccount
             }
 
             //Placeholder
-            BankAccount.UserId = new Guid("DF269D5B-B34B-425D-A9A1-701A606D6393");
+            BankAccount.UserId = new Guid("f7a3d8dd-70b1-4b98-be0c-219672025281");
 
             var (model, urlLookupResult, statusCode) = await PostBankAccountDataAsync(BankAccount);
             if (statusCode == HttpStatusCode.Created)

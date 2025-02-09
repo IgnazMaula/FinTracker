@@ -6,30 +6,32 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.Net;
 using System.Net.Http.Headers;
 
-namespace FinTracker.Pages.BankTransaction
+namespace FinTracker.Pages.BankAccount
 {
     public partial class CreateBankTransaction : BasePage
     {
         [Inject] private ToastService Toast { get; set; }
         [Inject] private NavigationManager NavManager { get; set; }
 
-        private string SelectedBank { get; set; }
+        [Parameter] public Guid Id { get; set; }
+
+        //private string SelectedBank { get; set; }
         private BankTransactionModel UploadBankTransaction = new BankTransactionModel();
         private FileUploadModel SelectedFile { get; set; } = new FileUploadModel();
 
-        private List<BankAccountModel> BankAccountList = new List<BankAccountModel>();
+        private BankAccountModel BankAccount = new BankAccountModel();
 
 
         protected override async Task OnInitializedAsync()
         {
-            await GetBankAccounts();
+            await GetBankAccount();
             StateHasChanged();
         }
 
-        private async Task GetBankAccounts()
+        private async Task GetBankAccount()
         {
-            var (model, urlLookupResult, statusCode) = await GetBankAccountListDataAsync();
-            if (statusCode == HttpStatusCode.OK) { BankAccountList = model; PageStatus = string.Empty; PageIsValid = true; }
+            var (model, urlLookupResult, statusCode) = await GetBankAccountDataAsync(Id);
+            if (statusCode == HttpStatusCode.OK) { BankAccount = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();
         }
@@ -41,21 +43,21 @@ namespace FinTracker.Pages.BankTransaction
                 return;
             }
 
-            UploadBankTransaction.BankAccountId = new Guid(SelectedBank);
+            UploadBankTransaction.BankAccountId = Id;
 
             var (model, urlLookupResult, statusCode) = await PostTransactionCsvUpload(UploadBankTransaction.BankAccountId, SelectedFile);
-            if (statusCode == HttpStatusCode.Created)
+            if (statusCode == HttpStatusCode.OK)
             {
                 PageStatus = string.Empty;
                 PageIsValid = true;
-                await Toast.ShowSuccess("Bank Transaction successfuly created");
-                NavManager.NavigateTo("/BankTransactions");
+                await Toast.ShowSuccess("Bank Transaction successfuly added");
+                NavManager.NavigateTo($"BankAccountDetail/{Id}");
             }
             else
             {
                 PageStatus = urlLookupResult.Message;
                 PageIsValid = false;
-                await Toast.ShowError("failed to create Bank Transaction");
+                await Toast.ShowError("failed to add Bank Transaction");
             }
 
             StateHasChanged();

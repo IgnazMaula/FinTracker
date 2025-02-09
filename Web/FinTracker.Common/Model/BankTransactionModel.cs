@@ -13,7 +13,7 @@ public class BankTransactionModel
     public Guid Id { get; set; }
     public Guid BankAccountId { get; set; }
     public BankAccountModel? BankAccount { get; set; }
-    public DateTime TransactionDate { get; set; }
+    public DateTime TransactionDate { get; set; } = DateTime.Now;
     public string Description { get; set; }
     public string TransactionType { get; set; }
     public decimal TransactionAmount { get; set; }

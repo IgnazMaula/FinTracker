@@ -8,7 +8,7 @@ namespace FinTracker.Infrastructure.Persistence
     {
         public DatabaseContext CreateDbContext(string[] args)
         {
-            string connectionString = "Server=IGNAZ-LAPTOP\\SQLEXPRESS;Database=FinTracker_DB;Integrated Security=True;TrustServerCertificate=True;";
+            string connectionString = "Server=IGNAZ-LAPTOP\\SQLEXPRESS;Database=FinTrackerDB;Integrated Security=True;TrustServerCertificate=True;";
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseSqlServer(connectionString);
 

@@ -1,0 +1,99 @@
+﻿@page "/DCACalculator"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="DCA Calculator" Icon="user-plus">
+    <ButtonLink Label="Back" Url="DCAs" class="btn btn-sm btn-outline-primary" Icon="users" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column Class="col-xxl-4">
+            <Card>
+                <CardHeader>Simulate DCA</CardHeader>
+                <CardBody>
+                    <EditForm Model="DCA" OnValidSubmit="SubmitDCACalculator">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column>
+                                <InputOption Label="Ticker" Id="Ticker" Placeholder="Choose An Option" @bind-Value="@DCA.Ticker" Items="AssetList" Context="item" ValidationFor="@(()=>DCA.Ticker)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputForm Label="InitialInvestment" Id="InitialInvestment" Placeholder="Enter Initial Investment" @bind-Value="@DCA.InitialInvestment" ValidationFor="@(()=>DCA.InitialInvestment)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputForm Label="RecurringInvestment" Id="RecurringInvestment" Placeholder="Enter Recurring Investment" @bind-Value="@DCA.RecurringInvestment" ValidationFor="@(()=>DCA.RecurringInvestment)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputOption Label="StartMonth" Id="StartMonth" Placeholder="Choose An Option" @bind-Value="@DCA.StartMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.StartMonth)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputForm Type="number" Label="StartYear" Id="StartYear" Placeholder="Enter Start Year" @bind-Value="@DCA.StartYear" ValidationFor="@(()=>DCA.StartYear)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputOption Label="EndMonth" Id="EndMonth" Placeholder="Choose An Option" @bind-Value="@DCA.EndMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.EndMonth)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <InputForm Type="number" Label="EndYear" Id="EndYear" Placeholder="Enter End Year" @bind-Value="@DCA.EndYear" ValidationFor="@(()=>DCA.EndYear)" />
+                            </Column>
+                        </Row>
+                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="DCAs" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+        <Column Class="col-xxl-8">
+            <Row>
+                <Card>
+                    <CardHeader>DCA Result</CardHeader>
+                    <CardBody>
+                        <FinTracker.Pages.Dashboard.MonthlySurplusDeficitChart />
+                    </CardBody>
+                </Card>
+            </Row>
+            <Row>
+                <Card>
+                    <CardBody>
+                        <Table TableId="defaultTable" Items="@DCAResultList" Context="DCAResult">
+                            <HeaderTemplate>
+                                <th>Date</th>
+                                <th>Price</th>
+                                <th>Percent Gain</th>
+                                <th>Total Invested</th>
+                                <th>Total Gain</th>
+                                <th>Total</th>
+                            </HeaderTemplate>
+                            <RowTemplate>
+                                <td>@DCAResult.Date</td>
+                                <td>@DCAResult.Price</td>
+                                <td>@DCAResult.PercentGain</td>
+                                <td>@DCAResult.TotalInvested.ToString("N2")</td>
+                                <td>@DCAResult.TotalGain.ToString("N2")</td>
+                                <td>@DCAResult.Total.ToString("N2")</td>
+                            </RowTemplate>
+                        </Table>
+                    </CardBody>
+                </Card>
+            </Row>
+        </Column>
+    </Row>
+</Container>

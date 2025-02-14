@@ -27,6 +27,23 @@ namespace FinTracker.Pages
             "IDR", "USD", "EUR", "JPY", "GBP", "AUD", 
             "CAD", "CNY", "SGD", "HKD", "KRW", "RUB",
         };
+
+        protected List<string> AssetList = new List<string>
+        {
+            "BTC-USD", "ETH-USD", "SOL-USD", "XRP-USD", "BNB-USD", "DOGE-USD",
+            "SPY", "AAPL", "NVDA", "MSFT", "AMZN", "TSLA",
+        };
+
+        protected List<string> PeriodList = new List<string>
+        {
+            "Monthly", "Weekly",
+        };
+
+        protected List<string> MonthList = new List<string>
+        {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
         #endregion
 
         #region Bank Account Helper Methods
@@ -100,6 +117,17 @@ namespace FinTracker.Pages
                 urlLookupResult.Message = response.RequestMessage != null ? response.RequestMessage.ToString() : "";
                 urlLookupResult.Url = response.RequestMessage != null && response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.ToString() : $"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/Upload";
             }
+            return (model, urlLookupResult, statusCode);
+        }
+        #endregion
+
+        #region DCA Calculator Helper Methods
+        //-----------------------------------------------------------------
+        // DCA Calculator Helper Methods
+        //-----------------------------------------------------------------
+        protected async Task<(List<DCAResultModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> SubmitDCACalculatorDataAsync(DCACalculatorModel request)
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<DCACalculatorModel, List<DCAResultModel>>($"{Configuration["BaseUrl"]}{Configuration["DCACalculatorUrl"]}", request);
             return (model, urlLookupResult, statusCode);
         }
         #endregion

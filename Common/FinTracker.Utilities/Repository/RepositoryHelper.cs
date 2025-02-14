@@ -67,6 +67,22 @@ namespace FinTracker.Utilities.Repository
                 return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
             }
         }
+        public static async Task<(TResponse model, UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostEntity<TRequest, TResponse>(string url, TRequest request)
+        {
+            try
+            {
+                var jsonContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+                var response = await HttpClient.PostAsync(url, jsonContent);
+                response.EnsureSuccessStatusCode();
+
+                var model = await response.Content.ReadFromJsonAsync<TResponse>();
+                return (model, new UrlLookupResult { Success = true, Message = "Request succeeded." }, response.StatusCode);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (default, new UrlLookupResult { Success = false, Message = ex.Message }, HttpStatusCode.InternalServerError);
+            }
+        }
 
         // Put Entity - Generic Method for PUT requests
         public static async Task<(T model, UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PutEntity<T>(string url, Guid id, T request)

@@ -62,38 +62,34 @@
             </Card>
         </Column>
         <Column Class="col-xxl-8">
-            <Row>
-                <Card>
-                    <CardHeader>DCA Result</CardHeader>
-                    <CardBody>
-                        <FinTracker.Pages.Dashboard.MonthlySurplusDeficitChart />
-                    </CardBody>
-                </Card>
-            </Row>
-            <Row>
-                <Card>
-                    <CardBody>
-                        <Table TableId="defaultTable" Items="@DCAResultList" Context="DCAResult">
-                            <HeaderTemplate>
-                                <th>Date</th>
-                                <th>Price</th>
-                                <th>Percent Gain</th>
-                                <th>Total Invested</th>
-                                <th>Total Gain</th>
-                                <th>Total</th>
-                            </HeaderTemplate>
-                            <RowTemplate>
-                                <td>@DCAResult.Date</td>
-                                <td>@DCAResult.Price</td>
-                                <td>@DCAResult.PercentGain</td>
-                                <td>@DCAResult.TotalInvested.ToString("N2")</td>
-                                <td>@DCAResult.TotalGain.ToString("N2")</td>
-                                <td>@DCAResult.Total.ToString("N2")</td>
-                            </RowTemplate>
-                        </Table>
-                    </CardBody>
-                </Card>
-            </Row>
+            <Card>
+                <CardHeader>DCA Result</CardHeader>
+                <CardBody>
+                    <FinTracker.Pages.Dashboard.MonthlySurplusDeficitChart />
+                </CardBody>
+            </Card>
+            <Card>
+                <CardBody>
+                    <Table TableId="defaultTable" Items="@DCAResultList" Context="DCAResult">
+                        <HeaderTemplate>
+                            <th>Date</th>
+                            <th>Price</th>
+                            <th>Percent Gain</th>
+                            <th>Total Invested</th>
+                            <th>Total Gain</th>
+                            <th>Total</th>
+                        </HeaderTemplate>
+                        <RowTemplate>
+                            <td>@DCAResult.Date</td>
+                            <td>@DCAResult.Price</td>
+                            <td>@DCAResult.PercentGain</td>
+                            <td>@DCAResult.TotalInvested.ToString("N2")</td>
+                            <td>@DCAResult.TotalGain.ToString("N2")</td>
+                            <td>@DCAResult.Total.ToString("N2")</td>
+                        </RowTemplate>
+                    </Table>
+                </CardBody>
+            </Card>
         </Column>
     </Row>
 </Container>

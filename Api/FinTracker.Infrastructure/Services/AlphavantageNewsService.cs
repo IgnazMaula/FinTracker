@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Net;
 using FinTracker.Application.Interfaces;
 using FinTracker.Application.Models;
+using Newtonsoft.Json;
 
 namespace FinTracker.Infrastructure.Services;
 public class AlphavantageNewsService : IAlphavantageNewsService
@@ -33,7 +34,7 @@ public class AlphavantageNewsService : IAlphavantageNewsService
         }
 
         var newsApiResponse = await response.Content.ReadAsStringAsync();
-        var newsApiData = JsonSerializer.Deserialize<NewsArticle>(newsApiResponse);
+        var newsApiData = JsonConvert.DeserializeObject<NewsArticle>(newsApiResponse);
 
         return newsApiData;
     }

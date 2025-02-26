@@ -22,6 +22,21 @@ window.addEventListener('DOMContentLoaded', event => {
             const dataTable = new DataTable(datatables, {
                 responsive: true,
                 order: [],
+                columnDefs: [
+                    { targets: '_all', orderable: false }
+                ]
+            });
+        }
+
+        else if (tableId == "dcaTable") {
+            const dataTable = new DataTable(datatables, {
+                responsive: true,
+                pageLength: 100,
+                searching: false,
+                order: [],
+                columnDefs: [
+                    { targets: '_all', orderable: false }
+                ]
             });
         }
 

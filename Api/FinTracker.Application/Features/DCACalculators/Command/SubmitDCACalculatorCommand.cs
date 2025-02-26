@@ -14,7 +14,6 @@ namespace FinTracker.Application.Features.DCACalculators.Command;
 public class SubmitDCACalculatorCommand : IRequest<BaseResponse<List<DCAResultDTO>>>
 {
     public string Ticker { get; set; }
-    public string Period { get; set; }
     public double InitialInvestment { get; set; }
     public double RecurringInvestment { get; set; }
     public string StartMonth { get; set; }
@@ -45,21 +44,34 @@ public class SubmitDCACalculatorHandler : IRequestHandler<SubmitDCACalculatorCom
             var historicalPrices = await _tipRanksApiServuce.GetHistoricalPrice(request.Ticker);
 
             double totalInvested = request.InitialInvestment;
-            //double totalGained = 0;
+            double lastTotal = 0;
             double lastPrice = 0;
             for (int year = request.StartYear; year <= request.EndYear; year++)
             {
                 for (int month = 1; month <= 12; month++)
                 {
                     var theDate = new DateTime(year, month, 1);
+                    var theDate2 = new DateTime(year, month, 2);
+                    var theDate3 = new DateTime(year, month, 3);
                     var historicalPrice = historicalPrices.Where(W => W.Date == theDate).FirstOrDefault();
+                    if(historicalPrice == null)
+                    {
+                        historicalPrice = historicalPrices.Where(W => W.Date == theDate2).FirstOrDefault();
+                    }
+                    if (historicalPrice == null)
+                    {
+                        historicalPrice = historicalPrices.Where(W => W.Date == theDate3).FirstOrDefault();
+                    }
                     if (historicalPrice != null)
                     {
                         if (result.Count == 0) { lastPrice = historicalPrice.Price; }
-                        var total = ((historicalPrice.Price / lastPrice) * totalInvested) + request.RecurringInvestment;
+                        var totalGained = (lastTotal + (result.Count == 0 ? request.RecurringInvestment : 0))
+                        / lastPrice * (historicalPrice.Price - lastPrice);
                         totalInvested += request.RecurringInvestment;
-                        var totalGained = total - totalInvested;
+                        var total = totalInvested + totalGained;
                         var percentGain = (totalGained / totalInvested) * 100;
+                        lastPrice = historicalPrice.Price;
+                        lastTotal = total;
 
                         result.Add(new DCAResultDTO
                         {
@@ -70,7 +82,6 @@ public class SubmitDCACalculatorHandler : IRequestHandler<SubmitDCACalculatorCom
                             TotalGain = total - totalInvested,
                             Total = total
                         });
-                        lastPrice = historicalPrice.Price;
                     }
                 }
 

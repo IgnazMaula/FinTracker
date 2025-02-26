@@ -16,7 +16,7 @@ public class DCACalculatorController : BaseApiController
 {
 
     [HttpPost]
-    public async Task<IActionResult> SubmitDCACalculato([FromBody] SubmitDCACalculatorCommand command)
+    public async Task<IActionResult> SubmitDCACalculator([FromBody] SubmitDCACalculatorCommand command)
     {
         try
         {

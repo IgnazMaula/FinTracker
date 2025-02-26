@@ -23,17 +23,17 @@
                         </Row>
                         <Row>
                             <Column>
-                                <InputForm Label="InitialInvestment" Id="InitialInvestment" Placeholder="Enter Initial Investment" @bind-Value="@DCA.InitialInvestment" ValidationFor="@(()=>DCA.InitialInvestment)" />
+                                <InputForm Label="Initial Investment (USD)" Id="InitialInvestment" Placeholder="Enter Initial Investment" @bind-Value="@DCA.InitialInvestment" ValidationFor="@(()=>DCA.InitialInvestment)" />
                             </Column>
                         </Row>
                         <Row>
                             <Column>
-                                <InputForm Label="RecurringInvestment" Id="RecurringInvestment" Placeholder="Enter Recurring Investment" @bind-Value="@DCA.RecurringInvestment" ValidationFor="@(()=>DCA.RecurringInvestment)" />
+                                <InputForm Label="Recurring Investment (USD)" Id="RecurringInvestment" Placeholder="Enter Recurring Investment" @bind-Value="@DCA.RecurringInvestment" ValidationFor="@(()=>DCA.RecurringInvestment)" />
                             </Column>
                         </Row>
                         <Row>
                             <Column>
-                                <InputOption Label="StartMonth" Id="StartMonth" Placeholder="Choose An Option" @bind-Value="@DCA.StartMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.StartMonth)">
+                                <InputOption Label="Start Month" Id="StartMonth" Placeholder="Choose An Option" @bind-Value="@DCA.StartMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.StartMonth)">
                                     <Template><option value="@item">@item</option></Template>
                                 </InputOption>
                             </Column>
@@ -45,51 +45,55 @@
                         </Row>
                         <Row>
                             <Column>
-                                <InputOption Label="EndMonth" Id="EndMonth" Placeholder="Choose An Option" @bind-Value="@DCA.EndMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.EndMonth)">
+                                <InputOption Label="End Month" Id="EndMonth" Placeholder="Choose An Option" @bind-Value="@DCA.EndMonth" Items="MonthList" Context="item" ValidationFor="@(()=>DCA.EndMonth)">
                                     <Template><option value="@item">@item</option></Template>
                                 </InputOption>
                             </Column>
                         </Row>
                         <Row>
                             <Column>
-                                <InputForm Type="number" Label="EndYear" Id="EndYear" Placeholder="Enter End Year" @bind-Value="@DCA.EndYear" ValidationFor="@(()=>DCA.EndYear)" />
+                                <InputForm Type="number" Label="End Year" Id="EndYear" Placeholder="Enter End Year" @bind-Value="@DCA.EndYear" ValidationFor="@(()=>DCA.EndYear)" />
                             </Column>
                         </Row>
-                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonSubmit Label="Calculate" class="btn btn-primary" />
                         <ButtonLink Label="Cancel" Url="DCAs" class="btn btn-outline-primary" />
                     </EditForm>
                 </CardBody>
             </Card>
         </Column>
         <Column Class="col-xxl-8">
-            <Card>
-                <CardHeader>DCA Result</CardHeader>
-                <CardBody>
-                    <FinTracker.Pages.Dashboard.MonthlySurplusDeficitChart />
-                </CardBody>
-            </Card>
-            <Card>
-                <CardBody>
-                    <Table TableId="defaultTable" Items="@DCAResultList" Context="DCAResult">
-                        <HeaderTemplate>
-                            <th>Date</th>
-                            <th>Price</th>
-                            <th>Percent Gain</th>
-                            <th>Total Invested</th>
-                            <th>Total Gain</th>
-                            <th>Total</th>
-                        </HeaderTemplate>
-                        <RowTemplate>
-                            <td>@DCAResult.Date</td>
-                            <td>@DCAResult.Price</td>
-                            <td>@DCAResult.PercentGain</td>
-                            <td>@DCAResult.TotalInvested.ToString("N2")</td>
-                            <td>@DCAResult.TotalGain.ToString("N2")</td>
-                            <td>@DCAResult.Total.ToString("N2")</td>
-                        </RowTemplate>
-                    </Table>
-                </CardBody>
-            </Card>
+           
+            @if(DCAResultList.Count > 0)
+            {
+                <Card>
+                    <CardHeader>DCA Result</CardHeader>
+                    <CardBody>
+                        <DCAGraph Model="DCAResultList" />
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardBody>
+                        <Table TableId="bankTransactionTable" Items="@DCAResultList" Context="DCAResult">
+                            <HeaderTemplate>
+                                <th>Date</th>
+                                <th>Price</th>
+                                <th>Percent Gain</th>
+                                <th>Total Invested</th>
+                                <th>Total Gain</th>
+                                <th>Total</th>
+                            </HeaderTemplate>
+                            <RowTemplate>
+                                <td>@DCAResult.Date.ToString("MMM yyyy")</td>
+                                <td>@DCAResult.Price.ToString("N2")</td>
+                                <td>@DCAResult.PercentGain.ToString("N2")</td>
+                                <td>@DCAResult.TotalInvested.ToString("N2")</td>
+                                <td>@DCAResult.TotalGain.ToString("N2")</td>
+                                <td>@DCAResult.Total.ToString("N2")</td>
+                            </RowTemplate>
+                        </Table>
+                    </CardBody>
+                </Card>
+            }
         </Column>
     </Row>
 </Container>

@@ -7,17 +7,17 @@
 
                 <div class="sidenav-menu-heading">Main</div>
 
-                <NavLink class="nav-link" href="/Dashboard">
+                <NavLink class="nav-link" href="/">
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     Dashboard
                 </NavLink>
 
                 <div class="sidenav-menu-heading">Cashflow Tracker</div>
 
-                 <NavLink class="nav-link" href="/CashflowOverview">
+@*                  <NavLink class="nav-link" href="/CashflowOverview">
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     Overview
-                </NavLink>
+                </NavLink> *@
                 <!-- Sidenav Menu (Bank Account)-->
                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseBankAccount" aria-expanded="false" aria-controls="collapseBankAccount">
                     <div class="nav-link-icon"><i data-feather="users"></i></div>
@@ -39,16 +39,16 @@
                 <div class="collapse" id="collapseBankTransaction" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                         <NavLink class="nav-link" href="/BankTransactions">Bank Transaction List</NavLink>
-                        <NavLink class="nav-link" href="/CreateBankTransaction">Add Bank Transaction</NavLink>
+@*                         <NavLink class="nav-link" href="/CreateBankTransaction">Add Bank Transaction</NavLink> *@
                     </nav>
                 </div>
 
                  <div class="sidenav-menu-heading">Investment Portfolio</div>
-
+@* 
                   <NavLink class="nav-link" href="/InvestmentOverview">
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     Overview
-                </NavLink>
+                </NavLink> *@
                 <!-- Sidenav Menu (Bank Account)-->
                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePortfolioAccount" aria-expanded="false" aria-controls="collapsePortfolioAccount">
                     <div class="nav-link-icon"><i data-feather="users"></i></div>
@@ -63,24 +63,28 @@
                 </div>
 
                 <!-- Sidenav Menu (DCA)-->
-                <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDCA" aria-expanded="false" aria-controls="collapseDCA">
+@*                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDCA" aria-expanded="false" aria-controls="collapseDCA">
                     <div class="nav-link-icon"><i data-feather="users"></i></div>
                     DCA Calculator
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </NavLink> *@
+                <NavLink class="nav-link" href="/DCACalculator">
+                    <div class="nav-link-icon"><i data-feather="activity"></i></div>
+                    DCA Calculator
                 </NavLink>
-                <div class="collapse" id="collapseDCA" data-bs-parent="#accordionSidenav">
+@*                 <div class="collapse" id="collapseDCA" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                         <NavLink class="nav-link" href="/DCAs">DCA List</NavLink>
                         <NavLink class="nav-link" href="/CreateDCA">Create DCA</NavLink>
                     </nav>
-                </div>
+                </div> *@
 
                  <div class="sidenav-menu-heading">Financial Goal Planner</div>
 
-                 <NavLink class="nav-link" href="/GoalOverview">
+@*                  <NavLink class="nav-link" href="/GoalOverview">
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     Overview
-                </NavLink>
+                </NavLink> *@
                 <!-- Sidenav Menu (Bank Account)-->
                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseGoal" aria-expanded="false" aria-controls="collapseGoal">
                     <div class="nav-link-icon"><i data-feather="users"></i></div>

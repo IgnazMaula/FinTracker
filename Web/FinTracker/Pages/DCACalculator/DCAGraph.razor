@@ -1,0 +1,47 @@
+﻿<ApexChart TItem="DCAResultModel"
+           Title="Monthly Surplus and Deficit"
+           Options="options">
+
+    <ApexPointSeries TItem="DCAResultModel"
+                     Items="Model"
+                     SeriesType="@SeriesType.Line"
+                     Name="Gross Value"
+                     XValue="@(e => e.Date.ToString("MMM yyyy"))"
+                     YValue="@(e => (decimal) e.Total)" />
+
+</ApexChart>
+
+@code {
+
+    [Parameter] public List<DCAResultModel>? Model { get; set; }
+
+    private ApexChartOptions<DCAResultModel> options { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        options.PlotOptions = new PlotOptions
+            {
+                Line = new PlotOptionsLine
+                {
+                    Colors = new LineColors
+                    {
+                        Threshold = 0,
+                        ColorAboveThreshold = "#0161F2",
+                        ColorBelowThreshold = "#0161F2"
+                    }
+                }
+            };
+
+        options.Chart = new Chart
+            {
+                Zoom = new Zoom
+                {
+                    Enabled = false
+                },
+                Toolbar = new Toolbar
+                {
+                    Show = false
+                }
+            };
+    }
+}

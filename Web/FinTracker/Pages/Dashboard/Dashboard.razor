@@ -1,4 +1,5 @@
-﻿@page "/Dashboard"
+﻿@page "/"
+@inherits BasePage
 
 @if (DataLoaded)
 {
@@ -101,18 +102,41 @@
                             <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
                                 @if (DataLoaded)
                                 {
-                                    <Table TableId="dashboardTable2" Items="@CustomerList" Context="customer">
+                                    <Table TableId="bankTransactionTable" Items="@BankTransactionList" Context="BankTransaction">
                                         <HeaderTemplate>
-                                            <th>Date</th>
+                                            <th>Transaction Date</th>
                                             <th>Description</th>
-                                            <th>Type</th>
+                                            <th>TransactionType</th>
                                             <th>Amount</th>
                                         </HeaderTemplate>
                                         <RowTemplate>
-                                            <td>@customer.Name</td>
-                                            <td>@customer.Email</td>
-                                            <td>@customer.Address</td>
-                                            <td>@customer.Phone</td>
+                                            <td>@BankTransaction.TransactionDate.ToString("dd/MM/yy")</td>
+                                            <td>@(BankTransaction.Description.Length > 20 ? BankTransaction.Description.Substring(0, 20) + "..." : BankTransaction.Description)</td>
+
+                                            @if (BankTransaction.TransactionType == "Debit")
+                                            {
+                                                <td><div class="badge bg-danger text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                                            }
+                                            else if (BankTransaction.TransactionType == "Credit")
+                                            {
+                                                <td><div class="badge bg-success text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                                            }
+                                            else
+                                            {
+                                                <td><div class="badge bg-warning text-white rounded-pill">@BankTransaction.TransactionType</div></td>
+                                            }
+                                            @if (BankTransaction.TransactionType == "Debit")
+                                            {
+                                                <td class="text-danger">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                                            }
+                                            else if (BankTransaction.TransactionType == "Credit")
+                                            {
+                                                <td class="text-success">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-warning">@BankTransaction.TransactionAmount.ToString("N2")</td>
+                                            }
                                         </RowTemplate>
                                     </Table>
                                 }
@@ -139,23 +163,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body py-5">
-                        <div class="d-flex flex-column justify-content-center">
-                            @*  <MonthlyIncomeExpenseChart /> *@
-                            @*                            <CryptoChart/> *@
-                        </div>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body py-5">
-                        <div class="d-flex flex-column justify-content-center">
-                            @*   <MonthlySurplusDeficitChart /> *@
-                            @*                            <CryptoChart/> *@
-                        </div>
-                    </div>
-                </div>
+               @*  </div>
                 <!-- Illustration dashboard card example-->
                 <div class="card mb-4">
                     <div class="card-body py-5">
@@ -179,8 +187,8 @@
                             </CardBody>
                         </Card>
                     </Column>
-                </div>
-                <div class="row">
+                </div> *@
+               @*  <div class="row">
                     <div class="col-xl-6 mb-4">
                         <!-- Dashboard activity timeline example-->
                         <div class="card card-header-actions h-100">
@@ -291,7 +299,7 @@
                                 <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
                             </CardBody>
                         </Card>
-                    </Column>
+                    </Column> *@
                 </div>
             </div>
             <div class="col-xxl-4">
@@ -335,11 +343,11 @@
                         <Card class="h-100">
                             <CardHeader>Traffic Sources</CardHeader>
                             <CardBody>
-                                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
+                                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="200px" Height="200px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
                             </CardBody>
                         </Card>
                     </div>
-                    <div class="col-xl-6 col-xxl-12">
+                  @*   <div class="col-xl-6 col-xxl-12">
                         <!-- Team members / people dashboard card example-->
                         <div class="card mb-4">
                             <div class="card-header">People</div>
@@ -454,22 +462,25 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body py-5">
-                        <div class="d-flex flex-column justify-content-center">
-                            <img class="img-fluid mb-4" src="assets/img/illustrations/data-report.svg" alt="" style="height: 10rem" />
-                            <div class="text-center px-0 px-lg-5">
-                                <h5>New reports are here! Generate custom reports now!</h5>
-                                <p class="mb-4">Our new report generation system is now online. You can start creating custom reporting for any documents available on your account.</p>
-                                <a class="btn btn-primary p-3" href="#!">Get Started</a>
-                            </div>
-                        </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </Row>
+        <div class="row">
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-body">
+                        <CryptoChart />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions h-100">
+                    <div class="card-body">
+                        <CryptoChart />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }

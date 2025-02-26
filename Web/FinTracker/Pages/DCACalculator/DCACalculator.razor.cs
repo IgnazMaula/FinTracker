@@ -22,7 +22,7 @@ namespace FinTracker.Pages.DCACalculator
             }
 
             var (model, urlLookupResult, statusCode) = await SubmitDCACalculatorDataAsync(DCA);
-            if (statusCode == HttpStatusCode.Created)
+            if (statusCode == HttpStatusCode.OK)
             {
                 DCAResultList = model;
                 PageStatus = string.Empty;

@@ -16,6 +16,10 @@ window.addEventListener('DOMContentLoaded', event => {
                 responsive: true,
                 pageLength: 100,
                 searching: false,
+                order: [],
+                columnDefs: [
+                    { targets: '_all', orderable: false }
+                ]
             });
         }
         else if (tableId == "bankTransactionTable") {

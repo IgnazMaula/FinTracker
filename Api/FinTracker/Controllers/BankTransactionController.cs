@@ -94,7 +94,7 @@ namespace FinTracker.Api.Controllers
                 if (result.Status != 200)
                     return StatusCode(result.Status, new { message = result.Message });
 
-                return Ok(result.Data);
+                return Ok(result.Data.MonthlyBankAccountTransaction);
             }
             catch (Exception ex)
             {

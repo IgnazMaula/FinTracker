@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FinTracker.Application.Models.DTOs;
 using FinTracker.Application.Common;
 using FinTracker.Application.Interfaces;
+using Microsoft.VisualBasic;
 
 namespace FinTracker.Application.Features.DCACalculators.Command;
 
@@ -43,9 +44,18 @@ public class SubmitDCACalculatorHandler : IRequestHandler<SubmitDCACalculatorCom
 
             var historicalPrices = await _tipRanksApiServuce.GetHistoricalPrice(request.Ticker);
 
-            double totalInvested = request.InitialInvestment;
-            double lastTotal = 0;
-            double lastPrice = 0;
+            var firstPrice = historicalPrices.Where(w => w.Date == new DateTime(request.StartYear, 1, 1)).FirstOrDefault();
+            if (firstPrice == null) { firstPrice = historicalPrices.Where(w => w.Date == new DateTime(request.StartYear, 1, 2)).FirstOrDefault(); }
+            if (firstPrice == null) { firstPrice = historicalPrices.Where(w => w.Date == new DateTime(request.StartYear, 1, 3)).FirstOrDefault(); }
+
+
+            // Investment details
+            double initialInvestment = 1000;
+            double monthlyInvestment = 100;
+            double totalInvestment = initialInvestment;
+            double totalBTC = initialInvestment / firstPrice.Price; // Initial BTC purchased
+
+
             for (int year = request.StartYear; year <= request.EndYear; year++)
             {
                 for (int month = 1; month <= 12; month++)
@@ -54,7 +64,7 @@ public class SubmitDCACalculatorHandler : IRequestHandler<SubmitDCACalculatorCom
                     var theDate2 = new DateTime(year, month, 2);
                     var theDate3 = new DateTime(year, month, 3);
                     var historicalPrice = historicalPrices.Where(W => W.Date == theDate).FirstOrDefault();
-                    if(historicalPrice == null)
+                    if (historicalPrice == null)
                     {
                         historicalPrice = historicalPrices.Where(W => W.Date == theDate2).FirstOrDefault();
                     }
@@ -64,23 +74,21 @@ public class SubmitDCACalculatorHandler : IRequestHandler<SubmitDCACalculatorCom
                     }
                     if (historicalPrice != null)
                     {
-                        if (result.Count == 0) { lastPrice = historicalPrice.Price; }
-                        var totalGained = (lastTotal + (result.Count == 0 ? request.RecurringInvestment : 0))
-                        / lastPrice * (historicalPrice.Price - lastPrice);
-                        totalInvested += request.RecurringInvestment;
-                        var total = totalInvested + totalGained;
-                        var percentGain = (totalGained / totalInvested) * 100;
-                        lastPrice = historicalPrice.Price;
-                        lastTotal = total;
+                        totalBTC += monthlyInvestment / historicalPrice.Price; // Buy BTC each month
+                        totalInvestment += monthlyInvestment; // Increase total invested amount
+
+                        double totalValue = totalBTC * historicalPrice.Price; // Portfolio value
+                        double totalGain = totalValue - totalInvestment; // Total gain
+                        double percentGain = (totalGain / totalInvestment) * 100; // Percentage gain
 
                         result.Add(new DCAResultDTO
                         {
                             Date = historicalPrice.Date,
                             Price = historicalPrice.Price,
                             PercentGain = percentGain,
-                            TotalInvested = totalInvested,
-                            TotalGain = total - totalInvested,
-                            Total = total
+                            TotalInvested = totalInvestment,
+                            TotalGain = totalGain,
+                            Total = totalValue
                         });
                     }
                 }

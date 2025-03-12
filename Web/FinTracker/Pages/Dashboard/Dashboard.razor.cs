@@ -15,19 +15,23 @@ namespace FinTracker.Pages.Dashboard
 
         public bool DataLoaded { get; set; }
         private DashboardModel DashboardData = new DashboardModel();
+        private BankAccountModel BankAccount = new BankAccountModel();
         private List<CustomerModel> CustomerList = new List<CustomerModel>();
         private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
+        private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
 
         //Chart
         private int ChartIndex = -1;
         public double[] ChartData = new double[3];
-        public string[] ChartLabels = { "Customer", "Product", "Order" };
+        public string[] ChartLabels = { "Saving", "Investment", "Reserve" };
 
         protected override async Task OnInitializedAsync()
         {
+            await GetMonthlyTransactionByUserId();
             await GetBankTransactions();
+            await GetBankAccount();
             await GetDashboardData();
-            await GetCustomer();
+            //await GetCustomer();
 
             DataLoaded = true;
         }
@@ -46,17 +50,33 @@ namespace FinTracker.Pages.Dashboard
             else { await Toast.ShowError("Failed to fetch data"); }
         }
 
-        private async Task GetCustomer()
+        //private async Task GetCustomer()
+        //{
+        //    var result = await HttpClient.GetFromJsonAsync<List<CustomerModel>>("sample-data/customer.json");
+        //    if (result != null) { CustomerList = result; }
+        //    else { await Toast.ShowError("Failed to fetch data"); }
+        //}
+
+        private async Task GetBankAccount()
         {
-            var result = await HttpClient.GetFromJsonAsync<List<CustomerModel>>("sample-data/customer.json");
-            if (result != null) { CustomerList = result; }
-            else { await Toast.ShowError("Failed to fetch data"); }
+            var (model, urlLookupResult, statusCode) = await GetBankAccountDataAsync(new Guid("a9134c3f-b36d-4c31-9dc1-6b56884e2382"));
+            if (statusCode == HttpStatusCode.OK) { BankAccount = model; PageStatus = string.Empty; PageIsValid = true; }
+            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+            StateHasChanged();
         }
 
         private async Task GetBankTransactions()
         {
             var (model, urlLookupResult, statusCode) = await GetBankTransactionListDataAsync();
             if (statusCode == HttpStatusCode.OK) { BankTransactionList = model; PageStatus = string.Empty; PageIsValid = true; }
+            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+            StateHasChanged();
+        }
+
+        private async Task GetMonthlyTransactionByUserId()
+        {
+            var (model, urlLookupResult, statusCode) = await GetMonthlyBankTransactionByUserIdDataAsync(new Guid("f7a3d8dd-70b1-4b98-be0c-219672025281"));
+            if (statusCode == HttpStatusCode.OK) { BankMonthlyTransaction = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();
         }

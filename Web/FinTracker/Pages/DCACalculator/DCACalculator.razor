@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 
 <PageHeader Title="DCA Calculator" Icon="user-plus">
-    <ButtonLink Label="Back" Url="DCAs" class="btn btn-sm btn-outline-primary" Icon="users" />
+    <ButtonLink Label="Back" Url="DCAs" class="btn btn-sm btn-outline-primary" Icon="arrow-left" />
 </PageHeader>
 
 <Container>
@@ -65,6 +65,12 @@
            
             @if(DCAResultList.Count > 0)
             {
+                <div class="row">
+                    <InfoWidget Label="Total Invested" Quantity="@DCAResultList.Last().TotalInvested.ToString("N2")" Color="success" Icon="fa-dollar-sign" />
+                    <InfoWidget Label="Percent Gain" Quantity="@($"{DCAResultList.Last().PercentGain.ToString("N2")}%")" Color="success" Icon="fa-percentage" />
+                    <InfoWidget Label="Total Gain" Quantity="@DCAResultList.Last().TotalGain.ToString("N2")" Color="success" Icon="fa-dollar-sign" />
+                    <InfoWidget Label="Final Portfolio" Quantity="@DCAResultList.Last().Total.ToString("N2")" Color="success" Icon="fa-dollar-sign" />
+                </div>
                 <Card>
                     <CardHeader>DCA Result</CardHeader>
                     <CardBody>
@@ -73,7 +79,7 @@
                 </Card>
                 <Card>
                     <CardBody>
-                        <Table TableId="bankTransactionTable" Items="@DCAResultList" Context="DCAResult">
+                        <Table TableId="dcaTable" Items="@DCAResultList" Context="DCAResult">
                             <HeaderTemplate>
                                 <th>Date</th>
                                 <th>Price</th>
@@ -85,7 +91,7 @@
                             <RowTemplate>
                                 <td>@DCAResult.Date.ToString("MMM yyyy")</td>
                                 <td>@DCAResult.Price.ToString("N2")</td>
-                                <td>@DCAResult.PercentGain.ToString("N2")</td>
+                                <td>@DCAResult.PercentGain.ToString("N2")%</td>
                                 <td>@DCAResult.TotalInvested.ToString("N2")</td>
                                 <td>@DCAResult.TotalGain.ToString("N2")</td>
                                 <td>@DCAResult.Total.ToString("N2")</td>

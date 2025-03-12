@@ -15,4 +15,7 @@ public class DCAResultDTO
     public double TotalInvested { get; set; }
     public double TotalGain { get; set; }
     public double Total { get; set; }
+    public double AssetPurchased { get; set; }
+    public double TotalAsset { get; set; }
+    public double PortfolioValue { get; set; }
 }

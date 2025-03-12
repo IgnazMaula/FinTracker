@@ -3,7 +3,7 @@
     "Id": 1,
     "Name": "Tiger Nixon",
     "Email": "tiger1@email.com",
-    "Address": "Home 08, City Austin State Texas County US",
+    "Address": "Home 08",
     "Phone": "0842329",
     "Gender": "Male"
   },
@@ -79,20 +79,4 @@
     "Phone": "952738",
     "Gender": "Male"
   },
-  {
-    "Id": 11,
-    "Name": "Sara Miller",
-    "Email": "sara11@email.com",
-    "Address": "Home 54",
-    "Phone": "5387559",
-    "Gender": "Female"
-  },
-  {
-    "Id": 12,
-    "Name": "Daniel Brown",
-    "Email": "daniel12@email.com",
-    "Address": "Home 86",
-    "Phone": "942758",
-    "Gender": "Male"
-  }
 ]

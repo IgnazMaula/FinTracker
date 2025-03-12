@@ -1,7 +1,7 @@
 ﻿@using System.Net.Http.Json
 @inject HttpClient Http
 
-<ApexChart TItem="StockPrice" Title="Market Overview: BTC-USD" Options="ChartOptions">
+<ApexChart TItem="StockPrice" Title="Market Overview: SOL-USD" Options="ChartOptions">
     <ApexCandleSeries TItem="StockPrice"
                       Items="@stockPrices"
                       Name="Crypto OHLC"
@@ -53,7 +53,7 @@
 
     private async Task LoadChartData()
     {
-        var url = $"https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=7";
+        var url = $"https://api.coingecko.com/api/v3/coins/solana/ohlc?vs_currency=usd&days=7";
         var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
 
         if (response != null)

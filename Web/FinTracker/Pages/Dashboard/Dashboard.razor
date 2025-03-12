@@ -8,6 +8,7 @@
             <div class="page-header-content pt-4">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-auto mt-4">
+@*                         <img src="assets/img/logo.png" width="250" alt="..." /> *@
                     </div>
                 </div>
             </div>
@@ -24,7 +25,7 @@
                             <div class="me-3">
                                 <i class="feather-xl text-primary mb-3" data-feather="dollar-sign"></i>
                                 <h5>Cashflow Tracker</h5>
-                                <div class="text-muted small">To create informative visual elements on your pages</div>
+                                <div class="text-muted small">Track your Cashflow</div>
                             </div>
                             <img src="assets/img/illustrations/cashflow.svg" alt="..." style="width: 8rem" />
                         </div>
@@ -39,7 +40,7 @@
                             <div class="me-3">
                                 <i class="feather-xl text-green mb-3" data-feather="bar-chart-2"></i>
                                 <h5>Investment Portfolio</h5>
-                                <div class="text-muted small">To keep you on track when working with our toolkit</div>
+                                <div class="text-muted small">Track your Investment</div>
                             </div>
                             <img src="assets/img/illustrations/invest.svg" alt="..." style="width: 8rem" />
                         </div>
@@ -54,7 +55,7 @@
                             <div class="me-3">
                                 <i class="feather-xl text-warning mb-3" data-feather="award"></i>
                                 <h5>Financial Goal Planner</h5>
-                                <div class="text-muted small">To help get you started when building your new UI</div>
+                                <div class="text-muted small">Set Your Financial Goal</div>
                             </div>
                             <img src="assets/img/illustrations/goals.svg" alt="..." style="width: 8rem" />
                         </div>
@@ -66,23 +67,23 @@
             <div class="col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
                     <div class="card-body">
-                        <MonthlyIncomeExpenseChart />
+                        <MonthlyIncomeExpenseChart BankMonthlyTransaction="BankMonthlyTransaction" />
                     </div>
                 </div>
             </div>
             <div class="col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
                     <div class="card-body">
-                        <MonthlySurplusDeficitChart />
+                        <MonthlySurplusDeficitChart BankMonthlyTransaction="BankMonthlyTransaction" />
                     </div>
                 </div>
             </div>
         </div>
         <Row>
-            <DashboardCard Label="Total Cash (IDR)" Quantity="124.000.000" Color="primary" Icon="dollar-sign" Link="Customers" />
-            <DashboardCard Label="Total Investment" Quantity="10.000.000" Color="success" Icon="bar-chart-2" Link="Product" />
+            <DashboardCard Label="Total Cash (IDR)" Quantity="@BankAccount.CurrentBalance.ToString("")" Color="primary" Icon="dollar-sign" Link="Customers" />
+            <DashboardCard Label="Total Investment (USD)" Quantity="1200.00" Color="success" Icon="bar-chart-2" Link="Product" />
 @*             <DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
-            <DashboardCard Label="Ongoing Goals" Quantity="4" Color="warning" Icon="award" Link="Order" />
+            <DashboardCard Label="Ongoing Goals" Quantity="2" Color="warning" Icon="award" Link="Order" />
         </Row>
 
         <Row>
@@ -142,7 +143,7 @@
                                 }
                             </div>
                             <!-- Dashboard Tab Pane 2-->
-                            <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
+@*                             <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
                                 @if (DataLoaded)
                                 {
                                     <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
@@ -160,7 +161,7 @@
                                         </RowTemplate>
                                     </Table>
                                 }
-                            </div>
+                            </div> *@
                         </div>
                     </div>
                @*  </div>
@@ -341,7 +342,7 @@
                         <div class="col-xl-6 col-xxl-12">
                         <!-- Pie chart with legend example-->
                         <Card class="h-100">
-                            <CardHeader>Traffic Sources</CardHeader>
+                            <CardHeader>Asset Allocation</CardHeader>
                             <CardBody>
                                 <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="200px" Height="200px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
                             </CardBody>
@@ -477,7 +478,7 @@
             <div class="col-xl-6 mb-4">
                 <div class="card card-header-actions h-100">
                     <div class="card-body">
-                        <CryptoChart />
+                        <CryptoChart2 />
                     </div>
                 </div>
             </div>

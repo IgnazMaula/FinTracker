@@ -73,7 +73,7 @@ public class GetMonthlyBankTransactionByUserIdHandler : IRequestHandler<GetMonth
                 TotalDebit = t.TotalDebit,
                 SurplusDeficit = t.TotalCredit - t.TotalDebit
             })
-            .OrderByDescending(g => g.Period)
+            .OrderByDescending(g => g.Period).Reverse()
             .ToList();
 
             result.MonthlyBankAccountTransaction = groupedTransactions;

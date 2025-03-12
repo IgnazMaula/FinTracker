@@ -10,9 +10,11 @@ namespace FinTracker.Common.Model
 {
     public class MonthlyTransactionModel
     {
-        public string Month { get; set; }
-        public decimal Income { get; set; }
-        public decimal Expense { get; set; }
+        public Guid BankAccountId { get; set; }
+        public string Period { get; set; }
+        public decimal TotalCredit { get; set; }
+        public decimal TotalDebit { get; set; }
+        public decimal SurplusDeficit { get; set; }
 
     }
 }

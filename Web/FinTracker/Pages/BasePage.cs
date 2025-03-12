@@ -30,9 +30,22 @@ namespace FinTracker.Pages
 
         protected List<string> AssetList = new List<string>
         {
+            // Cryptocurrencies  
             "BTC-USD", "ETH-USD", "SOL-USD", "XRP-USD", "BNB-USD", "DOGE-USD",
+            "ADA-USD", "DOT-USD", "MATIC-USD", "LTC-USD", "AVAX-USD", "SHIB-USD",
+            "LINK-USD", "ATOM-USD", "UNI-USD", "XLM-USD", "TRX-USD", "WBTC-USD",  
+
+            // Stocks - S&P 500 & Tech Giants  
             "SPY", "AAPL", "NVDA", "MSFT", "AMZN", "TSLA",
+            "GOOGL", "META", "NFLX", "AMD", "BRK.B", "V",
+            "JPM", "XOM", "UNH", "PG", "MA", "HD", "ABBV",
+            "DIS", "PFE", "KO", "PEP", "INTC", "COST",  
+
+            // Other High-Growth Stocks  
+            "SNOW", "PLTR", "RBLX", "SQ", "SOFI", "UPST",
+            "ARKK", "TSM", "SHOP", "CRWD", "NET", "DOCU",
         };
+
 
         protected List<string> PeriodList = new List<string>
         {
@@ -94,6 +107,11 @@ namespace FinTracker.Pages
         protected async Task<(List<BankTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankTransactionByBankIdDataAsync(Guid id, string queryString = "")
         {
             var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/ByBankId/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(List<MonthlyTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetMonthlyBankTransactionByUserIdDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<MonthlyTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/GetMonthlyBankTransactionByUserId/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostBankTransactionDataAsync(BankTransactionModel request)

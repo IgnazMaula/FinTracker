@@ -14,16 +14,17 @@ using FinTracker.Application.Interfaces;
 using FinTracker.Application.Models;
 using FinTracker.Application.Models.DTOs;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace FinTracker.Infrastructure.Services;
 public class TipRankspiService : ITipRanksApiService
 {
     private readonly HttpClient _httpClient;
 
-    public TipRankspiService(HttpClient httpClient)
+    public TipRankspiService(HttpClient httpClient, IConfiguration config)
     {
         _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Add("x-cg-demo-api-key", "CG-Qzs5nxBCRdyc4T5aPLrqGx4N");
+        _httpClient.DefaultRequestHeaders.Add("x-cg-demo-api-key", config["ApiKey:CoinGeckoKey"]);
     }
 
     public async Task<List<DCAHistoryDataDTO>> GetHistoricalPrice(string ticker)

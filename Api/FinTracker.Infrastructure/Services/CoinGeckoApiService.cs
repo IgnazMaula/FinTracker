@@ -12,16 +12,17 @@ using System.Text.Json;
 using System.Net;
 using FinTracker.Application.Interfaces;
 using FinTracker.Application.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace FinTracker.Infrastructure.Services;
 public class CoinGeckoApiService : ICoinGeckoApiService
 {
     private readonly HttpClient _httpClient;
 
-    public CoinGeckoApiService(HttpClient httpClient)
+    public CoinGeckoApiService(HttpClient httpClient, IConfiguration config)
     {
         _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Add("x-cg-demo-api-key", "CG-Qzs5nxBCRdyc4T5aPLrqGx4N");
+        _httpClient.DefaultRequestHeaders.Add("x-cg-demo-api-key", config["ApiKey:CoinGeckoKey"]);
     }
 
     public async Task<NewsArticle> GetCryptoChartData()

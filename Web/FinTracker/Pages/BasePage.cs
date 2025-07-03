@@ -173,5 +173,16 @@ namespace FinTracker.Pages
             return (model, urlLookupResult, statusCode);
         }
         #endregion
+
+        #region Cryptocurrency Helper Methods
+        //-----------------------------------------------------------------
+        // Cryptocurrency Helper Methods
+        //-----------------------------------------------------------------
+        protected async Task<(List<CoinPriceModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetCryptocurrencyListAsync(string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<CoinPriceModel>($"{Configuration["BaseUrl"]}{Configuration["CryptocurrencyUrl"]}", queryString);
+            return (model, urlLookupResult, statusCode);
+        }
+        #endregion
     }
 }

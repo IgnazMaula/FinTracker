@@ -18,6 +18,7 @@ namespace FinTracker.Pages.Dashboard
         private BankAccountModel BankAccount = new BankAccountModel();
         private List<CustomerModel> CustomerList = new List<CustomerModel>();
         private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
+        private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
 
         //Chart
@@ -31,6 +32,7 @@ namespace FinTracker.Pages.Dashboard
             await GetBankTransactions();
             await GetBankAccount();
             await GetDashboardData();
+            await GetCryptoCurrencyList();
             //await GetCustomer();
 
             DataLoaded = true;
@@ -77,6 +79,14 @@ namespace FinTracker.Pages.Dashboard
         {
             var (model, urlLookupResult, statusCode) = await GetMonthlyBankTransactionByUserIdDataAsync(new Guid("f7a3d8dd-70b1-4b98-be0c-219672025281"));
             if (statusCode == HttpStatusCode.OK) { BankMonthlyTransaction = model; PageStatus = string.Empty; PageIsValid = true; }
+            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+            StateHasChanged();
+        }
+
+        private async Task GetCryptoCurrencyList()
+        {
+            var (model, urlLookupResult, statusCode) = await GetCryptocurrencyListAsync();
+            if (statusCode == HttpStatusCode.OK) { CoinPriceList = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();
         }

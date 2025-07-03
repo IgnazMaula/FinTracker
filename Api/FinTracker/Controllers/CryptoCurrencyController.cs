@@ -11,11 +11,11 @@ namespace FinTracker.Api.Controllers;
 [ApiController]
 public class CryptoCurrencyController : ControllerBase
 {
-    private readonly ICoinGeckoApiService _coinGeckoApiService;
+    private readonly ICMCService _cmcService;
 
-    public CryptoCurrencyController(ICoinGeckoApiService coinGeckoApiService)
+    public CryptoCurrencyController(ICMCService cmcService)
     {
-        _coinGeckoApiService = coinGeckoApiService;
+        _cmcService = cmcService;
     }
 
     [HttpGet]
@@ -23,8 +23,8 @@ public class CryptoCurrencyController : ControllerBase
     {
         try
         {
-            var newsFeed = await _coinGeckoApiService.GetCryptoChartData();
-            return Ok(newsFeed);
+            var result = await _cmcService.GetCryptoChartData();
+            return Ok(result);
         }
         catch (Exception ex)
         {

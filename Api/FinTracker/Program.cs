@@ -28,7 +28,7 @@ builder.Services.AddScoped<IBankTransactionRepository, BankTransactionRepository
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITransactionCSVService, TransactionCSVService>();
 builder.Services.AddHttpClient<IAlphavantageNewsService, AlphavantageNewsService>();
-builder.Services.AddHttpClient<ICoinGeckoApiService, CoinGeckoApiService>();
+builder.Services.AddHttpClient<ICMCService, CMCService>();
 builder.Services.AddHttpClient<ITipRanksApiService, TipRankspiService>();
 
 // Register AutoMapper
@@ -101,11 +101,12 @@ builder.Services.AddApplication();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinTracker API V1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseCors("AnyOrigin");
 app.UseHttpsRedirection();

@@ -39,7 +39,7 @@ bld/
 #wwwroot/
 
 #appsetting development
-appsettings.Development.json
+**/appsettings.Development.json
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/

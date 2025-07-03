@@ -65,27 +65,27 @@ namespace FinTracker.Pages
         //-----------------------------------------------------------------
         protected async Task<(List<BankAccountModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankAccountListDataAsync(string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankAccountModel>($"{Configuration["BaseUrl"]}{Configuration["BankAccountUrl"]}", queryString);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankAccountUrl"]}", queryString);
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankAccountDataAsync(Guid id, string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BankAccountModel>($"{Configuration["BaseUrl"]}{Configuration["BankAccountUrl"]}/{id}{queryString}");
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BankAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankAccountUrl"]}/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostBankAccountDataAsync(BankAccountModel request)
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<BankAccountModel>($"{Configuration["BaseUrl"]}{Configuration["BankAccountUrl"]}", request);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<BankAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankAccountUrl"]}", request);
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PutBankAccountDataAsync(Guid id, BankAccountModel request)
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PutEntity<BankAccountModel>($"{Configuration["BaseUrl"]}{Configuration["BankAccountUrl"]}", id, request);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PutEntity<BankAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankAccountUrl"]}", id, request);
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> DeleteBankAccountDataAsync(Guid id)
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.DeleteEntity<BankAccountModel>($"{Configuration["BaseUrl"]}{Configuration["BankAccountUrl"]}", id);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.DeleteEntity<BankAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankAccountUrl"]}", id);
             return (model, urlLookupResult, statusCode);
         }
         #endregion
@@ -96,27 +96,27 @@ namespace FinTracker.Pages
         //-----------------------------------------------------------------
         protected async Task<(List<BankTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankTransactionListDataAsync(string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}", queryString);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}", queryString);
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankTransactionDataAsync(Guid id, string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/{id}{queryString}");
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BankTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(List<BankTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBankTransactionByBankIdDataAsync(Guid id, string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/ByBankId/{id}{queryString}");
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<BankTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}/ByBankId/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(List<MonthlyTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetMonthlyBankTransactionByUserIdDataAsync(Guid id, string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<MonthlyTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/GetMonthlyBankTransactionByUserId/{id}{queryString}");
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<MonthlyTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}/GetMonthlyBankTransactionByUserId/{id}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(BankTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostBankTransactionDataAsync(BankTransactionModel request)
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<BankTransactionModel>($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}", request);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<BankTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}", request);
             return (model, urlLookupResult, statusCode);
         }
         protected async Task<(FileUploadResultModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostTransactionCsvUpload(Guid Id, FileUploadModel request)
@@ -128,12 +128,12 @@ namespace FinTracker.Pages
             using (var httpClient = new HttpClient())
             {
                 //httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-                var response = await httpClient.PostAsync($"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/Upload/{Id}", request.Content);
+                var response = await httpClient.PostAsync($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}/Upload/{Id}", request.Content);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 model = JsonConvert.DeserializeObject<FileUploadResultModel>(responseContent);
                 statusCode = response.StatusCode;
                 urlLookupResult.Message = response.RequestMessage != null ? response.RequestMessage.ToString() : "";
-                urlLookupResult.Url = response.RequestMessage != null && response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.ToString() : $"{Configuration["BaseUrl"]}{Configuration["BankTransactionUrl"]}/Upload";
+                urlLookupResult.Url = response.RequestMessage != null && response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.ToString() : $"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BankTransactionUrl"]}/Upload";
             }
             return (model, urlLookupResult, statusCode);
         }
@@ -145,7 +145,7 @@ namespace FinTracker.Pages
         //-----------------------------------------------------------------
         protected async Task<(List<DCAResultModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> SubmitDCACalculatorDataAsync(DCACalculatorModel request)
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<DCACalculatorModel, List<DCAResultModel>>($"{Configuration["BaseUrl"]}{Configuration["DCACalculatorUrl"]}", request);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<DCACalculatorModel, List<DCAResultModel>>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:DCACalculatorUrl"]}", request);
             return (model, urlLookupResult, statusCode);
         }
         #endregion
@@ -163,12 +163,12 @@ namespace FinTracker.Pages
             using (var httpClient = new HttpClient())
             {
                 //httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-                var response = await httpClient.PostAsync($"{Configuration["BaseUrl"]}{Configuration["FileUploadUrl"]}", request.Content);
+                var response = await httpClient.PostAsync($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:FileUploadUrl"]}", request.Content);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 model = JsonConvert.DeserializeObject<FileUploadResultModel>(responseContent);
                 statusCode = response.StatusCode;
                 urlLookupResult.Message = response.RequestMessage != null ? response.RequestMessage.ToString() : "";
-                urlLookupResult.Url = response.RequestMessage != null && response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.ToString() : $"{Configuration["BaseUrl"]}{Configuration["FileUploadUrl"]}";
+                urlLookupResult.Url = response.RequestMessage != null && response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.ToString() : $"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:FileUploadUrl"]}";
             }
             return (model, urlLookupResult, statusCode);
         }
@@ -180,7 +180,7 @@ namespace FinTracker.Pages
         //-----------------------------------------------------------------
         protected async Task<(List<CoinPriceModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetCryptocurrencyListAsync(string queryString = "")
         {
-            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<CoinPriceModel>($"{Configuration["BaseUrl"]}{Configuration["CryptocurrencyUrl"]}", queryString);
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<CoinPriceModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:CryptocurrencyUrl"]}", queryString);
             return (model, urlLookupResult, statusCode);
         }
         #endregion

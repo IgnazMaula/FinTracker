@@ -1,51 +1,29 @@
-﻿<ApexChart TItem="MonthlyTransactionModel"
-           Title="Monthly Surplus and Deficit"
-           Options="options">
-
-    <ApexPointSeries TItem="MonthlyTransactionModel"
-                     Items="BankMonthlyTransaction"
-                     SeriesType="@SeriesType.Line"
-                     Name="Gross Value"
-                     XValue="@(e => e.Period)"
-                     YAggregate="@(e => e.Sum(item => item.TotalCredit - item.TotalDebit))" />
-
-</ApexChart>
-
+﻿
 @code {
-    [Parameter] public List<MonthlyTransactionModel>? BankMonthlyTransaction { get; set; }
+    [Parameter]
+    public List<MonthlyTransactionModel>? BankMonthlyTransaction { get; set; }
 
-    private ApexChartOptions<MonthlyTransactionModel> options { get; set; } = new();
+    private List<SurplusDeficitPoint> SurplusData = new();
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
-         // Ensure the order is preserved by defining X-axis categories
-        options.Xaxis = new XAxis
+        if (BankMonthlyTransaction is not null)
         {
-            Categories = BankMonthlyTransaction?.Select(e => e.Period.ToString()).ToArray()
-        };
-        options.PlotOptions = new PlotOptions
-            {
-                Line = new PlotOptionsLine
+            SurplusData = BankMonthlyTransaction
+                .Select(x => new SurplusDeficitPoint
                 {
-                    Colors = new LineColors
-                    {
-                        Threshold = 0,
-                        ColorAboveThreshold = "#0161F2",
-                        ColorBelowThreshold = "#E81500"
-                    }
-                }
-            };
+                    Period = x.Period,
+                    Value = x.TotalCredit - x.TotalDebit,
+                    Color = (x.TotalCredit - x.TotalDebit) >= 0 ? "#0161F2" : "#E81500"
+                })
+                .ToList();
+        }
+    }
 
-        options.Chart = new Chart
-            {
-                Zoom = new Zoom
-                {
-                    Enabled = false
-                },
-                Toolbar = new Toolbar
-                {
-                    Show = false
-                }
-            };
+    public class SurplusDeficitPoint
+    {
+        public string Period { get; set; } = string.Empty;
+        public decimal Value { get; set; }
+        public string Color { get; set; } = string.Empty;
     }
 }

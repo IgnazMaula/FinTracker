@@ -11,7 +11,7 @@ namespace FinTracker.Common.Model
     public class MonthlyTransactionModel
     {
         public Guid BankAccountId { get; set; }
-        public string Period { get; set; }
+        public string Period { get; set; } = "";
         public decimal TotalCredit { get; set; }
         public decimal TotalDebit { get; set; }
         public decimal SurplusDeficit { get; set; }

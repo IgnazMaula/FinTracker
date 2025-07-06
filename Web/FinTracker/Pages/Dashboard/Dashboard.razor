@@ -2,14 +2,15 @@
 @inherits BasePage
 
 @if (DataLoaded)
+
 {
     <header class="page-header pb-10">
         <div class="container-xl px-4">
             <div class="page-header-content pt-4">
                 <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
-                        @*                         <img src="assets/img/logo.png" width="250" alt="..." /> *@
-                    </div>
+                    @*                     <div class="col-auto mt-4">
+                <img src="assets/img/logo.png" width="250" alt="..." />
+                </div> *@
                 </div>
             </div>
         </div>
@@ -18,7 +19,7 @@
     <div class="container-xl px-4 mt-n10">
         <div class="row">
             <div class="col-xl-4 mb-4">
-                <!-- Dashboard example card 1-->
+                <!-- Dashboard card 1-->
                 <a class="card lift h-100" href="#!">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
@@ -33,7 +34,7 @@
                 </a>
             </div>
             <div class="col-xl-4 mb-4">
-                <!-- Dashboard example card 2-->
+                <!-- Dashboard card 2-->
                 <a class="card lift h-100" href="#!">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
@@ -48,7 +49,7 @@
                 </a>
             </div>
             <div class="col-xl-4 mb-4">
-                <!-- Dashboard example card 3-->
+                <!-- Dashboard card 3-->
                 <a class="card lift h-100" href="#!">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
@@ -63,26 +64,13 @@
                 </a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xl-6 mb-4">
-                <div class="card card-header-actions h-100">
-                    <div class="card-body">
-                        <MonthlyIncomeExpenseChart BankMonthlyTransaction="BankMonthlyTransaction" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 mb-4">
-                <div class="card card-header-actions h-100">
-                    <div class="card-body">
-                        <MonthlySurplusDeficitChart BankMonthlyTransaction="BankMonthlyTransaction" />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Row Class="align-items-stretch">
+            <CashFlowChart BankMonthlyTransaction="@BankMonthlyTransaction" />
+        </Row>
         <Row>
-            <DashboardCard Label="Total Cash (IDR)" Quantity="@BankAccount.CurrentBalance.ToString("")" Color="primary" Icon="dollar-sign" Link="Customers" />
+            <DashboardCard Label="Total Cash (IDR)" Quantity="@BankAccount.CurrentBalance.ToString("N2")" Color="primary" Icon="dollar-sign" Link="Customers" />
             <DashboardCard Label="Total Investment (USD)" Quantity="1200.00" Color="success" Icon="bar-chart-2" Link="Product" />
-            @*             <DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
+            @*<DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
             <DashboardCard Label="Ongoing Goals" Quantity="2" Color="warning" Icon="award" Link="Order" />
         </Row>
 
@@ -97,11 +85,12 @@
                             <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
                         </ul>
                     </div>
-                    <div class="card-body">
-                        <div class="tab-content" id="dashboardNavContent">
+                    <div class="card-body" style="min-height: 666px;">
+                        <div class="tab-content h-100" id="dashboardNavContent">
                             <!-- Dashboard Tab Pane 1-->
                             <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
                                 @if (DataLoaded)
+
                                 {
                                     <Table TableId="bankTransactionTable" Items="@BankTransactionList" Context="BankTransaction">
                                         <HeaderTemplate>
@@ -115,26 +104,36 @@
                                             <td>@(BankTransaction.Description.Length > 20 ? BankTransaction.Description.Substring(0, 20) + "..." : BankTransaction.Description)</td>
 
                                             @if (BankTransaction.TransactionType == "Debit")
+
                                             {
                                                 <td><div class="badge bg-danger text-white rounded-pill">@BankTransaction.TransactionType</div></td>
                                             }
+
                                             else if (BankTransaction.TransactionType == "Credit")
+
                                             {
                                                 <td><div class="badge bg-success text-white rounded-pill">@BankTransaction.TransactionType</div></td>
                                             }
+
                                             else
+
                                             {
                                                 <td><div class="badge bg-warning text-white rounded-pill">@BankTransaction.TransactionType</div></td>
                                             }
                                             @if (BankTransaction.TransactionType == "Debit")
+
                                             {
                                                 <td class="text-danger">@BankTransaction.TransactionAmount.ToString("N2")</td>
                                             }
+
                                             else if (BankTransaction.TransactionType == "Credit")
+
                                             {
                                                 <td class="text-success">@BankTransaction.TransactionAmount.ToString("N2")</td>
                                             }
+
                                             else
+
                                             {
                                                 <td class="text-warning">@BankTransaction.TransactionAmount.ToString("N2")</td>
                                             }
@@ -143,25 +142,25 @@
                                 }
                             </div>
                             <!-- Dashboard Tab Pane 2-->
-                            @*                             <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
-                        @if (DataLoaded)
-                        {
-                        <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
-                        <HeaderTemplate>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Phone</th>
-                        </HeaderTemplate>
-                        <RowTemplate>
-                        <td>@customer.Name</td>
-                        <td>@customer.Email</td>
-                        <td>@customer.Address</td>
-                        <td>@customer.Phone</td>
-                        </RowTemplate>
-                        </Table>
-                        }
-                        </div> *@
+                            <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
+                                @if (DataLoaded)
+                                {
+                                    <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
+                                        <HeaderTemplate>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Address</th>
+                                            <th>Phone</th>
+                                        </HeaderTemplate>
+                                        <RowTemplate>
+                                            <td>@customer.Name</td>
+                                            <td>@customer.Email</td>
+                                            <td>@customer.Address</td>
+                                            <td>@customer.Phone</td>
+                                        </RowTemplate>
+                                    </Table>
+                                }
+                            </div>
                         </div>
                     </div>
                     @*  </div>
@@ -467,45 +466,83 @@
                 </div>
             </div>
         </Row>
-        @*  <div class="row">
-    <div class="col-xl-6 mb-4">
-    <div class="card card-header-actions h-100">
-    <div class="card-body">
-    <CryptoChart />
-    </div>
-    </div>
-    </div>
-    <div class="col-xl-6 mb-4">
-    <div class="card card-header-actions h-100">
-    <div class="card-body">
-    <CryptoChart2 />
-    </div>
-    </div>
-    </div>
-    </div> *@
-        <Row>
-            <div class="card card-header-actions h-100">
-                <div class="card-body">
-                    <SfGrid DataSource="@CoinPriceList" AllowPaging="true">
-                        <GridColumns>
-                            <GridColumn HeaderText="Logo" Width="60">
-                                <Template>
-                                    <img src="@((context as CoinPriceModel).LogoUrl)" width="32" />
-                                </Template>
-                            </GridColumn>
-                            <GridColumn Field="Name" HeaderText="Name" Width="150"></GridColumn>
-                            <GridColumn Field="Symbol" HeaderText="Symbol" Width="100"></GridColumn>
-                            <GridColumn Field="Price" HeaderText="Price" Format="C2" Width="120"></GridColumn>
-                            <GridColumn Field="PercentChange1h" HeaderText="1h %" Format="N2" Width="80"></GridColumn>
-                            <GridColumn Field="PercentChange24h" HeaderText="24h %" Format="N2" Width="80"></GridColumn>
-                            <GridColumn Field="PercentChange7d" HeaderText="7d %" Format="N2" Width="80"></GridColumn>
-                            <GridColumn Field="MarketCap" HeaderText="Market Cap" Format="C0" Width="150"></GridColumn>
-                            <GridColumn Field="Volume24h" HeaderText="Volume (24h)" Format="C0" Width="150"></GridColumn>
-                            <GridColumn Field="CirculatingSupply" HeaderText="Supply" Format="N0" Width="120"></GridColumn>
-                        </GridColumns>
-                    </SfGrid>
+
+        <Row Class="align-items-stretch">
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions">
+                    <div class="card-body">
+                        <CryptoChart />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 mb-4">
+                <div class="card card-header-actions">
+                    <div class="card-body">
+                        <CryptoChart />
+                    </div>
                 </div>
             </div>
         </Row>
+
+        <Row>
+            <div class="col mb-4">
+                <div class="card card-header-actions h-100 w-100">
+                    <div class="card-body">
+                        <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
+                            <HeaderTemplate>
+                                <th>Logo</th>
+                                <th>Name</th>
+                                <th>Symbol</th>
+                                <th>Price</th>
+                                <th>1h %</th>
+                                <th>24h %</th>
+                                <th>7d %</th>
+                                <th>Market Cap</th>
+                                <th>Volume (24h)</th>
+                                <th>Supply</th>
+                            </HeaderTemplate>
+                            <RowTemplate>
+                                <td><img src="@coin.LogoUrl" width="32" /></td>
+                                <td>@coin.Name</td>
+                                <td>@coin.Symbol</td>
+                                <td>@coin.Price.ToString("C2")</td>
+                                <td>@coin.PercentChange1h.ToString("N2")</td>
+                                <td>@coin.PercentChange24h.ToString("N2")</td>
+                                <td>@coin.PercentChange7d.ToString("N2")</td>
+                                <td>@coin.MarketCap.ToString("C0")</td>
+                                <td>@coin.Volume24h.ToString("C0")</td>
+                                <td>@coin.CirculatingSupply.ToString("N0")</td>
+                            </RowTemplate>
+                        </Table>
+                    </div>
+                </div>
+            </div>
+        </Row>
+
+
+        @*  <Row>
+    <div class="card card-header-actions h-100">
+    <div class="card-body">
+    <SfGrid DataSource="@CoinPriceList" AllowPaging="true">
+    <GridColumns>
+    <GridColumn HeaderText="Logo" Width="60">
+    <Template>
+    <img src="@((context as CoinPriceModel).LogoUrl)" width="32" />
+    </Template>
+    </GridColumn>
+    <GridColumn Field="Name" HeaderText="Name" Width="150"></GridColumn>
+    <GridColumn Field="Symbol" HeaderText="Symbol" Width="100"></GridColumn>
+    <GridColumn Field="Price" HeaderText="Price" Format="C2" Width="120"></GridColumn>
+    <GridColumn Field="PercentChange1h" HeaderText="1h %" Format="N2" Width="80"></GridColumn>
+    <GridColumn Field="PercentChange24h" HeaderText="24h %" Format="N2" Width="80"></GridColumn>
+    <GridColumn Field="PercentChange7d" HeaderText="7d %" Format="N2" Width="80"></GridColumn>
+    <GridColumn Field="MarketCap" HeaderText="Market Cap" Format="C0" Width="150"></GridColumn>
+    <GridColumn Field="Volume24h" HeaderText="Volume (24h)" Format="C0" Width="150"></GridColumn>
+    <GridColumn Field="CirculatingSupply" HeaderText="Supply" Format="N0" Width="120"></GridColumn>
+    </GridColumns>
+    </SfGrid>
+    </div>
+    </div>
+    </Row> *@
     </div>
 }

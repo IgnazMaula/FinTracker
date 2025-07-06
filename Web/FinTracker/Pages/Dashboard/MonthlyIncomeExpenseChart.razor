@@ -1,20 +1,29 @@
-﻿<ApexChart TItem="MonthlyTransactionModel" Title="Monthly Income and Expense">
-    <ApexPointSeries TItem="MonthlyTransactionModel"
-                     Items="BankMonthlyTransaction"
-                     Name="Income"
-                     XValue="@(e => e.Period)"
-                     YValue="@(e => e.TotalCredit)"
-                     SeriesType="SeriesType.Bar"
-                     Color="#0161F2" />
+﻿<SfChart Title="Monthly Income and Expense">
+    <ChartPrimaryXAxis Title="Period"
+                       ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
 
-    <ApexPointSeries TItem="MonthlyTransactionModel"
-                     Items="BankMonthlyTransaction"
+    <ChartPrimaryYAxis Title="Amount"
+                       LabelFormat="N2"
+                       ValueType="Syncfusion.Blazor.Charts.ValueType.Double" />
+
+    <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@BankMonthlyTransaction"
+                     XName="Period"
+                     YName="TotalCredit"
+                     Name="Income"
+                     Type="ChartSeriesType.Column"
+                     Fill="#0161F2">
+        </ChartSeries>
+        <ChartSeries DataSource="@BankMonthlyTransaction"
+                     XName="Period"
+                     YName="TotalDebit"
                      Name="Expense"
-                     XValue="@(e => e.Period)"
-                     YValue="@(e => e.TotalDebit)"
-                     SeriesType="SeriesType.Bar"
-                     Color="#E81500" />
-</ApexChart>
+                     Type="ChartSeriesType.Column"
+                     Fill="#E81500">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
 
 @code {
     [Parameter] public List<MonthlyTransactionModel>? BankMonthlyTransaction { get; set; }

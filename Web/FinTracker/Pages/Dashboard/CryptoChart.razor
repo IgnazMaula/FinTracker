@@ -1,54 +1,36 @@
-﻿@using System.Net.Http.Json
-@inject HttpClient Http
+﻿@inject HttpClient Http
 
-<ApexChart TItem="StockPrice" Title="Market Overview: BTC-USD" Options="ChartOptions">
-    <ApexCandleSeries TItem="StockPrice"
-                      Items="@stockPrices"
-                      Name="Crypto OHLC"
-                      XValue="@(e => e.Timestamp)"
-                      Open="@(e => e.Open)"
-                      High="@(e => e.High)"
-                      Low="@(e => e.Low)"
-                      Close="@(e => e.Close)" />
-</ApexChart>
+<SfChart Title="Market Overview: BTC-USD">
+    <ChartPrimaryXAxis Title="Date"
+                       ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                       LabelRotation="45">
+    </ChartPrimaryXAxis>
+
+    <ChartPrimaryYAxis Title="Price (USD)"
+                       ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
+                       LabelFormat="${value}" />
+
+    <ChartTooltipSettings Enable="true" />
+
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@stockPrices"
+                     XName="Timestamp"
+                     High="High"
+                     Low="Low"
+                     Open="Open"
+                     Close="Close"
+                     Name="BTC"
+                     Type="ChartSeriesType.Candle">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
 
 @code {
     private List<StockPrice> stockPrices = new();
-    private ApexChartOptions<StockPrice> ChartOptions = new();
 
     protected override async Task OnInitializedAsync()
     {
-        SetChartOptions();
         await LoadChartData();
-    }
-
-    private void SetChartOptions()
-    {
-        ChartOptions = new ApexChartOptions<StockPrice>
-            {
-                Chart = new Chart
-                {
-                    Toolbar = new Toolbar
-                    {
-                        Show = false // Disables toolbar (zoom, pan, reset)
-                    },
-                    Zoom = new Zoom
-                    {
-                        Enabled = false // Disables zoom
-                    }
-                },
-                Xaxis = new XAxis
-                {
-                    Labels = new XAxisLabels { Show = true }
-                },
-                Yaxis = new List<YAxis>
-            {
-                new YAxis
-                {
-                    Labels = new YAxisLabels { Show = true }
-                }
-            }
-            };
     }
 
     private async Task LoadChartData()
@@ -59,19 +41,21 @@
         if (response != null)
         {
             stockPrices = response.Take(30).Select(p => new StockPrice
-                {
-                    Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0]).ToString("yyyy-MM-dd HH:mm"),
-                    Open = (decimal)p[1],
-                    High = (decimal)p[2],
-                    Low = (decimal)p[3],
-                    Close = (decimal)p[4]
-                }).ToList();
+            {
+                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0])
+                            .ToLocalTime()
+                            .ToString("MM-dd HH:mm"),
+                Open = (decimal)p[1],
+                High = (decimal)p[2],
+                Low = (decimal)p[3],
+                Close = (decimal)p[4]
+            }).ToList();
         }
     }
 
     public class StockPrice
     {
-        public string Timestamp { get; set; }
+        public string Timestamp { get; set; } = string.Empty;
         public decimal Open { get; set; }
         public decimal High { get; set; }
         public decimal Low { get; set; }

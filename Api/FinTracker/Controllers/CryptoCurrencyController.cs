@@ -12,10 +12,13 @@ namespace FinTracker.Api.Controllers;
 public class CryptoCurrencyController : ControllerBase
 {
     private readonly ICMCService _cmcService;
+    private readonly IBinancePortfolioService _binancePortfolioService;
 
-    public CryptoCurrencyController(ICMCService cmcService)
+    public CryptoCurrencyController(ICMCService cmcService, IBinancePortfolioService binancePortfolioService)
     {
         _cmcService = cmcService;
+        _binancePortfolioService = binancePortfolioService;
+
     }
 
     [HttpGet]
@@ -24,6 +27,20 @@ public class CryptoCurrencyController : ControllerBase
         try
         {
             var result = await _cmcService.GetCryptoChartData();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpGet("BinancePortfolio")]
+    public async Task<IActionResult> GetBinancePortfolio()
+    {
+        try
+        {
+            var result = await _binancePortfolioService.GetPortfolioAsync();
             return Ok(result);
         }
         catch (Exception ex)

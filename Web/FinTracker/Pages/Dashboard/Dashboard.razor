@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-xl-4 mb-4">
                 <!-- Dashboard card 1-->
-                <a class="card lift h-100" href="#!">
+                <NavLink class="card lift h-100" href="/Cashflow">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
@@ -31,11 +31,12 @@
                             <img src="assets/img/illustrations/cashflow.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
-                </a>
+                </NavLink>
             </div>
+
             <div class="col-xl-4 mb-4">
                 <!-- Dashboard card 2-->
-                <a class="card lift h-100" href="#!">
+                <NavLink class="card lift h-100" href="/Investment">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
@@ -46,11 +47,12 @@
                             <img src="assets/img/illustrations/invest.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
-                </a>
+                </NavLink>
             </div>
+
             <div class="col-xl-4 mb-4">
                 <!-- Dashboard card 3-->
-                <a class="card lift h-100" href="#!">
+                <NavLink class="card lift h-100" href="/Goals">
                     <div class="card-body d-flex justify-content-center flex-column">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="me-3">
@@ -61,8 +63,9 @@
                             <img src="assets/img/illustrations/goals.svg" alt="..." style="width: 8rem" />
                         </div>
                     </div>
-                </a>
+                </NavLink>
             </div>
+
         </div>
         <Row Class="align-items-stretch">
             <CashFlowChart BankMonthlyTransaction="@BankMonthlyTransaction" />

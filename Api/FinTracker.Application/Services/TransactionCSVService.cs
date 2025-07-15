@@ -67,7 +67,12 @@ namespace FinTracker.Application.Services
             await _bankTransactionRepository.CreateMultipleAsync(uniqueTransactions);
 
             //Edit current balance based on the latest transaction
-            bank.CurrentBalance = uniqueTransactions.Last().Balance ?? 0;
+            var allTransactions = existingTransactions
+            .Concat(uniqueTransactions)
+            .OrderBy(t => t.TransactionDate)
+            .ToList();
+
+            bank.CurrentBalance = allTransactions.Last().Balance ?? 0;
             await _bankAccountRepository.UpdateAsync(bank);
         }
     }

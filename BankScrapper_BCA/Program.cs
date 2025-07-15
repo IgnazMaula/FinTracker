@@ -62,9 +62,11 @@ class BCAScraper
                     string type = cells[4].Text.Trim();
                     string balance = cells[5].Text.Trim();
 
+                    Console.WriteLine("Date: " + date);
                     Console.WriteLine("Description: " + description);
                     Console.WriteLine("Amount: " + amount);
                     Console.WriteLine("Type: " + type);
+                    Console.WriteLine("Balance: " + balance);
                     Console.WriteLine("-------------------------");
                 }
             }

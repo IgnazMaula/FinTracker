@@ -61,8 +61,8 @@ public class GetMonthlyBankTransactionByUserIdHandler : IRequestHandler<GetMonth
             .Select(g => new MonthlyBankAccountTransaction
             {
                 BankAccountId = g.Key.BankAccountId,
-                Period = $"{g.Key.Year:D4}/{g.Key.Month:D2}",
-                TotalCredit = g.Where(t => t.TransactionType == "Credit").Sum(t => t.TransactionAmount) ?? 0,
+                Period = $"{g.Key.Year % 100:D2}/{g.Key.Month:D2}",
+            TotalCredit = g.Where(t => t.TransactionType == "Credit").Sum(t => t.TransactionAmount) ?? 0,
                 TotalDebit = g.Where(t => t.TransactionType == "Debit").Sum(t => Math.Abs(t.TransactionAmount ?? 0))
             })
             .Select(t => new MonthlyBankAccountTransaction
@@ -74,7 +74,7 @@ public class GetMonthlyBankTransactionByUserIdHandler : IRequestHandler<GetMonth
                 SurplusDeficit = t.TotalCredit - t.TotalDebit
             })
             .OrderByDescending(g => g.Period).Reverse()
-            .ToList();
+            .Take(12).ToList();
 
             result.MonthlyBankAccountTransaction = groupedTransactions;
 

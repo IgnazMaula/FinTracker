@@ -30,6 +30,7 @@ builder.Services.AddScoped<ITransactionCSVService, TransactionCSVService>();
 builder.Services.AddHttpClient<IAlphavantageNewsService, AlphavantageNewsService>();
 builder.Services.AddHttpClient<ICMCService, CMCService>();
 builder.Services.AddHttpClient<ITipRanksApiService, TipRankspiService>();
+builder.Services.AddHttpClient<IBinancePortfolioService, BinancePortfolioService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));

@@ -16,16 +16,14 @@
                         <th>Name</th>
                         <th>Bank Name</th>
                         <th>Account No</th>
-                        <th>Currency</th>
-                        <th>CurrentBalance</th>
+                        <th>Current Balance</th>
                         <th></th>
                     </HeaderTemplate>
                     <RowTemplate>
                         <td>@BankAccount.Name</td>
                         <td>@BankAccount.BankName</td>
                         <td>@BankAccount.AccountNo</td>
-                        <td>@BankAccount.Currency</td>
-                        <td>@BankAccount.CurrentBalance.ToString("N2")</td>
+                        <td>@BankAccount.Currency @BankAccount.CurrentBalance.ToString("N2")</td>
                         <td>
                             <div class="text-center">
                                 <ButtonLink Label="Transactions" Url=@($"/BankAccountDetail/{BankAccount.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />

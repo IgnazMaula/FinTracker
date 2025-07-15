@@ -1,0 +1,89 @@
+﻿<div class="col-xl-6 mb-4">
+    <div class="card card-header-actions">
+        <div class="card-body">
+            <SfChart Title="Monthly Income and Expense">
+                <ChartPrimaryXAxis Title="Period"
+                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+
+                <ChartPrimaryYAxis Title="Amount"
+                                   LabelFormat="N2"
+                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Double" />
+
+                <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="@BankMonthlyTransaction"
+                                 XName="Period"
+                                 YName="TotalCredit"
+                                 Name="Income"
+                                 Type="ChartSeriesType.Column"
+                                 Fill="#0161F2">
+                    </ChartSeries>
+                    <ChartSeries DataSource="@BankMonthlyTransaction"
+                                 XName="Period"
+                                 YName="TotalDebit"
+                                 Name="Expense"
+                                 Type="ChartSeriesType.Column"
+                                 Fill="#E81500">
+                    </ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+<div class="col-xl-6 mb-4">
+    <div class="card card-header-actions">
+        <div class="card-body">
+            <SfChart Title="Monthly Surplus and Deficit">
+                <ChartPrimaryXAxis Title="Period"
+                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Category" />
+
+                <ChartPrimaryYAxis Title="Surplus / Deficit"
+                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
+                                   LabelFormat="N2" />
+
+                <ChartTooltipSettings Enable="true" Format="${point.x}: Rp ${point.y}" />
+
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="@SurplusData"
+                                 XName="Period"
+                                 YName="Value"
+                                 Name="Gross Value"
+                                 Type="ChartSeriesType.Line"
+                                 PointColorMapping="Color"
+                                 Fill="#DDDDDD"
+                                 Width="4">
+                        <ChartMarker Visible="true" Width="10" Height="10" />
+                    </ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<MonthlyTransactionModel>? BankMonthlyTransaction { get; set; }
+
+    private List<SurplusDeficitPoint> SurplusData = new();
+
+    protected override void OnParametersSet()
+    {
+        if (BankMonthlyTransaction is not null)
+        {
+            SurplusData = BankMonthlyTransaction
+                .Select(x => new SurplusDeficitPoint
+                {
+                    Period = x.Period,
+                    Value = x.TotalCredit - x.TotalDebit,
+                    Color = (x.TotalCredit - x.TotalDebit) >= 0 ? "#0161F2" : "#E81500"
+                })
+                .ToList();
+        }
+    }
+
+    public class SurplusDeficitPoint
+    {
+        public string Period { get; set; } = string.Empty;
+        public decimal Value { get; set; }
+        public string Color { get; set; } = string.Empty;
+    }
+}

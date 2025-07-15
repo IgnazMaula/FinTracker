@@ -1,0 +1,16 @@
+﻿@inject IJSRuntime JS
+
+<div style="overflow-x: auto; width: 100%;">
+    <div id="tradingview-forex-widget-container" style="min-width: 1200px; height: 550px;"></div>
+</div>
+
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("loadForexScreener");
+        }
+    }
+}

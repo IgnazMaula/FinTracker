@@ -1,0 +1,82 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Tiger Nixon",
+    "Email": "tiger1@email.com",
+    "Address": "Home 08",
+    "Phone": "0842329",
+    "Gender": "Male"
+  },
+  {
+    "Id": 2,
+    "Name": "Garrett Winters",
+    "Email": "gwinters2@email.com",
+    "Address": "Home 09",
+    "Phone": "952738",
+    "Gender": "Female"
+  },
+  {
+    "Id": 3,
+    "Name": "Cedric Kelly",
+    "Email": "cedrick3@email.com",
+    "Address": "Home 54",
+    "Phone": "5387559",
+    "Gender": "Female"
+  },
+  {
+    "Id": 4,
+    "Name": "Brielle Williamson",
+    "Email": "bwilliamson4@email.com",
+    "Address": "Home 86",
+    "Phone": "942758",
+    "Gender": "Male"
+  },
+  {
+    "Id": 5,
+    "Name": "John Doe",
+    "Email": "john5@email.com",
+    "Address": "Home 08",
+    "Phone": "0842329",
+    "Gender": "Male"
+  },
+  {
+    "Id": 6,
+    "Name": "Jane Smith",
+    "Email": "jane6@email.com",
+    "Address": "Home 09",
+    "Phone": "952738",
+    "Gender": "Female"
+  },
+  {
+    "Id": 7,
+    "Name": "Bob Johnson",
+    "Email": "bob7@email.com",
+    "Address": "Home 54",
+    "Phone": "5387559",
+    "Gender": "Male"
+  },
+  {
+    "Id": 8,
+    "Name": "Alice Williams",
+    "Email": "alice8@email.com",
+    "Address": "Home 86",
+    "Phone": "942758",
+    "Gender": "Female"
+  },
+  {
+    "Id": 9,
+    "Name": "Eva Thompson",
+    "Email": "eva9@email.com",
+    "Address": "Home 08",
+    "Phone": "0842329",
+    "Gender": "Female"
+  },
+  {
+    "Id": 10,
+    "Name": "Tom Davis",
+    "Email": "tom10@email.com",
+    "Address": "Home 09",
+    "Phone": "952738",
+    "Gender": "Male"
+  },
+]

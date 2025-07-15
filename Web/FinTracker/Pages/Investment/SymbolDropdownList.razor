@@ -1,0 +1,36 @@
+﻿@inject HttpClient Http
+
+@using Radzen
+
+<RadzenDropDown Data="@Symbols"
+                TextProperty="Name"
+                ValueProperty="Code"
+                @bind-Value="SelectedSymbolCode"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                AllowFiltering="true"
+                Placeholder="Select a symbol"
+                Style="width: 300px;">
+    <Template Context="symbol">
+        <div style="display: flex; align-items: center;">
+            <img src="@symbol.LogoUrl" style="width: 20px; height: 20px; margin-right: 8px;" />
+            <span>@symbol.Name</span>
+        </div>
+    </Template>
+</RadzenDropDown>
+
+@code {
+    public class SymbolItem
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string LogoUrl { get; set; }
+    }
+
+    private List<SymbolItem> Symbols = new();
+    private string SelectedSymbolCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Symbols = await Http.GetFromJsonAsync<List<SymbolItem>>("data/symbols.json");
+    }
+}

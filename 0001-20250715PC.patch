@@ -1,0 +1,2639 @@
+From 836c1271afada54f1c9414a3ccd9a7482672295d Mon Sep 17 00:00:00 2001
+From: Cons Ignaz Maula Ibrahim <cons.ignazmaula@sinarmas-agri.com>
+Date: Tue, 15 Jul 2025 17:44:28 +0700
+Subject: [PATCH] apply changes
+
+---
+ 0001-20250707PC.patch                         | 239 +++++++++
+ Web/FinTracker/FinTracker.csproj              |   8 +
+ .../Pages/BankAccount/BankAccounts.razor      |   6 +-
+ .../Pages/Dashboard/CryptoChart2.razor        | 135 +++--
+ .../Pages/Dashboard/Dashboard.razor           |   7 +-
+ .../Pages/Dashboard/Dashboard.razor.cs        |   6 -
+ .../Pages/Dashboard/StockChart.razor          | 113 +++++
+ .../Pages/Investment/CashFlowChart.razor      |  89 ++++
+ .../Pages/Investment/CryptoChart2.razor       | 108 ++++
+ .../Investment/CryptocurrencyScreener.razor   |  15 +
+ .../Pages/Investment/ForexScreener.razor      |  16 +
+ .../Pages/Investment/Investment.razor         | 465 ++++++++++++++++++
+ .../Pages/Investment/Investment.razor.cs      | 103 ++++
+ .../Pages/Investment/InvestmentOverview.razor | 149 ++++++
+ .../Pages/Investment/StockChart.razor         | 108 ++++
+ .../Pages/Investment/StockScreener.razor      |  21 +
+ .../Pages/Investment/SymbolDropdownList.razor |  36 ++
+ Web/FinTracker/Program.cs                     |   4 +
+ .../Components/Dashboard/InfoWidget.razor     |   2 +-
+ Web/FinTracker/Shared/NavMenu.razor           |   6 +-
+ Web/FinTracker/_Imports.razor                 |   4 +-
+ Web/FinTracker/wwwroot/data/symbols.json      | 408 +++++++++++++++
+ Web/FinTracker/wwwroot/index.html             |  28 ++
+ Web/FinTracker/wwwroot/js/trading-widget.js   | 145 ++++++
+ .../wwwroot/sample-data/symbols.json          |  82 +++
+ 25 files changed, 2231 insertions(+), 72 deletions(-)
+ create mode 100644 0001-20250707PC.patch
+ create mode 100644 Web/FinTracker/Pages/Dashboard/StockChart.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/CashFlowChart.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/CryptoChart2.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/CryptocurrencyScreener.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/ForexScreener.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/Investment.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/Investment.razor.cs
+ create mode 100644 Web/FinTracker/Pages/Investment/InvestmentOverview.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/StockChart.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/StockScreener.razor
+ create mode 100644 Web/FinTracker/Pages/Investment/SymbolDropdownList.razor
+ create mode 100644 Web/FinTracker/wwwroot/data/symbols.json
+ create mode 100644 Web/FinTracker/wwwroot/js/trading-widget.js
+ create mode 100644 Web/FinTracker/wwwroot/sample-data/symbols.json
+
+diff --git a/0001-20250707PC.patch b/0001-20250707PC.patch
+new file mode 100644
+index 0000000..d0337b3
+--- /dev/null
++++ b/0001-20250707PC.patch
+@@ -0,0 +1,239 @@
++From 0a32b02ef54f2ba6bd9aad454a2ef94a221b86c4 Mon Sep 17 00:00:00 2001
++From: Cons Ignaz Maula Ibrahim <cons.ignazmaula@sinarmas-agri.com>
++Date: Mon, 7 Jul 2025 17:57:14 +0700
++Subject: [PATCH] 20250707PC
++
++---
++ .../Pages/Dashboard/CryptoChart.razor         | 13 ++-
++ .../Pages/Dashboard/Dashboard.razor           | 92 +++++++++++++------
++ .../Pages/Dashboard/Dashboard.razor.cs        |  7 ++
++ .../wwwroot/js/datatables/datatables.js       | 14 +++
++ 4 files changed, 93 insertions(+), 33 deletions(-)
++
++diff --git a/Web/FinTracker/Pages/Dashboard/CryptoChart.razor b/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
++index af2933f..3648334 100644
++--- a/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
+++++ b/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
++@@ -1,6 +1,6 @@
++ ﻿@inject HttpClient Http
++ 
++-<SfChart Title="Market Overview: BTC-USD">
+++<SfChart Title="@Ticker">
++     <ChartPrimaryXAxis Title="Date"
++                        ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
++                        LabelRotation="45">
++@@ -19,23 +19,28 @@
++                      Low="Low"
++                      Open="Open"
++                      Close="Close"
++-                     Name="BTC"
+++                     Name="@Ticker"
++                      Type="ChartSeriesType.Candle">
++         </ChartSeries>
++     </ChartSeriesCollection>
++ </SfChart>
++ 
++ @code {
+++
+++
+++
+++    [Parameter] public string? Ticker { get; set; }
+++
++     private List<StockPrice> stockPrices = new();
++ 
++-    protected override async Task OnInitializedAsync()
+++    protected override async Task OnParametersSetAsync()
++     {
++         await LoadChartData();
++     }
++ 
++     private async Task LoadChartData()
++     {
++-        var url = $"https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=7";
+++        var url = $"https://api.coingecko.com/api/v3/coins/{Ticker?.ToLower()}/ohlc?vs_currency=usd&days=7";
++         var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
++ 
++         if (response != null)
++diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
++index eff0182..11dc278 100644
++--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor
+++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
++@@ -467,56 +467,59 @@
++             </div>
++         </Row>
++ 
++-        <Row Class="align-items-stretch">
++-            <div class="col-xl-6 mb-4">
++-                <div class="card card-header-actions">
++-                    <div class="card-body">
++-                        <CryptoChart />
++-                    </div>
++-                </div>
++-            </div>
++-            <div class="col-xl-6 mb-4">
++-                <div class="card card-header-actions">
++-                    <div class="card-body">
++-                        <CryptoChart />
++-                    </div>
++-                </div>
++-            </div>
++-        </Row>
+++        @*         <Row Class="align-items-stretch">
+++    <div class="col-xl-6 mb-4">
+++    <div class="card card-header-actions">
+++    <div class="card-body">
+++    <CryptoChart />
+++    </div>
+++    </div>
+++    </div>
+++    <div class="col-xl-6 mb-4">
+++    <div class="card card-header-actions">
+++    <div class="card-body">
+++    <CryptoChart />
+++    </div>
+++    </div>
+++    </div>
+++    </Row> *@
++ 
++         <Row>
++-            <div class="col mb-4">
+++            <div class="col-xl-6 mb-4">
++                 <div class="card card-header-actions h-100 w-100">
++                     <div class="card-body">
++-                        <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
+++                        <Table TableId="coinPriceSummaryTable" Items="@CoinPriceList" Context="coin">
++                             <HeaderTemplate>
++-                                <th>Logo</th>
++-                                <th>Name</th>
++-                                <th>Symbol</th>
+++                                <th></th>
+++                                <th>Coin</th>
++                                 <th>Price</th>
++                                 <th>1h %</th>
++                                 <th>24h %</th>
++                                 <th>7d %</th>
++-                                <th>Market Cap</th>
++-                                <th>Volume (24h)</th>
++-                                <th>Supply</th>
+++                                <th>Action</th>
++                             </HeaderTemplate>
++-                            <RowTemplate>
+++                            <RowTemplate Context="coin">
++                                 <td><img src="@coin.LogoUrl" width="32" /></td>
++-                                <td>@coin.Name</td>
++                                 <td>@coin.Symbol</td>
++                                 <td>@coin.Price.ToString("C2")</td>
++                                 <td>@coin.PercentChange1h.ToString("N2")</td>
++                                 <td>@coin.PercentChange24h.ToString("N2")</td>
++                                 <td>@coin.PercentChange7d.ToString("N2")</td>
++-                                <td>@coin.MarketCap.ToString("C0")</td>
++-                                <td>@coin.Volume24h.ToString("C0")</td>
++-                                <td>@coin.CirculatingSupply.ToString("N0")</td>
+++                                <td>
+++                                    <button class="btn btn-sm btn-primary" @onclick="() => SetTicker(coin.Name)">Show Chart</button>
+++                                </td>
++                             </RowTemplate>
++                         </Table>
++                     </div>
++                 </div>
++             </div>
+++            <div class="col-xl-6 mb-4">
+++                <div class="card card-header-actions">
+++                    <div class="card-body">
+++                        <CryptoChart Ticker="@SelectedTicker" />
+++                    </div>
+++                </div>
+++            </div>
++         </Row>
++ 
++ 
++@@ -544,5 +547,36 @@
++     </div>
++     </div>
++     </Row> *@
+++
+++        @*  <div class="card card-header-actions h-100 w-100">
+++    <div class="card-body">
+++    <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
+++    <HeaderTemplate>
+++    <th>Logo</th>
+++    <th>Name</th>
+++    <th>Symbol</th>
+++    <th>Price</th>
+++    <th>1h %</th>
+++    <th>24h %</th>
+++    <th>7d %</th>
+++    <th>Market Cap</th>
+++    <th>Volume (24h)</th>
+++    <th>Supply</th>
+++    </HeaderTemplate>
+++    <RowTemplate>
+++    <td><img src="@coin.LogoUrl" width="32" /></td>
+++    <td>@coin.Name</td>
+++    <td>@coin.Symbol</td>
+++    <td>@coin.Price.ToString("C2")</td>
+++    <td>@coin.PercentChange1h.ToString("N2")</td>
+++    <td>@coin.PercentChange24h.ToString("N2")</td>
+++    <td>@coin.PercentChange7d.ToString("N2")</td>
+++    <td>@coin.MarketCap.ToString("C0")</td>
+++    <td>@coin.Volume24h.ToString("C0")</td>
+++    <td>@coin.CirculatingSupply.ToString("N0")</td>
+++    </RowTemplate>
+++    </Table>
+++    </div>
+++    </div> *@
++     </div>
++ }
++\ No newline at end of file
++diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
++index 76f9045..7154747 100644
++--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
+++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
++@@ -21,6 +21,8 @@ namespace FinTracker.Pages.Dashboard
++         private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
++         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
++ 
+++        private string SelectedTicker = "solana";
+++
++         //Chart
++         private int ChartIndex = -1;
++         public double[] ChartData = new double[3];
++@@ -90,5 +92,10 @@ namespace FinTracker.Pages.Dashboard
++             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
++             StateHasChanged();
++         }
+++
+++        private void SetTicker(string symbol)
+++        {
+++            SelectedTicker = symbol;
+++        }
++     }
++ }
++diff --git a/Web/FinTracker/wwwroot/js/datatables/datatables.js b/Web/FinTracker/wwwroot/js/datatables/datatables.js
++index fa2e9aa..8e40ab4 100644
++--- a/Web/FinTracker/wwwroot/js/datatables/datatables.js
+++++ b/Web/FinTracker/wwwroot/js/datatables/datatables.js
++@@ -44,6 +44,20 @@ window.addEventListener('DOMContentLoaded', event => {
++             });
++         }
++ 
+++        else if (tableId == "coinPriceSummaryTable") {
+++            const dataTable = new DataTable(datatables, {
+++                responsive: true,
+++                paging: false,
+++                lengthChange: false,
+++                pageLength: 8,
+++                searching: false,
+++                order: [],
+++                columnDefs: [
+++                    { targets: '_all', orderable: false }
+++                ]
+++            });
+++        }
+++
++         //Add another type of table here
++ 
++         else {
++-- 
++2.46.1.windows.1
++
+diff --git a/Web/FinTracker/FinTracker.csproj b/Web/FinTracker/FinTracker.csproj
+index c07629b..dffb7c1 100644
+--- a/Web/FinTracker/FinTracker.csproj
++++ b/Web/FinTracker/FinTracker.csproj
+@@ -19,6 +19,7 @@
+ 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+ 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
+ 	  <PackageReference Include="MudBlazor" Version="6.11.1" />
++	  <PackageReference Include="Radzen.Blazor" Version="7.1.5" />
+ 	  <PackageReference Include="Syncfusion.Blazor" Version="30.1.37" />
+   </ItemGroup>
+ 
+@@ -28,4 +29,11 @@
+     <ProjectReference Include="..\FinTracker.Common\FinTracker.Common.csproj" />
+   </ItemGroup>
+ 
++  <ItemGroup>
++    <Content Update="wwwroot\sample-data\symbols.json">
++      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
++      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
++    </Content>
++  </ItemGroup>
++
+ </Project>
+diff --git a/Web/FinTracker/Pages/BankAccount/BankAccounts.razor b/Web/FinTracker/Pages/BankAccount/BankAccounts.razor
+index 6ac5276..6dc1898 100644
+--- a/Web/FinTracker/Pages/BankAccount/BankAccounts.razor
++++ b/Web/FinTracker/Pages/BankAccount/BankAccounts.razor
+@@ -16,16 +16,14 @@
+                         <th>Name</th>
+                         <th>Bank Name</th>
+                         <th>Account No</th>
+-                        <th>Currency</th>
+-                        <th>CurrentBalance</th>
++                        <th>Current Balance</th>
+                         <th></th>
+                     </HeaderTemplate>
+                     <RowTemplate>
+                         <td>@BankAccount.Name</td>
+                         <td>@BankAccount.BankName</td>
+                         <td>@BankAccount.AccountNo</td>
+-                        <td>@BankAccount.Currency</td>
+-                        <td>@BankAccount.CurrentBalance.ToString("N2")</td>
++                        <td>@BankAccount.Currency @BankAccount.CurrentBalance.ToString("N2")</td>
+                         <td>
+                             <div class="text-center">
+                                 <ButtonLink Label="Transactions" Url=@($"/BankAccountDetail/{BankAccount.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
+diff --git a/Web/FinTracker/Pages/Dashboard/CryptoChart2.razor b/Web/FinTracker/Pages/Dashboard/CryptoChart2.razor
+index dbeedad..6304332 100644
+--- a/Web/FinTracker/Pages/Dashboard/CryptoChart2.razor
++++ b/Web/FinTracker/Pages/Dashboard/CryptoChart2.razor
+@@ -1,80 +1,113 @@
+-﻿@using System.Net.Http.Json
+-@inject HttpClient Http
++﻿@inject HttpClient Http
++@inject IJSRuntime JS
++
++<h4>Select a coin:</h4>
++<select class="form-control mb-3" @onchange="OnCoinChanged">
++    @foreach (var coin in Coins)
++    {
++        <option value="@coin.Id">@coin.Name (@coin.Symbol.ToUpper())</option>
++    }
++</select>
++
++@if (!string.IsNullOrWhiteSpace(SelectedCoinId))
++
+ 
+-<ApexChart TItem="StockPrice" Title="Market Overview: SOL-USD" Options="ChartOptions">
+-    <ApexCandleSeries TItem="StockPrice"
+-                      Items="@stockPrices"
+-                      Name="Crypto OHLC"
+-                      XValue="@(e => e.Timestamp)"
+-                      Open="@(e => e.Open)"
+-                      High="@(e => e.High)"
+-                      Low="@(e => e.Low)"
+-                      Close="@(e => e.Close)" />
+-</ApexChart>
++
++{
++    <div class="my-3">
++        <gecko-coin-price-chart-widget @key="@($"{SelectedCoinId}-chart")"
++                                       locale="en"
++                                       outlined="true"
++                                       coin-id="@SelectedCoinId"
++                                       initial-currency="usd">
++        </gecko-coin-price-chart-widget>
++        <br />
++        <gecko-coin-ticker-widget @key="@($"{SelectedCoinId}-ticker")"
++                                  locale="en"
++                                  outlined="true"
++                                  coin-id="@SelectedCoinId"
++                                  initial-currency="usd">
++        </gecko-coin-ticker-widget>
++    </div>
++}
++
++@* <SfChart Title="@SelectedCoinName">
++    <ChartPrimaryXAxis Title="Date" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelRotation="45" />
++    <ChartPrimaryYAxis Title="Price (USD)" ValueType="Syncfusion.Blazor.Charts.ValueType.Double" LabelFormat="${value}" />
++    <ChartTooltipSettings Enable="true" />
++    <ChartSeriesCollection>
++        <ChartSeries DataSource="@stockPrices"
++                     XName="Timestamp"
++                     High="High"
++                     Low="Low"
++                     Open="Open"
++                     Close="Close"
++                     Name="@SelectedCoinName"
++                     Type="ChartSeriesType.Candle">
++        </ChartSeries>
++    </ChartSeriesCollection>
++</SfChart> *@
+ 
+ @code {
++    private List<Coin> Coins = new();
+     private List<StockPrice> stockPrices = new();
+-    private ApexChartOptions<StockPrice> ChartOptions = new();
++    private string SelectedCoinId = "bitcoin"; // default
++    private string SelectedCoinName = "Bitcoin";
+ 
+     protected override async Task OnInitializedAsync()
+     {
+-        SetChartOptions();
+-        await LoadChartData();
++        await LoadCoins();
++        //await LoadChartData();
+     }
+ 
+-    private void SetChartOptions()
++    private async Task LoadCoins()
+     {
+-        ChartOptions = new ApexChartOptions<StockPrice>
+-            {
+-                Chart = new Chart
+-                {
+-                    Toolbar = new Toolbar
+-                    {
+-                        Show = false // Disables toolbar (zoom, pan, reset)
+-                    },
+-                    Zoom = new Zoom
+-                    {
+-                        Enabled = false // Disables zoom
+-                    }
+-                },
+-                Xaxis = new XAxis
+-                {
+-                    Labels = new XAxisLabels { Show = true }
+-                },
+-                Yaxis = new List<YAxis>
+-            {
+-                new YAxis
+-                {
+-                    Labels = new YAxisLabels { Show = true }
+-                }
+-            }
+-            };
++        Coins = await Http.GetFromJsonAsync<List<Coin>>("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1");
+     }
+ 
+     private async Task LoadChartData()
+     {
+-        var url = $"https://api.coingecko.com/api/v3/coins/solana/ohlc?vs_currency=usd&days=7";
++        var url = $"https://api.coingecko.com/api/v3/coins/{SelectedCoinId}/ohlc?vs_currency=usd&days=7";
+         var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
+ 
+         if (response != null)
+         {
+             stockPrices = response.Take(30).Select(p => new StockPrice
+-                {
+-                    Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0]).ToString("yyyy-MM-dd HH:mm"),
+-                    Open = (decimal)p[1],
+-                    High = (decimal)p[2],
+-                    Low = (decimal)p[3],
+-                    Close = (decimal)p[4]
+-                }).ToList();
++            {
++                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0])
++                            .ToLocalTime()
++                            .ToString("MM-dd HH:mm"),
++                Open = (decimal)p[1],
++                High = (decimal)p[2],
++                Low = (decimal)p[3],
++                Close = (decimal)p[4]
++            }).ToList();
+         }
++
++        SelectedCoinName = Coins.FirstOrDefault(c => c.Id == SelectedCoinId)?.Name ?? SelectedCoinId;
+     }
+ 
++    private async Task OnCoinChanged(ChangeEventArgs e)
++    {
++        SelectedCoinId = e.Value?.ToString() ?? "bitcoin";
++        //await LoadChartData();
++
++        // await Task.Delay(100);
++        // await JS.InvokeVoidAsync("refreshGeckoWidgets");
++    }
++
++    public class Coin
++    {
++        public string Id { get; set; } = string.Empty;
++        public string Symbol { get; set; } = string.Empty;
++        public string Name { get; set; } = string.Empty; 
++    }
+     public class StockPrice
+     {
+-        public string Timestamp { get; set; }
++        public string Timestamp { get; set; } = string.Empty;
+         public decimal Open { get; set; }
+         public decimal High { get; set; }
+         public decimal Low { get; set; }
+         public decimal Close { get; set; }
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
+index 11dc278..6b1a2af 100644
+--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor
++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
+@@ -488,6 +488,7 @@
+             <div class="col-xl-6 mb-4">
+                 <div class="card card-header-actions h-100 w-100">
+                     <div class="card-body">
++@*                         <gecko-coin-list-widget locale="en" outlined="true" coin-ids="bitcoin,ethereum,tether,ripple,binancecoin,solana,usd-coin,tron,dogecoin,cardano" initial-currency="usd"></gecko-coin-list-widget> *@
+                         <Table TableId="coinPriceSummaryTable" Items="@CoinPriceList" Context="coin">
+                             <HeaderTemplate>
+                                 <th></th>
+@@ -496,7 +497,6 @@
+                                 <th>1h %</th>
+                                 <th>24h %</th>
+                                 <th>7d %</th>
+-                                <th>Action</th>
+                             </HeaderTemplate>
+                             <RowTemplate Context="coin">
+                                 <td><img src="@coin.LogoUrl" width="32" /></td>
+@@ -505,9 +505,6 @@
+                                 <td>@coin.PercentChange1h.ToString("N2")</td>
+                                 <td>@coin.PercentChange24h.ToString("N2")</td>
+                                 <td>@coin.PercentChange7d.ToString("N2")</td>
+-                                <td>
+-                                    <button class="btn btn-sm btn-primary" @onclick="() => SetTicker(coin.Name)">Show Chart</button>
+-                                </td>
+                             </RowTemplate>
+                         </Table>
+                     </div>
+@@ -516,7 +513,7 @@
+             <div class="col-xl-6 mb-4">
+                 <div class="card card-header-actions">
+                     <div class="card-body">
+-                        <CryptoChart Ticker="@SelectedTicker" />
++                        <CryptoChart2 />
+                     </div>
+                 </div>
+             </div>
+diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
+index 7154747..6928bd6 100644
+--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
+@@ -21,7 +21,6 @@ namespace FinTracker.Pages.Dashboard
+         private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
+         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
+ 
+-        private string SelectedTicker = "solana";
+ 
+         //Chart
+         private int ChartIndex = -1;
+@@ -92,10 +91,5 @@ namespace FinTracker.Pages.Dashboard
+             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+             StateHasChanged();
+         }
+-
+-        private void SetTicker(string symbol)
+-        {
+-            SelectedTicker = symbol;
+-        }
+     }
+ }
+diff --git a/Web/FinTracker/Pages/Dashboard/StockChart.razor b/Web/FinTracker/Pages/Dashboard/StockChart.razor
+new file mode 100644
+index 0000000..e2fbc88
+--- /dev/null
++++ b/Web/FinTracker/Pages/Dashboard/StockChart.razor
+@@ -0,0 +1,113 @@
++﻿@inject HttpClient Http
++@inject IJSRuntime JS
++
++<h4>Select a coin:</h4>
++<select class="form-control mb-3" @onchange="OnCoinChanged">
++    @foreach (var coin in Coins)
++    {
++        <option value="@coin.Id">@coin.Name (@coin.Symbol.ToUpper())</option>
++    }
++</select>
++
++@if (!string.IsNullOrWhiteSpace(SelectedCoinId))
++
++
++
++{
++    <div class="my-3">
++        <gecko-coin-price-chart-widget @key="@($"{SelectedCoinId}-chart")"
++                                       locale="en"
++                                       outlined="true"
++                                       coin-id="@SelectedCoinId"
++                                       initial-currency="usd">
++        </gecko-coin-price-chart-widget>
++        <br />
++        <gecko-coin-ticker-widget @key="@($"{SelectedCoinId}-ticker")"
++                                  locale="en"
++                                  outlined="true"
++                                  coin-id="@SelectedCoinId"
++                                  initial-currency="usd">
++        </gecko-coin-ticker-widget>
++    </div>
++}
++
++@* <SfChart Title="@SelectedCoinName">
++    <ChartPrimaryXAxis Title="Date" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelRotation="45" />
++    <ChartPrimaryYAxis Title="Price (USD)" ValueType="Syncfusion.Blazor.Charts.ValueType.Double" LabelFormat="${value}" />
++    <ChartTooltipSettings Enable="true" />
++    <ChartSeriesCollection>
++        <ChartSeries DataSource="@stockPrices"
++                     XName="Timestamp"
++                     High="High"
++                     Low="Low"
++                     Open="Open"
++                     Close="Close"
++                     Name="@SelectedCoinName"
++                     Type="ChartSeriesType.Candle">
++        </ChartSeries>
++    </ChartSeriesCollection>
++</SfChart> *@
++
++@code {
++    private List<Coin> Coins = new();
++    private List<StockPrice> stockPrices = new();
++    private string SelectedCoinId = "bitcoin"; // default
++    private string SelectedCoinName = "Bitcoin";
++
++    protected override async Task OnInitializedAsync()
++    {
++        await LoadCoins();
++        //await LoadChartData();
++    }
++
++    private async Task LoadCoins()
++    {
++        Coins = await Http.GetFromJsonAsync<List<Coin>>("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1");
++    }
++
++    private async Task LoadChartData()
++    {
++        var url = $"https://api.coingecko.com/api/v3/coins/{SelectedCoinId}/ohlc?vs_currency=usd&days=7";
++        var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
++
++        if (response != null)
++        {
++            stockPrices = response.Take(30).Select(p => new StockPrice
++            {
++                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0])
++                            .ToLocalTime()
++                            .ToString("MM-dd HH:mm"),
++                Open = (decimal)p[1],
++                High = (decimal)p[2],
++                Low = (decimal)p[3],
++                Close = (decimal)p[4]
++            }).ToList();
++        }
++
++        SelectedCoinName = Coins.FirstOrDefault(c => c.Id == SelectedCoinId)?.Name ?? SelectedCoinId;
++    }
++
++    private async Task OnCoinChanged(ChangeEventArgs e)
++    {
++        SelectedCoinId = e.Value?.ToString() ?? "bitcoin";
++        //await LoadChartData();
++
++        // await Task.Delay(100);
++        // await JS.InvokeVoidAsync("refreshGeckoWidgets");
++    }
++
++    public class Coin
++    {
++        public string Id { get; set; } = string.Empty;
++        public string Symbol { get; set; } = string.Empty;
++        public string Name { get; set; } = string.Empty; 
++    }
++    public class StockPrice
++    {
++        public string Timestamp { get; set; } = string.Empty;
++        public decimal Open { get; set; }
++        public decimal High { get; set; }
++        public decimal Low { get; set; }
++        public decimal Close { get; set; }
++    }
++}
+diff --git a/Web/FinTracker/Pages/Investment/CashFlowChart.razor b/Web/FinTracker/Pages/Investment/CashFlowChart.razor
+new file mode 100644
+index 0000000..63b82e5
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/CashFlowChart.razor
+@@ -0,0 +1,89 @@
++﻿<div class="col-xl-6 mb-4">
++    <div class="card card-header-actions">
++        <div class="card-body">
++            <SfChart Title="Monthly Income and Expense">
++                <ChartPrimaryXAxis Title="Period"
++                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
++
++                <ChartPrimaryYAxis Title="Amount"
++                                   LabelFormat="N2"
++                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Double" />
++
++                <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
++                <ChartSeriesCollection>
++                    <ChartSeries DataSource="@BankMonthlyTransaction"
++                                 XName="Period"
++                                 YName="TotalCredit"
++                                 Name="Income"
++                                 Type="ChartSeriesType.Column"
++                                 Fill="#0161F2">
++                    </ChartSeries>
++                    <ChartSeries DataSource="@BankMonthlyTransaction"
++                                 XName="Period"
++                                 YName="TotalDebit"
++                                 Name="Expense"
++                                 Type="ChartSeriesType.Column"
++                                 Fill="#E81500">
++                    </ChartSeries>
++                </ChartSeriesCollection>
++            </SfChart>
++        </div>
++    </div>
++</div>
++<div class="col-xl-6 mb-4">
++    <div class="card card-header-actions">
++        <div class="card-body">
++            <SfChart Title="Monthly Surplus and Deficit">
++                <ChartPrimaryXAxis Title="Period"
++                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Category" />
++
++                <ChartPrimaryYAxis Title="Surplus / Deficit"
++                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Double"
++                                   LabelFormat="N2" />
++
++                <ChartTooltipSettings Enable="true" Format="${point.x}: Rp ${point.y}" />
++
++                <ChartSeriesCollection>
++                    <ChartSeries DataSource="@SurplusData"
++                                 XName="Period"
++                                 YName="Value"
++                                 Name="Gross Value"
++                                 Type="ChartSeriesType.Line"
++                                 PointColorMapping="Color"
++                                 Fill="#DDDDDD"
++                                 Width="4">
++                        <ChartMarker Visible="true" Width="10" Height="10" />
++                    </ChartSeries>
++                </ChartSeriesCollection>
++            </SfChart>
++        </div>
++    </div>
++</div>
++
++@code {
++    [Parameter] public List<MonthlyTransactionModel>? BankMonthlyTransaction { get; set; }
++
++    private List<SurplusDeficitPoint> SurplusData = new();
++
++    protected override void OnParametersSet()
++    {
++        if (BankMonthlyTransaction is not null)
++        {
++            SurplusData = BankMonthlyTransaction
++                .Select(x => new SurplusDeficitPoint
++                {
++                    Period = x.Period,
++                    Value = x.TotalCredit - x.TotalDebit,
++                    Color = (x.TotalCredit - x.TotalDebit) >= 0 ? "#0161F2" : "#E81500"
++                })
++                .ToList();
++        }
++    }
++
++    public class SurplusDeficitPoint
++    {
++        public string Period { get; set; } = string.Empty;
++        public decimal Value { get; set; }
++        public string Color { get; set; } = string.Empty;
++    }
++}
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Investment/CryptoChart2.razor b/Web/FinTracker/Pages/Investment/CryptoChart2.razor
+new file mode 100644
+index 0000000..dfcd31a
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/CryptoChart2.razor
+@@ -0,0 +1,108 @@
++﻿@inject HttpClient Http
++@inject IJSRuntime JS
++
++<h4>Select a coin:</h4>
++<SymbolDropdownList />
++
++@if (!string.IsNullOrWhiteSpace(SelectedCoinId))
++
++
++
++{
++    <div class="my-3">
++        <gecko-coin-price-chart-widget @key="@($"{SelectedCoinId}-chart")"
++                                       locale="en"
++                                       outlined="true"
++                                       coin-id="@SelectedCoinId"
++                                       initial-currency="usd">
++        </gecko-coin-price-chart-widget>
++        <br />
++        <gecko-coin-ticker-widget @key="@($"{SelectedCoinId}-ticker")"
++                                  locale="en"
++                                  outlined="true"
++                                  coin-id="@SelectedCoinId"
++                                  initial-currency="usd">
++        </gecko-coin-ticker-widget>
++    </div>
++}
++
++@* <SfChart Title="@SelectedCoinName">
++    <ChartPrimaryXAxis Title="Date" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelRotation="45" />
++    <ChartPrimaryYAxis Title="Price (USD)" ValueType="Syncfusion.Blazor.Charts.ValueType.Double" LabelFormat="${value}" />
++    <ChartTooltipSettings Enable="true" />
++    <ChartSeriesCollection>
++        <ChartSeries DataSource="@stockPrices"
++                     XName="Timestamp"
++                     High="High"
++                     Low="Low"
++                     Open="Open"
++                     Close="Close"
++                     Name="@SelectedCoinName"
++                     Type="ChartSeriesType.Candle">
++        </ChartSeries>
++    </ChartSeriesCollection>
++</SfChart> *@
++
++@code {
++    private List<Coin> Coins = new();
++    private List<StockPrice> stockPrices = new();
++    private string SelectedCoinId = "bitcoin"; // default
++    private string SelectedCoinName = "Bitcoin";
++
++    protected override async Task OnInitializedAsync()
++    {
++        await LoadCoins();
++        //await LoadChartData();
++    }
++
++    private async Task LoadCoins()
++    {
++        Coins = await Http.GetFromJsonAsync<List<Coin>>("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1");
++    }
++
++    private async Task LoadChartData()
++    {
++        var url = $"https://api.coingecko.com/api/v3/coins/{SelectedCoinId}/ohlc?vs_currency=usd&days=7";
++        var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
++
++        if (response != null)
++        {
++            stockPrices = response.Take(30).Select(p => new StockPrice
++            {
++                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0])
++                            .ToLocalTime()
++                            .ToString("MM-dd HH:mm"),
++                Open = (decimal)p[1],
++                High = (decimal)p[2],
++                Low = (decimal)p[3],
++                Close = (decimal)p[4]
++            }).ToList();
++        }
++
++        SelectedCoinName = Coins.FirstOrDefault(c => c.Id == SelectedCoinId)?.Name ?? SelectedCoinId;
++    }
++
++    private async Task OnCoinChanged(ChangeEventArgs e)
++    {
++        SelectedCoinId = e.Value?.ToString() ?? "bitcoin";
++        //await LoadChartData();
++
++        // await Task.Delay(100);
++        // await JS.InvokeVoidAsync("refreshGeckoWidgets");
++    }
++
++    public class Coin
++    {
++        public string Id { get; set; } = string.Empty;
++        public string Symbol { get; set; } = string.Empty;
++        public string Name { get; set; } = string.Empty; 
++    }
++    public class StockPrice
++    {
++        public string Timestamp { get; set; } = string.Empty;
++        public decimal Open { get; set; }
++        public decimal High { get; set; }
++        public decimal Low { get; set; }
++        public decimal Close { get; set; }
++    }
++}
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Investment/CryptocurrencyScreener.razor b/Web/FinTracker/Pages/Investment/CryptocurrencyScreener.razor
+new file mode 100644
+index 0000000..ad0b0fc
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/CryptocurrencyScreener.razor
+@@ -0,0 +1,15 @@
++﻿@inject IJSRuntime JS
++
++<div style="overflow-x: auto; width: 100%;">
++    <div id="tradingview-crypto-widget-container" style="min-width: 1200px; height: 550px;"></div>
++</div>
++
++@code {
++    protected override async Task OnAfterRenderAsync(bool firstRender)
++    {
++        if (firstRender)
++        {
++            await JS.InvokeVoidAsync("loadCryptoScreener");
++        }
++    }
++}
+diff --git a/Web/FinTracker/Pages/Investment/ForexScreener.razor b/Web/FinTracker/Pages/Investment/ForexScreener.razor
+new file mode 100644
+index 0000000..653f473
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/ForexScreener.razor
+@@ -0,0 +1,16 @@
++﻿@inject IJSRuntime JS
++
++<div style="overflow-x: auto; width: 100%;">
++    <div id="tradingview-forex-widget-container" style="min-width: 1200px; height: 550px;"></div>
++</div>
++
++
++@code {
++    protected override async Task OnAfterRenderAsync(bool firstRender)
++    {
++        if (firstRender)
++        {
++            await JS.InvokeVoidAsync("loadForexScreener");
++        }
++    }
++}
+diff --git a/Web/FinTracker/Pages/Investment/Investment.razor b/Web/FinTracker/Pages/Investment/Investment.razor
+new file mode 100644
+index 0000000..2312c7a
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/Investment.razor
+@@ -0,0 +1,465 @@
++﻿@page "/Investment"
++@inherits BasePage
++
++@if (DataLoaded)
++
++{
++    <header class="page-header pb-10">
++        <div class="container-xl px-4">
++            <div class="page-header-content pt-4">
++                <div class="row align-items-center justify-content-between">
++                </div>
++            </div>
++        </div>
++    </header>
++
++    <div class="container-xl px-4 mt-n10">
++        <div class="card card-waves mb-4 mt-5">
++            <div class="card-body p-5">
++                <div class="row align-items-center justify-content-between">
++                    <div class="col">
++                        <h1 class="text-green text-xl fw-700">Investment Portfolio  <i class="feather-xl text-green" data-feather="bar-chart-2"></i></h1>
++                        <p class="text-gray-700">Great job, your affiliate dashboard is ready to go! You can view sales, generate links, prepare coupons, and download affiliate reports using this dashboard.</p>
++                        <div class="row">
++                            <InfoWidget Label="Earnings (monthly)" Quantity="$4,399" Color="primary" Icon="fa-dollar-sign" />
++                            <InfoWidget Label="Average sale price" Quantity="$27.00" Color="secondary" Icon="fa-tag" />
++                            <InfoWidget Label="Clicks" Quantity="11,291" Color="success" Icon="fa-mouse-pointer" />
++                        </div>
++                    </div>
++                    <div class="col">
++                        <img class="img-fluid px-xl-4"
++                             src="assets/img/illustrations/invest.svg"
++                             style="margin-top: -150px; z-index: 10; position: relative;" />
++                    </div>
++
++                </div>
++            </div>
++        </div>
++        <Row>
++            <DashboardCard Label="Total Cash (IDR)" Quantity="@BankAccount.CurrentBalance.ToString("N2")" Color="primary" Icon="dollar-sign" Link="Customers" />
++            <DashboardCard Label="Total Investment (USD)" Quantity="1200.00" Color="success" Icon="bar-chart-2" Link="Product" />
++            @*<DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
++            <DashboardCard Label="Ongoing Goals" Quantity="2" Color="warning" Icon="award" Link="Order" />
++        </Row>
++        <Row Class="align-items-stretch">
++            <CashFlowChart BankMonthlyTransaction="@BankMonthlyTransaction" />
++        </Row>
++
++        <Row>
++            <div class="col-xxl-8">
++                <!-- Tabbed dashboard card example-->
++                <div class="card mb-4">
++                    <div class="card-header border-bottom">
++                        <!-- Dashboard card navigation-->
++                        <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
++                            <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Last Bank Transactions</a></li>
++                            <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
++                        </ul>
++                    </div>
++                    <div class="card-body" style="min-height: 666px;">
++                        <div class="tab-content h-100" id="dashboardNavContent">
++                            <!-- Dashboard Tab Pane 1-->
++                            <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
++                                @if (DataLoaded)
++
++                                {
++                                    <Table TableId="bankTransactionTable" Items="@BankTransactionList" Context="BankTransaction">
++                                        <HeaderTemplate>
++                                            <th>Transaction Date</th>
++                                            <th>Description</th>
++                                            <th>TransactionType</th>
++                                            <th>Amount</th>
++                                        </HeaderTemplate>
++                                        <RowTemplate>
++                                            <td>@BankTransaction.TransactionDate.ToString("dd/MM/yy")</td>
++                                            <td>@(BankTransaction.Description.Length > 20 ? BankTransaction.Description.Substring(0, 20) + "..." : BankTransaction.Description)</td>
++
++                                            @if (BankTransaction.TransactionType == "Debit")
++
++                                            {
++                                                <td><div class="badge bg-danger text-white rounded-pill">@BankTransaction.TransactionType</div></td>
++                                            }
++
++                                            else if (BankTransaction.TransactionType == "Credit")
++
++                                            {
++                                                <td><div class="badge bg-success text-white rounded-pill">@BankTransaction.TransactionType</div></td>
++                                            }
++
++                                            else
++
++                                            {
++                                                <td><div class="badge bg-warning text-white rounded-pill">@BankTransaction.TransactionType</div></td>
++                                            }
++                                            @if (BankTransaction.TransactionType == "Debit")
++
++                                            {
++                                                <td class="text-danger">@BankTransaction.TransactionAmount.ToString("N2")</td>
++                                            }
++
++                                            else if (BankTransaction.TransactionType == "Credit")
++
++                                            {
++                                                <td class="text-success">@BankTransaction.TransactionAmount.ToString("N2")</td>
++                                            }
++
++                                            else
++
++                                            {
++                                                <td class="text-warning">@BankTransaction.TransactionAmount.ToString("N2")</td>
++                                            }
++                                        </RowTemplate>
++                                    </Table>
++                                }
++                            </div>
++                            <!-- Dashboard Tab Pane 2-->
++                            <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
++                                @if (DataLoaded)
++                                {
++                                    <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
++                                        <HeaderTemplate>
++                                            <th>Name</th>
++                                            <th>Email</th>
++                                            <th>Address</th>
++                                            <th>Phone</th>
++                                        </HeaderTemplate>
++                                        <RowTemplate>
++                                            <td>@customer.Name</td>
++                                            <td>@customer.Email</td>
++                                            <td>@customer.Address</td>
++                                            <td>@customer.Phone</td>
++                                        </RowTemplate>
++                                    </Table>
++                                }
++                            </div>
++                        </div>
++                    </div>
++                    @*  </div>
++                <!-- Illustration dashboard card example-->
++                <div class="card mb-4">
++                <div class="card-body py-5">
++                <div class="d-flex flex-column justify-content-center">
++                <img class="img-fluid mb-4" src="assets/img/illustrations/data-report.svg" alt="" style="height: 10rem" />
++                <div class="text-center px-0 px-lg-5">
++                <h5>New reports are here! Generate custom reports now!</h5>
++                <p class="mb-4">Our new report generation system is now online. You can start creating custom reporting for any documents available on your account.</p>
++                <a class="btn btn-primary p-3" href="#!">Get Started</a>
++                </div>
++                </div>
++                </div>
++                </div>
++                <div class="row">
++                <Column class="col-xl-6 mb-4">
++                <!-- Pie chart with legend example-->
++                <Card class="h-100">
++                <CardHeader>Traffic Sources</CardHeader>
++                <CardBody>
++                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
++                </CardBody>
++                </Card>
++                </Column>
++                </div> *@
++                    @*  <div class="row">
++                <div class="col-xl-6 mb-4">
++                <!-- Dashboard activity timeline example-->
++                <div class="card card-header-actions h-100">
++                <div class="card-header">
++                Recent Activity
++                <div class="dropdown no-caret">
++                <button class="btn btn-transparent-dark btn-icon dropdown-toggle" id="dropdownMenuButton" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="text-gray-500" data-feather="more-vertical"></i></button>
++                <div class="dropdown-menu dropdown-menu-end animated--fade-in-up" aria-labelledby="dropdownMenuButton">
++                <h6 class="dropdown-header">Filter Activity:</h6>
++                <a class="dropdown-item" href="#!"><span class="badge bg-green-soft text-green my-1">Commerce</span></a>
++                <a class="dropdown-item" href="#!"><span class="badge bg-blue-soft text-blue my-1">Reporting</span></a>
++                <a class="dropdown-item" href="#!"><span class="badge bg-yellow-soft text-yellow my-1">Server</span></a>
++                <a class="dropdown-item" href="#!"><span class="badge bg-purple-soft text-purple my-1">Users</span></a>
++                </div>
++                </div>
++                </div>
++                <div class="card-body">
++                <div class="timeline timeline-xs">
++                <!-- Timeline Item 1-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">27 min</div>
++                <div class="timeline-item-marker-indicator bg-green"></div>
++                </div>
++                <div class="timeline-item-content">
++                New order placed!
++                <a class="fw-bold text-dark" href="#!">Order #2912</a>
++                has been successfully placed.
++                </div>
++                </div>
++                <!-- Timeline Item 2-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">58 min</div>
++                <div class="timeline-item-marker-indicator bg-blue"></div>
++                </div>
++                <div class="timeline-item-content">
++                Your
++                <a class="fw-bold text-dark" href="#!">weekly report</a>
++                has been generated and is ready to view.
++                </div>
++                </div>
++                <!-- Timeline Item 3-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">2 hrs</div>
++                <div class="timeline-item-marker-indicator bg-purple"></div>
++                </div>
++                <div class="timeline-item-content">
++                New user
++                <a class="fw-bold text-dark" href="#!">Valerie Luna</a>
++                has registered
++                </div>
++                </div>
++                <!-- Timeline Item 4-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">1 day</div>
++                <div class="timeline-item-marker-indicator bg-yellow"></div>
++                </div>
++                <div class="timeline-item-content">Server activity monitor alert</div>
++                </div>
++                <!-- Timeline Item 5-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">1 day</div>
++                <div class="timeline-item-marker-indicator bg-green"></div>
++                </div>
++                <div class="timeline-item-content">
++                New order placed!
++                <a class="fw-bold text-dark" href="#!">Order #2911</a>
++                has been successfully placed.
++                </div>
++                </div>
++                <!-- Timeline Item 6-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">1 day</div>
++                <div class="timeline-item-marker-indicator bg-purple"></div>
++                </div>
++                <div class="timeline-item-content">
++                Details for
++                <a class="fw-bold text-dark" href="#!">Marketing and Planning Meeting</a>
++                have been updated.
++                </div>
++                </div>
++                <!-- Timeline Item 7-->
++                <div class="timeline-item">
++                <div class="timeline-item-marker">
++                <div class="timeline-item-marker-text">2 days</div>
++                <div class="timeline-item-marker-indicator bg-green"></div>
++                </div>
++                <div class="timeline-item-content">
++                New order placed!
++                <a class="fw-bold text-dark" href="#!">Order #2910</a>
++                has been successfully placed.
++                </div>
++                </div>
++                </div>
++                </div>
++                </div>
++                </div>
++                <Column class="col-xl-6 mb-4">
++                <!-- Pie chart with legend example-->
++                <Card class="h-100">
++                <CardHeader>Traffic Sources</CardHeader>
++                <CardBody>
++                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
++                </CardBody>
++                </Card>
++                </Column> *@
++                </div>
++            </div>
++            <div class="col-xxl-4">
++                <div class="row">
++                    <div class="col-xl-6 col-xxl-12">
++                        <div class="card card-header-actions mb-4">
++                            <div class="card-header">
++                                Asset Distribution
++                                <a class="btn btn-sm btn-primary-soft text-primary" href="#!">Create New</a>
++                            </div>
++                            <div class="card-body">
++                                <!-- Progress item 1-->
++                                <div class="d-flex align-items-center justify-content-between small mb-1">
++                                    <div class="fw-bold">Cash on Banks</div>
++                                    <div class="small">70%</div>
++                                </div>
++                                <div class="progress mb-3"><div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div></div>
++                                <!-- Progress item 2-->
++                                <div class="d-flex align-items-center justify-content-between small mb-1">
++                                    <div class="fw-bold">Cryptocurrencies</div>
++                                    <div class="small">20%</div>
++                                </div>
++                                <div class="progress mb-3"><div class="progress-bar bg-warning" role="progressbar" style="width: 20%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div>
++                                <!-- Progress item 3-->
++                                <div class="d-flex align-items-center justify-content-between small mb-1">
++                                    <div class="fw-bold">Stocks</div>
++                                    <div class="small">10%</div>
++                                </div>
++                                <div class="progress mb-3"><div class="progress-bar bg-success" role="progressbar" style="width: 10%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
++                                <!-- Progress item 4-->
++                                <div class="d-flex align-items-center justify-content-between small mb-1">
++                                    <div class="fw-bold">Mutual Funds</div>
++                                    <div class="small">0%</div>
++                                </div>
++                                <div class="progress"><div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
++                            </div>
++                        </div>
++                    </div>
++                    <div class="col-xl-6 col-xxl-12">
++                        <!-- Pie chart with legend example-->
++                        <Card class="h-100">
++                            <CardHeader>Asset Allocation</CardHeader>
++                            <CardBody>
++                                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="200px" Height="200px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
++                            </CardBody>
++                        </Card>
++                    </div>
++
++                </div>
++            </div>
++        </Row>
++        <Row>
++            <div class="col-xl-6 mb-4">
++                <div class="card">
++                    <div class="card-header border-bottom">
++                        <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
++                            <li class="nav-item me-1"><a class="nav-link active" id="stock-pill" href="#stock" data-bs-toggle="tab" role="tab" aria-controls="stock" aria-selected="true">Stock Market</a></li>
++                            <li class="nav-item"><a class="nav-link" id="crypto-pill" href="#crypto" data-bs-toggle="tab" role="tab" aria-controls="crypto" aria-selected="false">Cryptocurrency</a></li>
++                            <li class="nav-item"><a class="nav-link" id="forex-pill" href="#forex" data-bs-toggle="tab" role="tab" aria-controls="forex" aria-selected="false">Forex</a></li>
++                        </ul>
++                    </div>
++                    <div class="card-body">
++                        <div class="tab-content h-100" id="dashboardNavContent">
++                            <!-- Dashboard Tab Pane 1-->
++                            <div class="tab-pane fade show active" id="stock" role="tabpanel" aria-labelledby="stock-pill">
++                                <h4>Select Market:</h4>
++                                <select class="form-control mb-3" @bind="SelectedMarket">
++                                    <option value="cryptocurrency">Cryptocurrency</option>
++                                    <option value="us">USA (NASDAQ, NYSE, ARCA, OTC)</option>
++                                    <option value="indonesia">Indonesia (IDX)</option>
++                                    <option value="australia">Australia (ASX)</option>
++                                    <option value="forex">Forex</option>
++                                </select>
++                                @if (SelectedMarket == "cryptocurrency")
++                                {
++                                    <CryptocurrencyScreener />
++                                }
++                                else if (SelectedMarket == "forex")
++                                {
++                                    <ForexScreener />
++                                }
++                                else
++                                {
++                                    <StockScreener MarketType="@SelectedMarket" />
++                                }
++
++                            </div>
++                            <!-- Dashboard Tab Pane 2-->
++                            <div class="tab-pane fade" id="crypto" role="tabpanel" aria-labelledby="crypto-pill">
++                                @*    <CryptocurrencyScreener /> *@
++                            </div>
++                            <!-- Dashboard Tab Pane 2-->
++                            <div class="tab-pane fade" id="forex" role="tabpanel" aria-labelledby="forex-pill">
++                                @*  <ForexScreener /> *@
++                            </div>
++                        </div>
++                    </div>
++
++                </div>
++            </div>
++            <div class="col-xl-6 mb-4">
++                <div class="card card-header-actions">
++                    <div class="card-body">
++                        <CryptoChart2 />
++                    </div>
++                </div>
++            </div>
++        </Row>
++        @*  <Row>
++    <div class="col-xl-6 mb-4">
++    <div class="card mb-4">
++    <div class="card-header border-bottom">
++    <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
++    <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Last Bank Transactions</a></li>
++    <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
++    </ul>
++    </div>
++    <div class="card-body" style="min-height: 666px;">
++    <div class="tab-content h-100" id="dashboardNavContent">
++    <!-- Dashboard Tab Pane 1-->
++    <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
++    <StockScreener />
++    </div>
++    <!-- Dashboard Tab Pane 2-->
++    <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
++    <CryptocurrencyScreener />
++    </div>
++    </div>
++    </div>
++
++    </div>
++    </div>
++    </Row> *@
++
++
++        @*  <Row>
++    <div class="card card-header-actions h-100">
++    <div class="card-body">
++    <SfGrid DataSource="@CoinPriceList" AllowPaging="true">
++    <GridColumns>
++    <GridColumn HeaderText="Logo" Width="60">
++    <Template>
++    <img src="@((context as CoinPriceModel).LogoUrl)" width="32" />
++    </Template>
++    </GridColumn>
++    <GridColumn Field="Name" HeaderText="Name" Width="150"></GridColumn>
++    <GridColumn Field="Symbol" HeaderText="Symbol" Width="100"></GridColumn>
++    <GridColumn Field="Price" HeaderText="Price" Format="C2" Width="120"></GridColumn>
++    <GridColumn Field="PercentChange1h" HeaderText="1h %" Format="N2" Width="80"></GridColumn>
++    <GridColumn Field="PercentChange24h" HeaderText="24h %" Format="N2" Width="80"></GridColumn>
++    <GridColumn Field="PercentChange7d" HeaderText="7d %" Format="N2" Width="80"></GridColumn>
++    <GridColumn Field="MarketCap" HeaderText="Market Cap" Format="C0" Width="150"></GridColumn>
++    <GridColumn Field="Volume24h" HeaderText="Volume (24h)" Format="C0" Width="150"></GridColumn>
++    <GridColumn Field="CirculatingSupply" HeaderText="Supply" Format="N0" Width="120"></GridColumn>
++    </GridColumns>
++    </SfGrid>
++    </div>
++    </div>
++    </Row> *@
++
++        @*  <div class="card card-header-actions h-100 w-100">
++    <div class="card-body">
++    <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
++    <HeaderTemplate>
++    <th>Logo</th>
++    <th>Name</th>
++    <th>Symbol</th>
++    <th>Price</th>
++    <th>1h %</th>
++    <th>24h %</th>
++    <th>7d %</th>
++    <th>Market Cap</th>
++    <th>Volume (24h)</th>
++    <th>Supply</th>
++    </HeaderTemplate>
++    <RowTemplate>
++    <td><img src="@coin.LogoUrl" width="32" /></td>
++    <td>@coin.Name</td>
++    <td>@coin.Symbol</td>
++    <td>@coin.Price.ToString("C2")</td>
++    <td>@coin.PercentChange1h.ToString("N2")</td>
++    <td>@coin.PercentChange24h.ToString("N2")</td>
++    <td>@coin.PercentChange7d.ToString("N2")</td>
++    <td>@coin.MarketCap.ToString("C0")</td>
++    <td>@coin.Volume24h.ToString("C0")</td>
++    <td>@coin.CirculatingSupply.ToString("N0")</td>
++    </RowTemplate>
++    </Table>
++    </div>
++    </div> *@
++    </div>
++}
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Investment/Investment.razor.cs b/Web/FinTracker/Pages/Investment/Investment.razor.cs
+new file mode 100644
+index 0000000..344dd54
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/Investment.razor.cs
+@@ -0,0 +1,103 @@
++﻿using FinTracker.Common.Model;
++using Microsoft.AspNetCore.Components;
++using Microsoft.JSInterop;
++using System.Net;
++using System.Net.Http;
++using System.Net.Http.Json;
++
++namespace FinTracker.Pages.Investment
++{
++    public partial class Investment : BasePage
++    {
++        [Inject] private HttpClient HttpClient { get; set; }
++        [Inject] private IJSRuntime JS { get; set; }
++        [Inject] private ToastService Toast { get; set; }
++
++        public bool DataLoaded { get; set; }
++        private DashboardModel DashboardData = new DashboardModel();
++        private BankAccountModel BankAccount = new BankAccountModel();
++        private List<CustomerModel> CustomerList = new List<CustomerModel>();
++        private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
++        private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
++        private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
++
++
++        private string SelectedMarket = "cryptocurrency";
++
++
++        //Chart
++        private int ChartIndex = -1;
++        public double[] ChartData = new double[3];
++        public string[] ChartLabels = { "Saving", "Investment", "Reserve" };
++
++        protected override async Task OnInitializedAsync()
++        {
++            await GetMonthlyTransactionByUserId();
++            await GetBankTransactions();
++            await GetBankAccount();
++            await GetDashboardData();
++            await GetCryptoCurrencyList();
++            //await GetCustomer();
++
++            DataLoaded = true;
++        }
++
++        private async Task GetDashboardData()
++        {
++            var result = await HttpClient.GetFromJsonAsync<DashboardModel>("sample-data/dashboard.json");
++            if (result != null)
++            {
++                DashboardData = result;
++
++                ChartData[0] = DashboardData.CustomerCount;
++                ChartData[1] = DashboardData.ProductCount;
++                ChartData[2] = DashboardData.LocationCount;
++            }
++            else { await Toast.ShowError("Failed to fetch data"); }
++        }
++
++        //private async Task GetCustomer()
++        //{
++        //    var result = await HttpClient.GetFromJsonAsync<List<CustomerModel>>("sample-data/customer.json");
++        //    if (result != null) { CustomerList = result; }
++        //    else { await Toast.ShowError("Failed to fetch data"); }
++        //}
++
++        private async Task GetBankAccount()
++        {
++            var (model, urlLookupResult, statusCode) = await GetBankAccountDataAsync(new Guid("a9134c3f-b36d-4c31-9dc1-6b56884e2382"));
++            if (statusCode == HttpStatusCode.OK) { BankAccount = model; PageStatus = string.Empty; PageIsValid = true; }
++            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
++            StateHasChanged();
++        }
++
++        private async Task GetBankTransactions()
++        {
++            var (model, urlLookupResult, statusCode) = await GetBankTransactionListDataAsync();
++            if (statusCode == HttpStatusCode.OK) { BankTransactionList = model; PageStatus = string.Empty; PageIsValid = true; }
++            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
++            StateHasChanged();
++        }
++
++        private async Task GetMonthlyTransactionByUserId()
++        {
++            var (model, urlLookupResult, statusCode) = await GetMonthlyBankTransactionByUserIdDataAsync(new Guid("f7a3d8dd-70b1-4b98-be0c-219672025281"));
++            if (statusCode == HttpStatusCode.OK) { BankMonthlyTransaction = model; PageStatus = string.Empty; PageIsValid = true; }
++            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
++            StateHasChanged();
++        }
++
++        private async Task GetCryptoCurrencyList()
++        {
++            var (model, urlLookupResult, statusCode) = await GetCryptocurrencyListAsync();
++            if (statusCode == HttpStatusCode.OK) { CoinPriceList = model; PageStatus = string.Empty; PageIsValid = true; }
++            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
++            StateHasChanged();
++        }
++
++        private void OnMarketTypeChanged(ChangeEventArgs e)
++        {
++            SelectedMarket = e.Value?.ToString() ?? "cryptocurrency";
++        }
++    }
++}
+diff --git a/Web/FinTracker/Pages/Investment/InvestmentOverview.razor b/Web/FinTracker/Pages/Investment/InvestmentOverview.razor
+new file mode 100644
+index 0000000..fb5a848
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/InvestmentOverview.razor
+@@ -0,0 +1,149 @@
++﻿@page "/InvestmentOverview"
++
++<main>
++    <!-- Main page content-->
++    <div class="container-xl px-4 mt-5">
++        <!-- Illustration dashboard card example-->
++        <div class="card card-waves mb-4 mt-5">
++            <div class="card-body p-5">
++                <div class="row align-items-center justify-content-between">
++                    <div class="col">
++                        <h1 class="text-green bold">Investment Portfolio Overview</h1>
++                        <p class="text-gray-700">Great job, your affiliate dashboard is ready to go! You can view sales, generate links, prepare coupons, and download affiliate reports using this dashboard.</p>
++                        <div class="row">
++                            <InfoWidget Label="Earnings (monthly)" Quantity="$4,399" Color="primary" Icon="fa-dollar-sign" />
++                            <InfoWidget Label="Average sale price" Quantity="$27.00" Color="secondary" Icon="fa-tag" />
++                            <InfoWidget Label="Clicks" Quantity="11,291" Color="success" Icon="fa-mouse-pointer" />
++                            <InfoWidget Label="Conversion rate" Quantity="1.23%" Color="info" Icon="fa-percentage" />
++                        </div>
++                    </div>
++                    <div class="col d-none d-lg-block mt-xxl-n4"><img class="img-fluid px-xl-4 mt-xxl-n5" src="assets/img/illustrations/invest.svg" /></div>
++                </div>
++            </div>
++        </div>
++        <div class="row">
++            <InfoWidget Label="Earnings (monthly)" Quantity="$4,399" Color="primary" Icon="fa-dollar-sign" />
++            <InfoWidget Label="Average sale price" Quantity="$27.00" Color="secondary" Icon="fa-tag" />
++            <InfoWidget Label="Clicks" Quantity="11,291" Color="success" Icon="fa-mouse-pointer" />
++            <InfoWidget Label="Conversion rate" Quantity="1.23%" Color="info" Icon="fa-percentage" />
++        </div>
++        <div class="row">
++            <div class="col-lg-4 mb-4">
++                <!-- Illustration card example-->
++                <div class="card mb-4">
++                    <div class="card-body text-center p-5">
++                        <img class="img-fluid mb-5" src="assets/img/illustrations/data-report.svg" />
++                        <h4>Report generation</h4>
++                        <p class="mb-4">Ready to get started? Let us know now! It's time to start building that dashboard you've been waiting to create!</p>
++                        <a class="btn btn-primary p-3" href="#!">Continue</a>
++                    </div>
++                </div>
++                <!-- Report summary card example-->
++                <div class="card mb-4">
++                    <div class="card-header">Affiliate Reports</div>
++                    <div class="list-group list-group-flush small">
++                        <a class="list-group-item list-group-item-action" href="#!">
++                            <i class="fas fa-dollar-sign fa-fw text-blue me-2"></i>
++                            Earnings Reports
++                        </a>
++                        <a class="list-group-item list-group-item-action" href="#!">
++                            <i class="fas fa-tag fa-fw text-purple me-2"></i>
++                            Average Sale Price
++                        </a>
++                        <a class="list-group-item list-group-item-action" href="#!">
++                            <i class="fas fa-mouse-pointer fa-fw text-green me-2"></i>
++                            Engagement (Clicks &amp; Impressions)
++                        </a>
++                        <a class="list-group-item list-group-item-action" href="#!">
++                            <i class="fas fa-percentage fa-fw text-yellow me-2"></i>
++                            Conversion Rate
++                        </a>
++                        <a class="list-group-item list-group-item-action" href="#!">
++                            <i class="fas fa-chart-pie fa-fw text-pink me-2"></i>
++                            Segments
++                        </a>
++                    </div>
++                    <div class="card-footer position-relative border-top-0">
++                        <a class="stretched-link" href="#!">
++                            <div class="text-xs d-flex align-items-center justify-content-between">
++                                View More Reports
++                                <i class="fas fa-long-arrow-alt-right"></i>
++                            </div>
++                        </a>
++                    </div>
++                </div>
++                <!-- Progress card example-->
++                <div class="card bg-primary border-0">
++                    <div class="card-body">
++                        <h5 class="text-white-50">Budget Overview</h5>
++                        <div class="mb-4">
++                            <span class="display-4 text-white">$48k</span>
++                            <span class="text-white-50">per year</span>
++                        </div>
++                        <div class="progress bg-white-25 rounded-pill" style="height: 0.5rem"><div class="progress-bar bg-white w-75 rounded-pill" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div></div>
++                    </div>
++                </div>
++            </div>
++            <div class="col-lg-8 mb-4">
++                <!-- Area chart example-->
++                <div class="card mb-4">
++                    <div class="card-header">Revenue Summary</div>
++                    <div class="card-body">
++                        <div class="chart-area"><canvas id="myAreaChart" width="100%" height="30"></canvas></div>
++                    </div>
++                </div>
++                <div class="row">
++                    <div class="col-lg-6">
++                        <!-- Bar chart example-->
++                        <div class="card h-100">
++                            <div class="card-header">Sales Reporting</div>
++                            <div class="card-body d-flex flex-column justify-content-center">
++                                <div class="chart-bar"><canvas id="myBarChart" width="100%" height="30"></canvas></div>
++                            </div>
++                            <div class="card-footer position-relative">
++                                <a class="stretched-link" href="#!">
++                                    <div class="text-xs d-flex align-items-center justify-content-between">
++                                        View More Reports
++                                        <i class="fas fa-long-arrow-alt-right"></i>
++                                    </div>
++                                </a>
++                            </div>
++                        </div>
++                    </div>
++                    <div class="col-lg-6">
++                        <!-- Pie chart example-->
++                        <div class="card h-100">
++                            <div class="card-header">Traffic Sources</div>
++                            <div class="card-body">
++                                <div class="chart-pie mb-4"><canvas id="myPieChart" width="100%" height="50"></canvas></div>
++                                <div class="list-group list-group-flush">
++                                    <div class="list-group-item d-flex align-items-center justify-content-between small px-0 py-2">
++                                        <div class="me-3">
++                                            <i class="fas fa-circle fa-sm me-1 text-blue"></i>
++                                            Direct
++                                        </div>
++                                        <div class="fw-500 text-dark">55%</div>
++                                    </div>
++                                    <div class="list-group-item d-flex align-items-center justify-content-between small px-0 py-2">
++                                        <div class="me-3">
++                                            <i class="fas fa-circle fa-sm me-1 text-purple"></i>
++                                            Social
++                                        </div>
++                                        <div class="fw-500 text-dark">15%</div>
++                                    </div>
++                                    <div class="list-group-item d-flex align-items-center justify-content-between small px-0 py-2">
++                                        <div class="me-3">
++                                            <i class="fas fa-circle fa-sm me-1 text-green"></i>
++                                            Referral
++                                        </div>
++                                        <div class="fw-500 text-dark">30%</div>
++                                    </div>
++                                </div>
++                            </div>
++                        </div>
++                    </div>
++                </div>
++            </div>
++        </div>
++    </div>
++</main>
+diff --git a/Web/FinTracker/Pages/Investment/StockChart.razor b/Web/FinTracker/Pages/Investment/StockChart.razor
+new file mode 100644
+index 0000000..c5dc8fd
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/StockChart.razor
+@@ -0,0 +1,108 @@
++﻿@inject HttpClient Http
++@inject IJSRuntime JS
++
++<h4>Select a coin:</h4>
++<SymbolDropdownList />
++
++@if (!string.IsNullOrWhiteSpace(SelectedCoinId))
++
++
++
++{
++    <div class="my-3">
++        <gecko-coin-price-chart-widget @key="@($"{SelectedCoinId}-chart")"
++                                       locale="en"
++                                       outlined="true"
++                                       coin-id="@SelectedCoinId"
++                                       initial-currency="usd">
++        </gecko-coin-price-chart-widget>
++        <br />
++        <gecko-coin-ticker-widget @key="@($"{SelectedCoinId}-ticker")"
++                                  locale="en"
++                                  outlined="true"
++                                  coin-id="@SelectedCoinId"
++                                  initial-currency="usd">
++        </gecko-coin-ticker-widget>
++    </div>
++}
++
++@* <SfChart Title="@SelectedCoinName">
++    <ChartPrimaryXAxis Title="Date" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelRotation="45" />
++    <ChartPrimaryYAxis Title="Price (USD)" ValueType="Syncfusion.Blazor.Charts.ValueType.Double" LabelFormat="${value}" />
++    <ChartTooltipSettings Enable="true" />
++    <ChartSeriesCollection>
++        <ChartSeries DataSource="@stockPrices"
++                     XName="Timestamp"
++                     High="High"
++                     Low="Low"
++                     Open="Open"
++                     Close="Close"
++                     Name="@SelectedCoinName"
++                     Type="ChartSeriesType.Candle">
++        </ChartSeries>
++    </ChartSeriesCollection>
++</SfChart> *@
++
++@code {
++    private List<Coin> Coins = new();
++    private List<StockPrice> stockPrices = new();
++    private string SelectedCoinId = "bitcoin"; // default
++    private string SelectedCoinName = "Bitcoin";
++
++    protected override async Task OnInitializedAsync()
++    {
++        await LoadCoins();
++        //await LoadChartData();
++    }
++
++    private async Task LoadCoins()
++    {
++        Coins = await Http.GetFromJsonAsync<List<Coin>>("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1");
++    }
++
++    private async Task LoadChartData()
++    {
++        var url = $"https://api.coingecko.com/api/v3/coins/{SelectedCoinId}/ohlc?vs_currency=usd&days=7";
++        var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
++
++        if (response != null)
++        {
++            stockPrices = response.Take(30).Select(p => new StockPrice
++            {
++                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds((long)p[0])
++                            .ToLocalTime()
++                            .ToString("MM-dd HH:mm"),
++                Open = (decimal)p[1],
++                High = (decimal)p[2],
++                Low = (decimal)p[3],
++                Close = (decimal)p[4]
++            }).ToList();
++        }
++
++        SelectedCoinName = Coins.FirstOrDefault(c => c.Id == SelectedCoinId)?.Name ?? SelectedCoinId;
++    }
++
++    private async Task OnCoinChanged(ChangeEventArgs e)
++    {
++        SelectedCoinId = e.Value?.ToString() ?? "bitcoin";
++        //await LoadChartData();
++
++        // await Task.Delay(100);
++        // await JS.InvokeVoidAsync("refreshGeckoWidgets");
++    }
++
++    public class Coin
++    {
++        public string Id { get; set; } = string.Empty;
++        public string Symbol { get; set; } = string.Empty;
++        public string Name { get; set; } = string.Empty; 
++    }
++    public class StockPrice
++    {
++        public string Timestamp { get; set; } = string.Empty;
++        public decimal Open { get; set; }
++        public decimal High { get; set; }
++        public decimal Low { get; set; }
++        public decimal Close { get; set; }
++    }
++}
+diff --git a/Web/FinTracker/Pages/Investment/StockScreener.razor b/Web/FinTracker/Pages/Investment/StockScreener.razor
+new file mode 100644
+index 0000000..d37c513
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/StockScreener.razor
+@@ -0,0 +1,21 @@
++﻿@inject IJSRuntime JS
++
++<div style="overflow-x: auto; width: 100%;">
++    <div id="tradingview-stock-widget-container" style="min-width: 1200px; height: 550px;"></div>
++</div>
++
++@code {
++    [Parameter]
++    public string MarketType { get; set; }
++
++    private string _lastMarketType;
++
++    protected override async Task OnAfterRenderAsync(bool firstRender)
++    {
++        if (firstRender || _lastMarketType != MarketType)
++        {
++            _lastMarketType = MarketType;
++            await JS.InvokeVoidAsync("loadStockScreener", MarketType);
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Investment/SymbolDropdownList.razor b/Web/FinTracker/Pages/Investment/SymbolDropdownList.razor
+new file mode 100644
+index 0000000..32eb31b
+--- /dev/null
++++ b/Web/FinTracker/Pages/Investment/SymbolDropdownList.razor
+@@ -0,0 +1,36 @@
++﻿@inject HttpClient Http
++
++@using Radzen
++
++<RadzenDropDown Data="@Symbols"
++                TextProperty="Name"
++                ValueProperty="Code"
++                @bind-Value="SelectedSymbolCode"
++                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
++                AllowFiltering="true"
++                Placeholder="Select a symbol"
++                Style="width: 300px;">
++    <Template Context="symbol">
++        <div style="display: flex; align-items: center;">
++            <img src="@symbol.LogoUrl" style="width: 20px; height: 20px; margin-right: 8px;" />
++            <span>@symbol.Name</span>
++        </div>
++    </Template>
++</RadzenDropDown>
++
++@code {
++    public class SymbolItem
++    {
++        public string Code { get; set; }
++        public string Name { get; set; }
++        public string LogoUrl { get; set; }
++    }
++
++    private List<SymbolItem> Symbols = new();
++    private string SelectedSymbolCode;
++
++    protected override async Task OnInitializedAsync()
++    {
++        Symbols = await Http.GetFromJsonAsync<List<SymbolItem>>("data/symbols.json");
++    }
++}
+diff --git a/Web/FinTracker/Program.cs b/Web/FinTracker/Program.cs
+index a368273..65cafea 100644
+--- a/Web/FinTracker/Program.cs
++++ b/Web/FinTracker/Program.cs
+@@ -2,6 +2,7 @@ using FinTracker;
+ using Microsoft.AspNetCore.Components.Web;
+ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+ using MudBlazor.Services;
++using Radzen;
+ using Syncfusion.Blazor;
+ 
+ // Register Syncfusion license
+@@ -22,6 +23,9 @@ builder.Services.AddMudServices();
+ //Syncfusion
+ builder.Services.AddSyncfusionBlazor();
+ 
++//Radzen
++builder.Services.AddRadzenComponents();
++
+ //Toast
+ builder.Services.AddScoped<ToastService>();
+ 
+diff --git a/Web/FinTracker/Shared/Components/Dashboard/InfoWidget.razor b/Web/FinTracker/Shared/Components/Dashboard/InfoWidget.razor
+index 1a4a3ac..bdccec0 100644
+--- a/Web/FinTracker/Shared/Components/Dashboard/InfoWidget.razor
++++ b/Web/FinTracker/Shared/Components/Dashboard/InfoWidget.razor
+@@ -1,4 +1,4 @@
+-﻿<div class="col-xl-3 col-md-6 mb-4">
++﻿<div class="col-xl-4 col-md-6 mb-4">
+     <div class="card border-start-lg border-start-@Color h-100">
+         <div class="card-body">
+             <div class="d-flex align-items-center">
+diff --git a/Web/FinTracker/Shared/NavMenu.razor b/Web/FinTracker/Shared/NavMenu.razor
+index b448122..c18ef13 100644
+--- a/Web/FinTracker/Shared/NavMenu.razor
++++ b/Web/FinTracker/Shared/NavMenu.razor
+@@ -44,11 +44,11 @@
+                 </div>
+ 
+                  <div class="sidenav-menu-heading">Investment Portfolio</div>
+-@* 
+-                  <NavLink class="nav-link" href="/InvestmentOverview">
++
++                  <NavLink class="nav-link" href="/Investment">
+                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
+                     Overview
+-                </NavLink> *@
++                </NavLink>
+                 <!-- Sidenav Menu (Bank Account)-->
+                 <NavLink class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePortfolioAccount" aria-expanded="false" aria-controls="collapsePortfolioAccount">
+                     <div class="nav-link-icon"><i data-feather="dollar-sign"></i></div>
+diff --git a/Web/FinTracker/_Imports.razor b/Web/FinTracker/_Imports.razor
+index cdc079a..c5d5297 100644
+--- a/Web/FinTracker/_Imports.razor
++++ b/Web/FinTracker/_Imports.razor
+@@ -7,9 +7,9 @@
+ @using Microsoft.AspNetCore.Components.Web
+ @using Microsoft.AspNetCore.Components.Web.Virtualization
+ @using Microsoft.AspNetCore.Components.WebAssembly.Http
+-@using Syncfusion.Blazor
+-@using Syncfusion.Blazor.Grids
+ @using Syncfusion.Blazor.Charts
++@using Syncfusion.Blazor.DropDowns
++@using Radzen.Blazor
+ @using ApexCharts
+ @using FinTracker
+ @using FinTracker.Common
+diff --git a/Web/FinTracker/wwwroot/data/symbols.json b/Web/FinTracker/wwwroot/data/symbols.json
+new file mode 100644
+index 0000000..62bc820
+--- /dev/null
++++ b/Web/FinTracker/wwwroot/data/symbols.json
+@@ -0,0 +1,408 @@
++[
++  {
++    "Id": "BTC",
++    "Name": "Bitcoin (BTC)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png"
++  },
++  {
++    "Id": "ETH",
++    "Name": "Ethereum (ETH)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png"
++  },
++  {
++    "Id": "XRP",
++    "Name": "XRP (XRP)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/44/thumb/xrp.png"
++  },
++  {
++    "Id": "USDT",
++    "Name": "Tether (USDT)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png"
++  },
++  {
++    "Id": "BNB",
++    "Name": "BNB (BNB)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/825/thumb/bnb-icon2_2x.png"
++  },
++  {
++    "Id": "SOL",
++    "Name": "Solana (SOL)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/4128/thumb/solana.png"
++  },
++  {
++    "Id": "USDC",
++    "Name": "USD Coin (USDC)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png"
++  },
++  {
++    "Id": "DOGE",
++    "Name": "Dogecoin (DOGE)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/5/thumb/dogecoin.png"
++  },
++  {
++    "Id": "TRX",
++    "Name": "TRON (TRX)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/1094/thumb/tron-logo.png"
++  },
++  {
++    "Id": "ADA",
++    "Name": "Cardano (ADA)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/975/thumb/cardano.png"
++  },
++  {
++    "Id": "DOT",
++    "Name": "Polkadot (DOT)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12171/thumb/polkadot.png"
++  },
++  {
++    "Id": "MATIC",
++    "Name": "Polygon (MATIC)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png"
++  },
++  {
++    "Id": "LTC",
++    "Name": "Litecoin (LTC)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png"
++  },
++  {
++    "Id": "AVAX",
++    "Name": "Avalanche (AVAX)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12559/thumb/Avax.png"
++  },
++  {
++    "Id": "LINK",
++    "Name": "Chainlink (LINK)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png"
++  },
++  {
++    "Id": "ATOM",
++    "Name": "Cosmos (ATOM)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/1481/thumb/cosmos_hub.png"
++  },
++  {
++    "Id": "XLM",
++    "Name": "Stellar (XLM)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/100/thumb/stellar.png"
++  },
++  {
++    "Id": "NEAR",
++    "Name": "NEAR Protocol (NEAR)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/10365/thumb/near_icon.png"
++  },
++  {
++    "Id": "ALGO",
++    "Name": "Algorand (ALGO)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/4380/thumb/download.png"
++  },
++  {
++    "Id": "FTT",
++    "Name": "FTX Token (FTT)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/9026/thumb/F_TX_logo.png"
++  },
++  {
++    "Id": "HBAR",
++    "Name": "Hedera (HBAR)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/3686/thumb/hbar.png"
++  },
++  {
++    "Id": "VET",
++    "Name": "VeChain (VET)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/945/thumb/vechain.png"
++  },
++  {
++    "Id": "AXS",
++    "Name": "Axie Infinity (AXS)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/13029/thumb/axie_infinity_logo.png"
++  },
++  {
++    "Id": "EGLD",
++    "Name": "Elrond (EGLD)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12335/thumb/elrond3_360.png"
++  },
++  {
++    "Id": "XTZ",
++    "Name": "Tezos (XTZ)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/976/thumb/tezos-logo.png"
++  },
++  {
++    "Id": "THETA",
++    "Name": "Theta Network (THETA)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/2538/thumb/theta-token-logo.png"
++  },
++  {
++    "Id": "AXL",
++    "Name": "Axelar (AXL)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/27817/thumb/axelar.png"
++  },
++  {
++    "Id": "FIL",
++    "Name": "Filecoin (FIL)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12817/thumb/filecoin.png"
++  },
++  {
++    "Id": "ICP",
++    "Name": "Internet Computer (ICP)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/14495/thumb/Internet_Computer_logo.png"
++  },
++  {
++    "Id": "SAND",
++    "Name": "The Sandbox (SAND)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12129/thumb/sandbox_logo.png"
++  },
++  {
++    "Id": "MANA",
++    "Name": "Decentraland (MANA)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png"
++  },
++  {
++    "Id": "GRT",
++    "Name": "The Graph (GRT)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/9138/thumb/GRT.png"
++  },
++  {
++    "Id": "KSM",
++    "Name": "Kusama (KSM)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/9594/thumb/kusama.png"
++  },
++  {
++    "Id": "RUNE",
++    "Name": "THORChain (RUNE)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/6595/thumb/thorchain.png"
++  },
++  {
++    "Id": "SUSHI",
++    "Name": "SushiSwap (SUSHI)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12271/thumb/sushi.png"
++  },
++  {
++    "Id": "AVAX2",
++    "Name": "Avalanche (AVAX) – alt",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12559/thumb/Avax.png"
++  },
++  {
++    "Id": "IMX",
++    "Name": "ImmutableX (IMX)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/18123/thumb/ImmutableX.png"
++  },
++  {
++    "Id": "ENJ",
++    "Name": "Enjin Coin (ENJ)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/1102/thumb/enjin-coin-logo.png"
++  },
++  {
++    "Id": "ZIL",
++    "Name": "Zilliqa (ZIL)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/2783/thumb/zilliqa.png"
++  },
++  {
++    "Id": "GALA",
++    "Name": "Gala (GALA)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/12304/thumb/gala.png"
++  },
++  {
++    "Id": "ANKR",
++    "Name": "Ankr (ANKR)",
++    "LogoUrl": "https://assets.coingecko.com/coins/images/10681/thumb/ankr.jpeg"
++  },
++
++  {
++    "Id": "AAPL",
++    "Name": "Apple Inc. (AAPL)",
++    "LogoUrl": "https://logo.clearbit.com/apple.com"
++  },
++  {
++    "Id": "MSFT",
++    "Name": "Microsoft Corp. (MSFT)",
++    "LogoUrl": "https://logo.clearbit.com/microsoft.com"
++  },
++  {
++    "Id": "NVDA",
++    "Name": "NVIDIA Corp. (NVDA)",
++    "LogoUrl": "https://logo.clearbit.com/nvidia.com"
++  },
++  {
++    "Id": "AMZN",
++    "Name": "Amazon.com Inc. (AMZN)",
++    "LogoUrl": "https://logo.clearbit.com/amazon.com"
++  },
++  {
++    "Id": "GOOGL",
++    "Name": "Alphabet Inc. (GOOGL)",
++    "LogoUrl": "https://logo.clearbit.com/abc.xyz"
++  },
++  {
++    "Id": "META",
++    "Name": "Meta Platforms Inc. (META)",
++    "LogoUrl": "https://logo.clearbit.com/facebook.com"
++  },
++  {
++    "Id": "BRK.A",
++    "Name": "Berkshire Hathaway Inc. (BRK.A)",
++    "LogoUrl": "https://logo.clearbit.com/berkshirehathaway.com"
++  },
++  {
++    "Id": "TSLA",
++    "Name": "Tesla Inc. (TSLA)",
++    "LogoUrl": "https://logo.clearbit.com/tesla.com"
++  },
++  {
++    "Id": "AVGO",
++    "Name": "Broadcom Inc. (AVGO)",
++    "LogoUrl": "https://logo.clearbit.com/broadcom.com"
++  },
++  {
++    "Id": "JPM",
++    "Name": "JPMorgan Chase & Co. (JPM)",
++    "LogoUrl": "https://logo.clearbit.com/jpmorganchase.com"
++  },
++  {
++    "Id": "LLY",
++    "Name": "Eli Lilly and Co. (LLY)",
++    "LogoUrl": "https://logo.clearbit.com/lilly.com"
++  },
++  {
++    "Id": "JNJ",
++    "Name": "Johnson & Johnson (JNJ)",
++    "LogoUrl": "https://logo.clearbit.com/jnj.com"
++  },
++  {
++    "Id": "XOM",
++    "Name": "Exxon Mobil Corp. (XOM)",
++    "LogoUrl": "https://logo.clearbit.com/exxonmobil.com"
++  },
++  {
++    "Id": "V",
++    "Name": "Visa Inc. (V)",
++    "LogoUrl": "https://logo.clearbit.com/visa.com"
++  },
++  {
++    "Id": "WMT",
++    "Name": "Walmart Inc. (WMT)",
++    "LogoUrl": "https://logo.clearbit.com/walmart.com"
++  },
++  {
++    "Id": "CVX",
++    "Name": "Chevron Corp. (CVX)",
++    "LogoUrl": "https://logo.clearbit.com/chevron.com"
++  },
++  {
++    "Id": "PG",
++    "Name": "Procter & Gamble Co. (PG)",
++    "LogoUrl": "https://logo.clearbit.com/pg.com"
++  },
++  {
++    "Id": "UNH",
++    "Name": "UnitedHealth Group Inc. (UNH)",
++    "LogoUrl": "https://logo.clearbit.com/unitedhealthgroup.com"
++  },
++  {
++    "Id": "MA",
++    "Name": "Mastercard Inc. (MA)",
++    "LogoUrl": "https://logo.clearbit.com/mastercard.com"
++  },
++  {
++    "Id": "DIS",
++    "Name": "Walt Disney Co. (DIS)",
++    "LogoUrl": "https://logo.clearbit.com/disney.com"
++  },
++  {
++    "Id": "HD",
++    "Name": "Home Depot Inc. (HD)",
++    "LogoUrl": "https://logo.clearbit.com/homedepot.com"
++  },
++  {
++    "Id": "BAC",
++    "Name": "Bank of America Corp. (BAC)",
++    "LogoUrl": "https://logo.clearbit.com/bankofamerica.com"
++  },
++  {
++    "Id": "KO",
++    "Name": "Coca‑Cola Co. (KO)",
++    "LogoUrl": "https://logo.clearbit.com/coca-cola.com"
++  },
++  {
++    "Id": "PFE",
++    "Name": "Pfizer Inc. (PFE)",
++    "LogoUrl": "https://logo.clearbit.com/pfizer.com"
++  },
++  {
++    "Id": "CSCO",
++    "Name": "Cisco Systems Inc. (CSCO)",
++    "LogoUrl": "https://logo.clearbit.com/cisco.com"
++  },
++  {
++    "Id": "CMCSA",
++    "Name": "Comcast Corp. (CMCSA)",
++    "LogoUrl": "https://logo.clearbit.com/comcast.com"
++  },
++  {
++    "Id": "PEP",
++    "Name": "PepsiCo Inc. (PEP)",
++    "LogoUrl": "https://logo.clearbit.com/pepsico.com"
++  },
++  {
++    "Id": "ADBE",
++    "Name": "Adobe Inc. (ADBE)",
++    "LogoUrl": "https://logo.clearbit.com/adobe.com"
++  },
++  {
++    "Id": "ORCL",
++    "Name": "Oracle Corp. (ORCL)",
++    "LogoUrl": "https://logo.clearbit.com/oracle.com"
++  },
++  {
++    "Id": "NFLX",
++    "Name": "Netflix Inc. (NFLX)",
++    "LogoUrl": "https://logo.clearbit.com/netflix.com"
++  },
++  {
++    "Id": "T",
++    "Name": "AT&T Inc. (T)",
++    "LogoUrl": "https://logo.clearbit.com/att.com"
++  },
++  {
++    "Id": "ABT",
++    "Name": "Abbott Laboratories (ABT)",
++    "LogoUrl": "https://logo.clearbit.com/abbott.com"
++  },
++  {
++    "Id": "COST",
++    "Name": "Costco Wholesale Corp. (COST)",
++    "LogoUrl": "https://logo.clearbit.com/costco.com"
++  },
++  {
++    "Id": "MCD",
++    "Name": "McDonald’s Corp. (MCD)",
++    "LogoUrl": "https://logo.clearbit.com/mcdonalds.com"
++  },
++  {
++    "Id": "VZ",
++    "Name": "Verizon Communications (VZ)",
++    "LogoUrl": "https://logo.clearbit.com/verizon.com"
++  },
++  {
++    "Id": "NKE",
++    "Name": "Nike Inc. (NKE)",
++    "LogoUrl": "https://logo.clearbit.com/nike.com"
++  },
++  {
++    "Id": "MRK",
++    "Name": "Merck & Co. (MRK)",
++    "LogoUrl": "https://logo.clearbit.com/merck.com"
++  },
++  {
++    "Id": "INTC",
++    "Name": "Intel Corp. (INTC)",
++    "LogoUrl": "https://logo.clearbit.com/intel.com"
++  },
++  {
++    "Id": "CRM",
++    "Name": "Salesforce Inc. (CRM)",
++    "LogoUrl": "https://logo.clearbit.com/salesforce.com"
++  },
++  {
++    "Id": "IBM",
++    "Name": "IBM Corp. (IBM)",
++    "LogoUrl": "https://logo.clearbit.com/ibm.com"
++  }
++]
+diff --git a/Web/FinTracker/wwwroot/index.html b/Web/FinTracker/wwwroot/index.html
+index edb4d98..3cb3807 100644
+--- a/Web/FinTracker/wwwroot/index.html
++++ b/Web/FinTracker/wwwroot/index.html
+@@ -29,10 +29,35 @@
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+ 
++    <!--Radzen-->
++    <link href="_content/Radzen.Blazor/css/default.css" rel="stylesheet" />
++    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
++
+     <!-- JavaScript Libraries (loaded in the head for dependencies) -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
+     <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
++
++    <!-- CoinGecko widget -->
++    <script src="https://widgets.coingecko.com/gecko-coin-list-widget.js"></script>
++    <script src="https://widgets.coingecko.com/gecko-coin-price-chart-widget.js"></script>
++    <script src="https://widgets.coingecko.com/gecko-coin-ticker-widget.js"></script>
++    <script>
++        window.refreshGeckoWidgets = function () {
++            const chart = document.querySelector('gecko-coin-price-chart-widget');
++            if (chart) {
++                const clone = chart.cloneNode(true);
++                chart.parentNode.replaceChild(clone, chart);
++            }
++
++            const ticker = document.querySelector('gecko-coin-ticker-widget');
++            if (ticker) {
++                const clone = ticker.cloneNode(true);
++                ticker.parentNode.replaceChild(clone, ticker);
++            }
++        };
++    </script>
++
+ </head>
+ 
+ <body>
+@@ -60,6 +85,9 @@
+     <script src="js/toasts.js"></script>
+     <script src="js/datatables/datatables.js"></script>
+ 
++    <!-- TradingView Scripts -->
++    <script src="js/trading-widget.js"></script>
++
+     <!-- Blazor WebAssembly Script -->
+     <script src="_framework/blazor.webassembly.js"></script>
+ </body>
+diff --git a/Web/FinTracker/wwwroot/js/trading-widget.js b/Web/FinTracker/wwwroot/js/trading-widget.js
+new file mode 100644
+index 0000000..660faab
+--- /dev/null
++++ b/Web/FinTracker/wwwroot/js/trading-widget.js
+@@ -0,0 +1,145 @@
++// --------------------
++// TRADING VIEW WIDGET
++// --------------------
++
++// Screener Stock
++window.loadStockScreener = function (market) {
++    const containerId = "tradingview-stock-widget-container";
++    const container = document.getElementById(containerId);
++
++    if (!container) return;
++
++    container.innerHTML = ""; // Clear any existing content
++
++    const widgetContainer = document.createElement("div");
++    widgetContainer.className = "tradingview-widget-container";
++
++    const widgetInner = document.createElement("div");
++    widgetInner.className = "tradingview-widget-container__widget";
++
++    const copyright = document.createElement("div");
++    copyright.className = "tradingview-widget-copyright";
++    copyright.innerHTML = `
++        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
++            <span class="blue-text">Track all markets on TradingView</span>
++        </a>
++    `;
++
++    const marketMap = {
++        "us": "america",
++        "indonesia": "indonesia",
++        "australia": "australia",
++        "forex": "forex"
++    };
++
++    const mappedMarket = marketMap[market] || "america"; // fallback to US
++
++    const script = document.createElement("script");
++    script.type = "text/javascript";
++    script.async = true;
++    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-screener.js";
++    script.innerHTML = JSON.stringify({
++        width: "100%",
++        height: "100%",
++        defaultColumn: "overview",
++        defaultScreen: "most_capitalized",
++        showToolbar: false,
++        locale: "en",
++        market: mappedMarket,
++        colorTheme: "light"
++    });
++
++    widgetContainer.appendChild(widgetInner);
++    widgetContainer.appendChild(copyright);
++    widgetContainer.appendChild(script);
++    container.appendChild(widgetContainer);
++};
++
++// Screener Cryptocurrency
++window.loadCryptoScreener = function () {
++    const containerId = "tradingview-crypto-widget-container";
++    const container = document.getElementById(containerId);
++    if (!container) return;
++
++    container.innerHTML = "";
++
++    const widgetContainer = document.createElement("div");
++    widgetContainer.className = "tradingview-widget-container";
++
++    const widgetInner = document.createElement("div");
++    widgetInner.className = "tradingview-widget-container__widget";
++
++    const copyright = document.createElement("div");
++    copyright.className = "tradingview-widget-copyright";
++    copyright.innerHTML = `
++        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
++            <span class="blue-text">Track all markets on TradingView</span>
++        </a>
++    `;
++
++    const script = document.createElement("script");
++    script.type = "text/javascript";
++    script.async = true;
++    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-screener.js";
++    script.innerHTML = JSON.stringify({
++        defaultColumn: "overview",
++        screener_type: "crypto_mkt",
++        displayCurrency: "USD",
++        colorTheme: "light",
++        isTransparent: false,
++        locale: "en",
++        width: "100%",
++        height: "100%",
++    });
++
++    widgetContainer.appendChild(widgetInner);
++    widgetContainer.appendChild(copyright);
++    widgetContainer.appendChild(script);
++    container.appendChild(widgetContainer);
++};
++
++// Screener Forex
++window.loadForexScreener = function () {
++    const containerId = "tradingview-forex-widget-container";
++    const container = document.getElementById(containerId);
++
++    if (!container) return;
++
++    container.innerHTML = ""; // Clear any existing content
++
++    const widgetContainer = document.createElement("div");
++    widgetContainer.className = "tradingview-widget-container";
++
++    const widgetInner = document.createElement("div");
++    widgetInner.className = "tradingview-widget-container__widget";
++
++    const copyright = document.createElement("div");
++    copyright.className = "tradingview-widget-copyright";
++    copyright.innerHTML = `
++        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
++            <span class="blue-text">Track all markets on TradingView</span>
++        </a>
++    `;
++
++    const script = document.createElement("script");
++    script.type = "text/javascript";
++    script.async = true;
++    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-screener.js";
++    script.innerHTML = JSON.stringify({
++        width: "100%",
++        height: "100%",
++        defaultColumn: "overview",
++        defaultScreen: "top_gainers",
++        showToolbar: false,
++        locale: "en",
++        market: "forex",
++        colorTheme: "light"
++    });
++
++    widgetContainer.appendChild(widgetInner);
++    widgetContainer.appendChild(copyright);
++    widgetContainer.appendChild(script);
++    container.appendChild(widgetContainer);
++};
++
++
+diff --git a/Web/FinTracker/wwwroot/sample-data/symbols.json b/Web/FinTracker/wwwroot/sample-data/symbols.json
+new file mode 100644
+index 0000000..98181cf
+--- /dev/null
++++ b/Web/FinTracker/wwwroot/sample-data/symbols.json
+@@ -0,0 +1,82 @@
++﻿[
++  {
++    "Id": 1,
++    "Name": "Tiger Nixon",
++    "Email": "tiger1@email.com",
++    "Address": "Home 08",
++    "Phone": "0842329",
++    "Gender": "Male"
++  },
++  {
++    "Id": 2,
++    "Name": "Garrett Winters",
++    "Email": "gwinters2@email.com",
++    "Address": "Home 09",
++    "Phone": "952738",
++    "Gender": "Female"
++  },
++  {
++    "Id": 3,
++    "Name": "Cedric Kelly",
++    "Email": "cedrick3@email.com",
++    "Address": "Home 54",
++    "Phone": "5387559",
++    "Gender": "Female"
++  },
++  {
++    "Id": 4,
++    "Name": "Brielle Williamson",
++    "Email": "bwilliamson4@email.com",
++    "Address": "Home 86",
++    "Phone": "942758",
++    "Gender": "Male"
++  },
++  {
++    "Id": 5,
++    "Name": "John Doe",
++    "Email": "john5@email.com",
++    "Address": "Home 08",
++    "Phone": "0842329",
++    "Gender": "Male"
++  },
++  {
++    "Id": 6,
++    "Name": "Jane Smith",
++    "Email": "jane6@email.com",
++    "Address": "Home 09",
++    "Phone": "952738",
++    "Gender": "Female"
++  },
++  {
++    "Id": 7,
++    "Name": "Bob Johnson",
++    "Email": "bob7@email.com",
++    "Address": "Home 54",
++    "Phone": "5387559",
++    "Gender": "Male"
++  },
++  {
++    "Id": 8,
++    "Name": "Alice Williams",
++    "Email": "alice8@email.com",
++    "Address": "Home 86",
++    "Phone": "942758",
++    "Gender": "Female"
++  },
++  {
++    "Id": 9,
++    "Name": "Eva Thompson",
++    "Email": "eva9@email.com",
++    "Address": "Home 08",
++    "Phone": "0842329",
++    "Gender": "Female"
++  },
++  {
++    "Id": 10,
++    "Name": "Tom Davis",
++    "Email": "tom10@email.com",
++    "Address": "Home 09",
++    "Phone": "952738",
++    "Gender": "Male"
++  },
++]
+\ No newline at end of file
+-- 
+2.46.1.windows.1
+

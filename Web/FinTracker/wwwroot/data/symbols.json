@@ -1,0 +1,408 @@
+[
+  {
+    "Id": "BTC",
+    "Name": "Bitcoin (BTC)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png"
+  },
+  {
+    "Id": "ETH",
+    "Name": "Ethereum (ETH)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png"
+  },
+  {
+    "Id": "XRP",
+    "Name": "XRP (XRP)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/44/thumb/xrp.png"
+  },
+  {
+    "Id": "USDT",
+    "Name": "Tether (USDT)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png"
+  },
+  {
+    "Id": "BNB",
+    "Name": "BNB (BNB)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/825/thumb/bnb-icon2_2x.png"
+  },
+  {
+    "Id": "SOL",
+    "Name": "Solana (SOL)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/4128/thumb/solana.png"
+  },
+  {
+    "Id": "USDC",
+    "Name": "USD Coin (USDC)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png"
+  },
+  {
+    "Id": "DOGE",
+    "Name": "Dogecoin (DOGE)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/5/thumb/dogecoin.png"
+  },
+  {
+    "Id": "TRX",
+    "Name": "TRON (TRX)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/1094/thumb/tron-logo.png"
+  },
+  {
+    "Id": "ADA",
+    "Name": "Cardano (ADA)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/975/thumb/cardano.png"
+  },
+  {
+    "Id": "DOT",
+    "Name": "Polkadot (DOT)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12171/thumb/polkadot.png"
+  },
+  {
+    "Id": "MATIC",
+    "Name": "Polygon (MATIC)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png"
+  },
+  {
+    "Id": "LTC",
+    "Name": "Litecoin (LTC)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/2/thumb/litecoin.png"
+  },
+  {
+    "Id": "AVAX",
+    "Name": "Avalanche (AVAX)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12559/thumb/Avax.png"
+  },
+  {
+    "Id": "LINK",
+    "Name": "Chainlink (LINK)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png"
+  },
+  {
+    "Id": "ATOM",
+    "Name": "Cosmos (ATOM)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/1481/thumb/cosmos_hub.png"
+  },
+  {
+    "Id": "XLM",
+    "Name": "Stellar (XLM)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/100/thumb/stellar.png"
+  },
+  {
+    "Id": "NEAR",
+    "Name": "NEAR Protocol (NEAR)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/10365/thumb/near_icon.png"
+  },
+  {
+    "Id": "ALGO",
+    "Name": "Algorand (ALGO)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/4380/thumb/download.png"
+  },
+  {
+    "Id": "FTT",
+    "Name": "FTX Token (FTT)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/9026/thumb/F_TX_logo.png"
+  },
+  {
+    "Id": "HBAR",
+    "Name": "Hedera (HBAR)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/3686/thumb/hbar.png"
+  },
+  {
+    "Id": "VET",
+    "Name": "VeChain (VET)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/945/thumb/vechain.png"
+  },
+  {
+    "Id": "AXS",
+    "Name": "Axie Infinity (AXS)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/13029/thumb/axie_infinity_logo.png"
+  },
+  {
+    "Id": "EGLD",
+    "Name": "Elrond (EGLD)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12335/thumb/elrond3_360.png"
+  },
+  {
+    "Id": "XTZ",
+    "Name": "Tezos (XTZ)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/976/thumb/tezos-logo.png"
+  },
+  {
+    "Id": "THETA",
+    "Name": "Theta Network (THETA)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/2538/thumb/theta-token-logo.png"
+  },
+  {
+    "Id": "AXL",
+    "Name": "Axelar (AXL)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/27817/thumb/axelar.png"
+  },
+  {
+    "Id": "FIL",
+    "Name": "Filecoin (FIL)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12817/thumb/filecoin.png"
+  },
+  {
+    "Id": "ICP",
+    "Name": "Internet Computer (ICP)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/14495/thumb/Internet_Computer_logo.png"
+  },
+  {
+    "Id": "SAND",
+    "Name": "The Sandbox (SAND)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12129/thumb/sandbox_logo.png"
+  },
+  {
+    "Id": "MANA",
+    "Name": "Decentraland (MANA)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png"
+  },
+  {
+    "Id": "GRT",
+    "Name": "The Graph (GRT)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/9138/thumb/GRT.png"
+  },
+  {
+    "Id": "KSM",
+    "Name": "Kusama (KSM)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/9594/thumb/kusama.png"
+  },
+  {
+    "Id": "RUNE",
+    "Name": "THORChain (RUNE)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/6595/thumb/thorchain.png"
+  },
+  {
+    "Id": "SUSHI",
+    "Name": "SushiSwap (SUSHI)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12271/thumb/sushi.png"
+  },
+  {
+    "Id": "AVAX2",
+    "Name": "Avalanche (AVAX) – alt",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12559/thumb/Avax.png"
+  },
+  {
+    "Id": "IMX",
+    "Name": "ImmutableX (IMX)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/18123/thumb/ImmutableX.png"
+  },
+  {
+    "Id": "ENJ",
+    "Name": "Enjin Coin (ENJ)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/1102/thumb/enjin-coin-logo.png"
+  },
+  {
+    "Id": "ZIL",
+    "Name": "Zilliqa (ZIL)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/2783/thumb/zilliqa.png"
+  },
+  {
+    "Id": "GALA",
+    "Name": "Gala (GALA)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/12304/thumb/gala.png"
+  },
+  {
+    "Id": "ANKR",
+    "Name": "Ankr (ANKR)",
+    "LogoUrl": "https://assets.coingecko.com/coins/images/10681/thumb/ankr.jpeg"
+  },
+
+  {
+    "Id": "AAPL",
+    "Name": "Apple Inc. (AAPL)",
+    "LogoUrl": "https://logo.clearbit.com/apple.com"
+  },
+  {
+    "Id": "MSFT",
+    "Name": "Microsoft Corp. (MSFT)",
+    "LogoUrl": "https://logo.clearbit.com/microsoft.com"
+  },
+  {
+    "Id": "NVDA",
+    "Name": "NVIDIA Corp. (NVDA)",
+    "LogoUrl": "https://logo.clearbit.com/nvidia.com"
+  },
+  {
+    "Id": "AMZN",
+    "Name": "Amazon.com Inc. (AMZN)",
+    "LogoUrl": "https://logo.clearbit.com/amazon.com"
+  },
+  {
+    "Id": "GOOGL",
+    "Name": "Alphabet Inc. (GOOGL)",
+    "LogoUrl": "https://logo.clearbit.com/abc.xyz"
+  },
+  {
+    "Id": "META",
+    "Name": "Meta Platforms Inc. (META)",
+    "LogoUrl": "https://logo.clearbit.com/facebook.com"
+  },
+  {
+    "Id": "BRK.A",
+    "Name": "Berkshire Hathaway Inc. (BRK.A)",
+    "LogoUrl": "https://logo.clearbit.com/berkshirehathaway.com"
+  },
+  {
+    "Id": "TSLA",
+    "Name": "Tesla Inc. (TSLA)",
+    "LogoUrl": "https://logo.clearbit.com/tesla.com"
+  },
+  {
+    "Id": "AVGO",
+    "Name": "Broadcom Inc. (AVGO)",
+    "LogoUrl": "https://logo.clearbit.com/broadcom.com"
+  },
+  {
+    "Id": "JPM",
+    "Name": "JPMorgan Chase & Co. (JPM)",
+    "LogoUrl": "https://logo.clearbit.com/jpmorganchase.com"
+  },
+  {
+    "Id": "LLY",
+    "Name": "Eli Lilly and Co. (LLY)",
+    "LogoUrl": "https://logo.clearbit.com/lilly.com"
+  },
+  {
+    "Id": "JNJ",
+    "Name": "Johnson & Johnson (JNJ)",
+    "LogoUrl": "https://logo.clearbit.com/jnj.com"
+  },
+  {
+    "Id": "XOM",
+    "Name": "Exxon Mobil Corp. (XOM)",
+    "LogoUrl": "https://logo.clearbit.com/exxonmobil.com"
+  },
+  {
+    "Id": "V",
+    "Name": "Visa Inc. (V)",
+    "LogoUrl": "https://logo.clearbit.com/visa.com"
+  },
+  {
+    "Id": "WMT",
+    "Name": "Walmart Inc. (WMT)",
+    "LogoUrl": "https://logo.clearbit.com/walmart.com"
+  },
+  {
+    "Id": "CVX",
+    "Name": "Chevron Corp. (CVX)",
+    "LogoUrl": "https://logo.clearbit.com/chevron.com"
+  },
+  {
+    "Id": "PG",
+    "Name": "Procter & Gamble Co. (PG)",
+    "LogoUrl": "https://logo.clearbit.com/pg.com"
+  },
+  {
+    "Id": "UNH",
+    "Name": "UnitedHealth Group Inc. (UNH)",
+    "LogoUrl": "https://logo.clearbit.com/unitedhealthgroup.com"
+  },
+  {
+    "Id": "MA",
+    "Name": "Mastercard Inc. (MA)",
+    "LogoUrl": "https://logo.clearbit.com/mastercard.com"
+  },
+  {
+    "Id": "DIS",
+    "Name": "Walt Disney Co. (DIS)",
+    "LogoUrl": "https://logo.clearbit.com/disney.com"
+  },
+  {
+    "Id": "HD",
+    "Name": "Home Depot Inc. (HD)",
+    "LogoUrl": "https://logo.clearbit.com/homedepot.com"
+  },
+  {
+    "Id": "BAC",
+    "Name": "Bank of America Corp. (BAC)",
+    "LogoUrl": "https://logo.clearbit.com/bankofamerica.com"
+  },
+  {
+    "Id": "KO",
+    "Name": "Coca‑Cola Co. (KO)",
+    "LogoUrl": "https://logo.clearbit.com/coca-cola.com"
+  },
+  {
+    "Id": "PFE",
+    "Name": "Pfizer Inc. (PFE)",
+    "LogoUrl": "https://logo.clearbit.com/pfizer.com"
+  },
+  {
+    "Id": "CSCO",
+    "Name": "Cisco Systems Inc. (CSCO)",
+    "LogoUrl": "https://logo.clearbit.com/cisco.com"
+  },
+  {
+    "Id": "CMCSA",
+    "Name": "Comcast Corp. (CMCSA)",
+    "LogoUrl": "https://logo.clearbit.com/comcast.com"
+  },
+  {
+    "Id": "PEP",
+    "Name": "PepsiCo Inc. (PEP)",
+    "LogoUrl": "https://logo.clearbit.com/pepsico.com"
+  },
+  {
+    "Id": "ADBE",
+    "Name": "Adobe Inc. (ADBE)",
+    "LogoUrl": "https://logo.clearbit.com/adobe.com"
+  },
+  {
+    "Id": "ORCL",
+    "Name": "Oracle Corp. (ORCL)",
+    "LogoUrl": "https://logo.clearbit.com/oracle.com"
+  },
+  {
+    "Id": "NFLX",
+    "Name": "Netflix Inc. (NFLX)",
+    "LogoUrl": "https://logo.clearbit.com/netflix.com"
+  },
+  {
+    "Id": "T",
+    "Name": "AT&T Inc. (T)",
+    "LogoUrl": "https://logo.clearbit.com/att.com"
+  },
+  {
+    "Id": "ABT",
+    "Name": "Abbott Laboratories (ABT)",
+    "LogoUrl": "https://logo.clearbit.com/abbott.com"
+  },
+  {
+    "Id": "COST",
+    "Name": "Costco Wholesale Corp. (COST)",
+    "LogoUrl": "https://logo.clearbit.com/costco.com"
+  },
+  {
+    "Id": "MCD",
+    "Name": "McDonald’s Corp. (MCD)",
+    "LogoUrl": "https://logo.clearbit.com/mcdonalds.com"
+  },
+  {
+    "Id": "VZ",
+    "Name": "Verizon Communications (VZ)",
+    "LogoUrl": "https://logo.clearbit.com/verizon.com"
+  },
+  {
+    "Id": "NKE",
+    "Name": "Nike Inc. (NKE)",
+    "LogoUrl": "https://logo.clearbit.com/nike.com"
+  },
+  {
+    "Id": "MRK",
+    "Name": "Merck & Co. (MRK)",
+    "LogoUrl": "https://logo.clearbit.com/merck.com"
+  },
+  {
+    "Id": "INTC",
+    "Name": "Intel Corp. (INTC)",
+    "LogoUrl": "https://logo.clearbit.com/intel.com"
+  },
+  {
+    "Id": "CRM",
+    "Name": "Salesforce Inc. (CRM)",
+    "LogoUrl": "https://logo.clearbit.com/salesforce.com"
+  },
+  {
+    "Id": "IBM",
+    "Name": "IBM Corp. (IBM)",
+    "LogoUrl": "https://logo.clearbit.com/ibm.com"
+  }
+]

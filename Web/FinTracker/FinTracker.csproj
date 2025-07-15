@@ -19,6 +19,7 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
 	  <PackageReference Include="MudBlazor" Version="6.11.1" />
+	  <PackageReference Include="Radzen.Blazor" Version="7.1.5" />
 	  <PackageReference Include="Syncfusion.Blazor" Version="30.1.37" />
   </ItemGroup>
 
@@ -26,6 +27,13 @@
     <ProjectReference Include="..\..\Common\FinTracker.Shared\FinTracker.Shared.csproj" />
     <ProjectReference Include="..\..\Common\FinTracker.Utilities\FinTracker.Utilities.csproj" />
     <ProjectReference Include="..\FinTracker.Common\FinTracker.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\sample-data\symbols.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

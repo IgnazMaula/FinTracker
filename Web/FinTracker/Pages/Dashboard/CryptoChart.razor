@@ -1,6 +1,6 @@
 ﻿@inject HttpClient Http
 
-<SfChart Title="Market Overview: BTC-USD">
+<SfChart Title="@Ticker">
     <ChartPrimaryXAxis Title="Date"
                        ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
                        LabelRotation="45">
@@ -19,23 +19,28 @@
                      Low="Low"
                      Open="Open"
                      Close="Close"
-                     Name="BTC"
+                     Name="@Ticker"
                      Type="ChartSeriesType.Candle">
         </ChartSeries>
     </ChartSeriesCollection>
 </SfChart>
 
 @code {
+
+
+
+    [Parameter] public string? Ticker { get; set; }
+
     private List<StockPrice> stockPrices = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await LoadChartData();
     }
 
     private async Task LoadChartData()
     {
-        var url = $"https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=7";
+        var url = $"https://api.coingecko.com/api/v3/coins/{Ticker?.ToLower()}/ohlc?vs_currency=usd&days=7";
         var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
 
         if (response != null)

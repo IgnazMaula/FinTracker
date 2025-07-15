@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 
-namespace FinTracker.Pages.Dashboard
+namespace FinTracker.Pages.Investment
 {
-    public partial class Dashboard : BasePage
+    public partial class Investment : BasePage
     {
         [Inject] private HttpClient HttpClient { get; set; }
         [Inject] private IJSRuntime JS { get; set; }
@@ -20,6 +20,9 @@ namespace FinTracker.Pages.Dashboard
         private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
         private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
+
+
+        private string SelectedMarket = "cryptocurrency";
 
 
         //Chart
@@ -90,6 +93,11 @@ namespace FinTracker.Pages.Dashboard
             if (statusCode == HttpStatusCode.OK) { CoinPriceList = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();
+        }
+
+        private void OnMarketTypeChanged(ChangeEventArgs e)
+        {
+            SelectedMarket = e.Value?.ToString() ?? "cryptocurrency";
         }
     }
 }

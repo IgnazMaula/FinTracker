@@ -44,6 +44,20 @@ window.addEventListener('DOMContentLoaded', event => {
             });
         }
 
+        else if (tableId == "coinPriceSummaryTable") {
+            const dataTable = new DataTable(datatables, {
+                responsive: true,
+                paging: false,
+                lengthChange: false,
+                pageLength: 8,
+                searching: false,
+                order: [],
+                columnDefs: [
+                    { targets: '_all', orderable: false }
+                ]
+            });
+        }
+
         //Add another type of table here
 
         else {

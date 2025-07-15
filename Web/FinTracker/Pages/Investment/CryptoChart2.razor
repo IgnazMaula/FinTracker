@@ -2,12 +2,7 @@
 @inject IJSRuntime JS
 
 <h4>Select a coin:</h4>
-<select class="form-control mb-3" @onchange="OnCoinChanged">
-    @foreach (var coin in Coins)
-    {
-        <option value="@coin.Id">@coin.Name (@coin.Symbol.ToUpper())</option>
-    }
-</select>
+<SymbolDropdownList />
 
 @if (!string.IsNullOrWhiteSpace(SelectedCoinId))
 

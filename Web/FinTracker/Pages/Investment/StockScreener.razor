@@ -1,0 +1,21 @@
+﻿@inject IJSRuntime JS
+
+<div style="overflow-x: auto; width: 100%;">
+    <div id="tradingview-stock-widget-container" style="min-width: 1200px; height: 550px;"></div>
+</div>
+
+@code {
+    [Parameter]
+    public string MarketType { get; set; }
+
+    private string _lastMarketType;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender || _lastMarketType != MarketType)
+        {
+            _lastMarketType = MarketType;
+            await JS.InvokeVoidAsync("loadStockScreener", MarketType);
+        }
+    }
+}

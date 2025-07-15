@@ -1,0 +1,239 @@
+From 0a32b02ef54f2ba6bd9aad454a2ef94a221b86c4 Mon Sep 17 00:00:00 2001
+From: Cons Ignaz Maula Ibrahim <cons.ignazmaula@sinarmas-agri.com>
+Date: Mon, 7 Jul 2025 17:57:14 +0700
+Subject: [PATCH] 20250707PC
+
+---
+ .../Pages/Dashboard/CryptoChart.razor         | 13 ++-
+ .../Pages/Dashboard/Dashboard.razor           | 92 +++++++++++++------
+ .../Pages/Dashboard/Dashboard.razor.cs        |  7 ++
+ .../wwwroot/js/datatables/datatables.js       | 14 +++
+ 4 files changed, 93 insertions(+), 33 deletions(-)
+
+diff --git a/Web/FinTracker/Pages/Dashboard/CryptoChart.razor b/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
+index af2933f..3648334 100644
+--- a/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
++++ b/Web/FinTracker/Pages/Dashboard/CryptoChart.razor
+@@ -1,6 +1,6 @@
+ ﻿@inject HttpClient Http
+ 
+-<SfChart Title="Market Overview: BTC-USD">
++<SfChart Title="@Ticker">
+     <ChartPrimaryXAxis Title="Date"
+                        ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                        LabelRotation="45">
+@@ -19,23 +19,28 @@
+                      Low="Low"
+                      Open="Open"
+                      Close="Close"
+-                     Name="BTC"
++                     Name="@Ticker"
+                      Type="ChartSeriesType.Candle">
+         </ChartSeries>
+     </ChartSeriesCollection>
+ </SfChart>
+ 
+ @code {
++
++
++
++    [Parameter] public string? Ticker { get; set; }
++
+     private List<StockPrice> stockPrices = new();
+ 
+-    protected override async Task OnInitializedAsync()
++    protected override async Task OnParametersSetAsync()
+     {
+         await LoadChartData();
+     }
+ 
+     private async Task LoadChartData()
+     {
+-        var url = $"https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=7";
++        var url = $"https://api.coingecko.com/api/v3/coins/{Ticker?.ToLower()}/ohlc?vs_currency=usd&days=7";
+         var response = await Http.GetFromJsonAsync<List<List<double>>>(url);
+ 
+         if (response != null)
+diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
+index eff0182..11dc278 100644
+--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor
++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor
+@@ -467,56 +467,59 @@
+             </div>
+         </Row>
+ 
+-        <Row Class="align-items-stretch">
+-            <div class="col-xl-6 mb-4">
+-                <div class="card card-header-actions">
+-                    <div class="card-body">
+-                        <CryptoChart />
+-                    </div>
+-                </div>
+-            </div>
+-            <div class="col-xl-6 mb-4">
+-                <div class="card card-header-actions">
+-                    <div class="card-body">
+-                        <CryptoChart />
+-                    </div>
+-                </div>
+-            </div>
+-        </Row>
++        @*         <Row Class="align-items-stretch">
++    <div class="col-xl-6 mb-4">
++    <div class="card card-header-actions">
++    <div class="card-body">
++    <CryptoChart />
++    </div>
++    </div>
++    </div>
++    <div class="col-xl-6 mb-4">
++    <div class="card card-header-actions">
++    <div class="card-body">
++    <CryptoChart />
++    </div>
++    </div>
++    </div>
++    </Row> *@
+ 
+         <Row>
+-            <div class="col mb-4">
++            <div class="col-xl-6 mb-4">
+                 <div class="card card-header-actions h-100 w-100">
+                     <div class="card-body">
+-                        <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
++                        <Table TableId="coinPriceSummaryTable" Items="@CoinPriceList" Context="coin">
+                             <HeaderTemplate>
+-                                <th>Logo</th>
+-                                <th>Name</th>
+-                                <th>Symbol</th>
++                                <th></th>
++                                <th>Coin</th>
+                                 <th>Price</th>
+                                 <th>1h %</th>
+                                 <th>24h %</th>
+                                 <th>7d %</th>
+-                                <th>Market Cap</th>
+-                                <th>Volume (24h)</th>
+-                                <th>Supply</th>
++                                <th>Action</th>
+                             </HeaderTemplate>
+-                            <RowTemplate>
++                            <RowTemplate Context="coin">
+                                 <td><img src="@coin.LogoUrl" width="32" /></td>
+-                                <td>@coin.Name</td>
+                                 <td>@coin.Symbol</td>
+                                 <td>@coin.Price.ToString("C2")</td>
+                                 <td>@coin.PercentChange1h.ToString("N2")</td>
+                                 <td>@coin.PercentChange24h.ToString("N2")</td>
+                                 <td>@coin.PercentChange7d.ToString("N2")</td>
+-                                <td>@coin.MarketCap.ToString("C0")</td>
+-                                <td>@coin.Volume24h.ToString("C0")</td>
+-                                <td>@coin.CirculatingSupply.ToString("N0")</td>
++                                <td>
++                                    <button class="btn btn-sm btn-primary" @onclick="() => SetTicker(coin.Name)">Show Chart</button>
++                                </td>
+                             </RowTemplate>
+                         </Table>
+                     </div>
+                 </div>
+             </div>
++            <div class="col-xl-6 mb-4">
++                <div class="card card-header-actions">
++                    <div class="card-body">
++                        <CryptoChart Ticker="@SelectedTicker" />
++                    </div>
++                </div>
++            </div>
+         </Row>
+ 
+ 
+@@ -544,5 +547,36 @@
+     </div>
+     </div>
+     </Row> *@
++
++        @*  <div class="card card-header-actions h-100 w-100">
++    <div class="card-body">
++    <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
++    <HeaderTemplate>
++    <th>Logo</th>
++    <th>Name</th>
++    <th>Symbol</th>
++    <th>Price</th>
++    <th>1h %</th>
++    <th>24h %</th>
++    <th>7d %</th>
++    <th>Market Cap</th>
++    <th>Volume (24h)</th>
++    <th>Supply</th>
++    </HeaderTemplate>
++    <RowTemplate>
++    <td><img src="@coin.LogoUrl" width="32" /></td>
++    <td>@coin.Name</td>
++    <td>@coin.Symbol</td>
++    <td>@coin.Price.ToString("C2")</td>
++    <td>@coin.PercentChange1h.ToString("N2")</td>
++    <td>@coin.PercentChange24h.ToString("N2")</td>
++    <td>@coin.PercentChange7d.ToString("N2")</td>
++    <td>@coin.MarketCap.ToString("C0")</td>
++    <td>@coin.Volume24h.ToString("C0")</td>
++    <td>@coin.CirculatingSupply.ToString("N0")</td>
++    </RowTemplate>
++    </Table>
++    </div>
++    </div> *@
+     </div>
+ }
+\ No newline at end of file
+diff --git a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
+index 76f9045..7154747 100644
+--- a/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
++++ b/Web/FinTracker/Pages/Dashboard/Dashboard.razor.cs
+@@ -21,6 +21,8 @@ namespace FinTracker.Pages.Dashboard
+         private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
+         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
+ 
++        private string SelectedTicker = "solana";
++
+         //Chart
+         private int ChartIndex = -1;
+         public double[] ChartData = new double[3];
+@@ -90,5 +92,10 @@ namespace FinTracker.Pages.Dashboard
+             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+             StateHasChanged();
+         }
++
++        private void SetTicker(string symbol)
++        {
++            SelectedTicker = symbol;
++        }
+     }
+ }
+diff --git a/Web/FinTracker/wwwroot/js/datatables/datatables.js b/Web/FinTracker/wwwroot/js/datatables/datatables.js
+index fa2e9aa..8e40ab4 100644
+--- a/Web/FinTracker/wwwroot/js/datatables/datatables.js
++++ b/Web/FinTracker/wwwroot/js/datatables/datatables.js
+@@ -44,6 +44,20 @@ window.addEventListener('DOMContentLoaded', event => {
+             });
+         }
+ 
++        else if (tableId == "coinPriceSummaryTable") {
++            const dataTable = new DataTable(datatables, {
++                responsive: true,
++                paging: false,
++                lengthChange: false,
++                pageLength: 8,
++                searching: false,
++                order: [],
++                columnDefs: [
++                    { targets: '_all', orderable: false }
++                ]
++            });
++        }
++
+         //Add another type of table here
+ 
+         else {
+-- 
+2.46.1.windows.1
+

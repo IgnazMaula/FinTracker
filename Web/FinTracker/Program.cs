@@ -2,6 +2,7 @@ using FinTracker;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using Radzen;
 using Syncfusion.Blazor;
 
 // Register Syncfusion license
@@ -22,6 +23,9 @@ builder.Services.AddMudServices();
 
 //Syncfusion
 builder.Services.AddSyncfusionBlazor();
+
+//Radzen
+builder.Services.AddRadzenComponents();
 
 //Toast
 builder.Services.AddScoped<ToastService>();

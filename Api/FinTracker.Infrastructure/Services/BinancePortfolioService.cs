@@ -88,12 +88,17 @@ public class BinancePortfolioService : IBinancePortfolioService
 
         foreach (var symbol in symbols)
         {
-            var tradeQuery = $"symbol={symbol}&timestamp={timestamp}&recvWindow={recvWindow}";
+            long startTime = GetMillisecondsFromDateTime(new DateTime(2017, 1, 1));
+            long endTime = GetMillisecondsFromDateTime(DateTime.UtcNow);
+
+            var tradeQuery = $"symbol={symbol}&startTime={startTime}&limit=1000&timestamp={timestamp}&recvWindow={recvWindow}";
+            //var tradeQuery = $"symbol={symbol}&timestamp={timestamp}&recvWindow={recvWindow}";
             var tradeSignature = CreateSignature(tradeQuery);
             var tradeUrl = $"https://api.binance.com/api/v3/myTrades?{tradeQuery}&signature={tradeSignature}";
             var tradeRequest = new HttpRequestMessage(HttpMethod.Get, tradeUrl);
             tradeRequest.Headers.Add("X-MBX-APIKEY", _apiKey);
             var tradeResponse = await _httpClient.SendAsync(tradeRequest);
+            var errorContent = await tradeResponse.Content.ReadAsStringAsync();
             if (!tradeResponse.IsSuccessStatusCode) continue;
 
             var tradeJson = await tradeResponse.Content.ReadAsStringAsync();
@@ -217,5 +222,10 @@ public class BinancePortfolioService : IBinancePortfolioService
         using var hmac = new HMACSHA256(keyBytes);
         var hash = hmac.ComputeHash(messageBytes);
         return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+    }
+
+    private long GetMillisecondsFromDateTime(DateTime dt)
+    {
+        return (long)(dt.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds;
     }
 }

@@ -20,7 +20,7 @@ public class BankTransactionRepository : Repository<BankTransaction>, IBankTrans
 
     public async Task<List<BankTransaction>> GetBankTransactionByBankIdAsync(Guid id)
     {
-        return await _context.Set<BankTransaction>().Where(w => w.BankAccountId == id).OrderBy(o => o.TransactionDate).Reverse().ToListAsync();
+        return await _context.Set<BankTransaction>().Where(w => w.BankAccountId == id).OrderBy(o => o.TransactionDate).Reverse().Take(50).ToListAsync();
     }
 
     public async Task<List<BankTransaction>> GetBankTransactionByUserIdAsync(Guid id)

@@ -1,0 +1,45 @@
+﻿@page "/InvestmentAccounts"
+@inherits BasePage
+
+<PageHeader Title="Investment Account" Icon="user-plus">
+    <ButtonLink Label="Add New Investment Account" Url="/CreateInvestmentAccount" class="btn btn-sm btn-primary" Icon="plus-circle" />
+    <ButtonLink Label="Back to Dashboard" Url="/Dashboard" class="btn btn-sm btn-outline-primary" Icon="arrow-left" />
+</PageHeader>
+
+@if (DataLoaded)
+{
+    <ContainerFluid>
+        <Card>
+            <CardBody>
+                <Table TableId="defaultTable" Items="@InvestmentAccountList" Context="InvestmentAccount">
+                    <HeaderTemplate>
+                        <th>Name</th>
+                        <th>Investment Name</th>
+                        <th>Account No</th>
+                        <th>Current Balance</th>
+                        <th></th>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <td>@InvestmentAccount.Name</td>
+                        <td>@InvestmentAccount.InvestmentName</td>
+                        <td>@InvestmentAccount.AccountNo</td>
+                        <td>@InvestmentAccount.Currency @InvestmentAccount.CurrentBalance.ToString("N2")</td>
+                        <td>
+                            <div class="text-center">
+                                <ButtonLink Label="Transactions" Url=@($"/InvestmentAccountDetail/{InvestmentAccount.Id}") class="btn btn-sm btn-outline-primary" Icon="list" />
+                                <ButtonLink Label="Edit" Url=@($"/EditInvestmentAccount/{InvestmentAccount.Id}") class="btn btn-sm btn-primary" Icon="edit" />
+                                <ButtonModal Label="Delete" class="btn btn-sm btn-danger" Icon="trash-2" Target="deleteModal" Action="() => SetId(InvestmentAccount.Id)" />
+                            </div>
+                        </td>
+                    </RowTemplate>
+                </Table>
+            </CardBody>
+        </Card>
+    </ContainerFluid>
+}
+
+<Modal Id="deleteModal" Title="Confirm Delete" Message="Are you sure you want to delete this account?">
+    <ModalButtons>
+        <ButtonAction Label="Confirm Delete" class="btn btn-sm btn-danger" Action="DeleteInvestmentAccountHandler" />
+    </ModalButtons>
+</Modal>

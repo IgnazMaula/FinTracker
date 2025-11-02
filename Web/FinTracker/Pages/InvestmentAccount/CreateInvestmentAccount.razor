@@ -1,0 +1,47 @@
+﻿@page "/CreateInvestmentAccount"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="Investment Account" Icon="user-plus">
+    <ButtonLink Label="Back" Url="InvestmentAccounts" class="btn btn-sm btn-outline-primary" Icon="arrow-left" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Create Investment Account</CardHeader>
+                <CardBody>
+                    <EditForm Model="InvestmentAccount" OnValidSubmit="PostInvestmentAccount">
+                        <DataAnnotationsValidator />
+                        <Row>
+                            <Column class="col-md-6">
+                                <InputForm Label="Name" Id="Name" Placeholder="Enter Name" @bind-Value="@InvestmentAccount.Name" ValidationFor="@(()=>InvestmentAccount.Name)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputForm Label="Investment Name" Id="InvestmentName" Placeholder="Enter Investment Name" @bind-Value="@InvestmentAccount.InvestmentName" ValidationFor="@(()=>InvestmentAccount.InvestmentName)" />
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="AccountNo" Id="AccountNo" Placeholder="Enter Account No" @bind-Value="@InvestmentAccount.AccountNo" ValidationFor="@(()=>InvestmentAccount.AccountNo)" />
+                            </Column>
+                            <Column class="col-md-6">
+                                <InputOption Label="Currency" Id="Currency" Placeholder="Choose An Option" @bind-Value="@InvestmentAccount.Currency" Items="CurrencyList" Context="item" ValidationFor="@(()=>InvestmentAccount.Currency)">
+                                    <Template><option value="@item">@item</option></Template>
+                                </InputOption>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column class="col-sm-6">
+                                <InputForm Label="Initial Balance" Id="InitialBalance" Placeholder="Enter Initial Balance" @bind-Value="@InvestmentAccount.InitialBalance" ValidationFor="@(()=>InvestmentAccount.InitialBalance)" />
+                            </Column>
+                        </Row>
+                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonLink Label="Cancel" Url="InvestmentAccounts" class="btn btn-outline-primary" />
+                    </EditForm>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>

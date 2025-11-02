@@ -30,6 +30,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\InvestmentAccount\InvestmentAccountDetail.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Pages\InvestmentAccount\InvestmentAccounts.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Pages\InvestmentAccount\CreateInvestmentAccount.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Pages\InvestmentAccount\CreateInvestmentTransaction.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Pages\InvestmentAccount\EditInvestmentAccount.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="wwwroot\sample-data\symbols.json">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

@@ -19,11 +19,6 @@ window.loadStockScreener = function (market) {
 
     const copyright = document.createElement("div");
     copyright.className = "tradingview-widget-copyright";
-    copyright.innerHTML = `
-        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
-            <span class="blue-text">Track all markets on TradingView</span>
-        </a>
-    `;
 
     const marketMap = {
         "us": "america",
@@ -71,11 +66,6 @@ window.loadCryptoScreener = function () {
 
     const copyright = document.createElement("div");
     copyright.className = "tradingview-widget-copyright";
-    copyright.innerHTML = `
-        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
-            <span class="blue-text">Track all markets on TradingView</span>
-        </a>
-    `;
 
     const script = document.createElement("script");
     script.type = "text/javascript";
@@ -115,11 +105,6 @@ window.loadForexScreener = function () {
 
     const copyright = document.createElement("div");
     copyright.className = "tradingview-widget-copyright";
-    copyright.innerHTML = `
-        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
-            <span class="blue-text">Track all markets on TradingView</span>
-        </a>
-    `;
 
     const script = document.createElement("script");
     script.type = "text/javascript";

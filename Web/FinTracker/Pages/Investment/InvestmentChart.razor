@@ -1,0 +1,84 @@
+﻿@using FinTracker.Common.Shared.Model;
+
+<div class="col-xl-6 mb-4">
+    <div class="card card-header-actions">
+        <div class="card-body">
+            <SfChart Title="Portfolio Value (Last 30 Days)">
+                <ChartPrimaryXAxis Title="Date"
+                                   ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                                   LabelRotation="45" />
+                <ChartPrimaryYAxis Title="USDT Value"
+                                   LabelFormat="${value}" />
+                <ChartTooltipSettings Enable="true" />
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="@PortfolioHistory"
+                                 XName="Date"
+                                 YName="TotalValueInUSDT"
+                                 Type="ChartSeriesType.Line"
+                                 Width="3"
+                                 Fill="#0161F2">
+                        <ChartMarker  Width="8" Height="8" />
+                    </ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+<div class="col-xl-6 mb-4">
+    <div class="card card-header-actions">
+        <div class="card-body">
+            <SfAccumulationChart Title="Asset Allocation (%)" EnableSmartLabels="true">
+                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+                <AccumulationChartTooltipSettings Enable="true" Format="${point.x}: ${point.y}%" />
+
+                <AccumulationChartSeriesCollection>
+                    <AccumulationChartSeries DataSource="@AllocationData"
+                                             XName="Asset"
+                                             YName="Percentage"
+                                             Type="AccumulationType.Pie">
+                        <AccumulationDataLabelSettings Visible="true"
+                                                       Name="Asset"
+                                                       Position="AccumulationLabelPosition.Outside">
+                            <AccumulationChartConnector Color="#000000"
+                                                        Length="20px"
+                                                        Width="1"
+                                                        Type="ConnectorType.Curve" />
+                        </AccumulationDataLabelSettings>
+                    </AccumulationChartSeries>
+                </AccumulationChartSeriesCollection>
+            </SfAccumulationChart>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public InvestmentSummaryModel? InvestmentSummary { get; set; }
+    [Parameter] public List<PortfolioHistoryPoint>? PortfolioHistory { get; set; }
+
+    private List<AllocationPoint> AllocationData = new();
+
+    protected override void OnParametersSet()
+    {
+        if (InvestmentSummary?.AllocationPercentage != null)
+        {
+            AllocationData = InvestmentSummary.AllocationPercentage
+                .Select(x => new AllocationPoint
+                {
+
+                    Asset = x.Key,
+
+                    Percentage = x.Value
+
+                })
+                .ToList();
+        }
+    }
+
+    public class AllocationPoint
+    {
+        public string Asset { get; set; } = string.Empty;
+
+        public decimal Percentage { get; set; }
+    }
+}

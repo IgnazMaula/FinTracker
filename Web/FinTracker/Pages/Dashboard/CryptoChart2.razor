@@ -1,7 +1,7 @@
 ﻿@inject HttpClient Http
 @inject IJSRuntime JS
 
-<h4>Select a coin:</h4>
+<h4>Select a ticker:</h4>
 <select class="form-control mb-3" @onchange="OnCoinChanged">
     @foreach (var coin in Coins)
     {

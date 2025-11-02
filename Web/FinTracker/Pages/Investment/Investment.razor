@@ -3,6 +3,8 @@
 
 @if (DataLoaded)
 
+
+
 {
     <header class="page-header pb-10">
         <div class="container-xl px-4">
@@ -19,12 +21,12 @@
                 <div class="row align-items-center justify-content-between">
                     <div class="col">
                         <h1 class="text-green text-xl fw-700">Investment Portfolio  <i class="feather-xl text-green" data-feather="bar-chart-2"></i></h1>
-                        <p class="text-gray-700">Great job, your affiliate dashboard is ready to go! You can view sales, generate links, prepare coupons, and download affiliate reports using this dashboard.</p>
-                        <div class="row">
+                        <p class="text-gray-700">Track your investment</p>
+@*                         <div class="row">
                             <InfoWidget Label="Earnings (monthly)" Quantity="$4,399" Color="primary" Icon="fa-dollar-sign" />
                             <InfoWidget Label="Average sale price" Quantity="$27.00" Color="secondary" Icon="fa-tag" />
                             <InfoWidget Label="Clicks" Quantity="11,291" Color="success" Icon="fa-mouse-pointer" />
-                        </div>
+                        </div> *@
                     </div>
                     <div class="col">
                         <img class="img-fluid px-xl-4"
@@ -36,78 +38,44 @@
             </div>
         </div>
         <Row>
-            <DashboardCard Label="Total Cash (IDR)" Quantity="@BankAccount.CurrentBalance.ToString("N2")" Color="primary" Icon="dollar-sign" Link="Customers" />
-            <DashboardCard Label="Total Investment (USD)" Quantity="1200.00" Color="success" Icon="bar-chart-2" Link="Product" />
-            @*<DashboardCard Label="Location" Quantity="@DashboardData.LocationCount" Color="danger" Icon="map-pin" Link="Location" /> *@
-            <DashboardCard Label="Ongoing Goals" Quantity="2" Color="warning" Icon="award" Link="Order" />
+            <DashboardCard Label="Total Asset (USD)" Quantity="@BinancePortfolio.TotalPortfolioValueInUSDT.ToString("N4")" Color="success" Icon="bar-chart-2" Link="Customers" />
+            <DashboardCard Label="Total Gain 30D (USD)" Quantity="@BinancePortfolio.InvestmentSummary.DollarGain30d.ToString("N4")" Color="success" Icon="bar-chart-2" Link="Product" />
+            <DashboardCard Label="Percent Gain 30D " Quantity="@($"{BinancePortfolio.InvestmentSummary.PercentGain30d}%")" Color="success" Icon="bar-chart-2" Link="Order" />
         </Row>
         <Row Class="align-items-stretch">
-            <CashFlowChart BankMonthlyTransaction="@BankMonthlyTransaction" />
+            <InvestmentChart InvestmentSummary="@BinancePortfolio.InvestmentSummary" PortfolioHistory="@BinancePortfolio.PortfolioHistory" />
         </Row>
 
         <Row>
-            <div class="col-xxl-8">
+            <div class="col-xxl">
                 <!-- Tabbed dashboard card example-->
                 <div class="card mb-4">
                     <div class="card-header border-bottom">
                         <!-- Dashboard card navigation-->
                         <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
-                            <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Last Bank Transactions</a></li>
-                            <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
+                            <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Asset List</a></li>
+                            <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Investment Activities</a></li>
                         </ul>
                     </div>
-                    <div class="card-body" style="min-height: 666px;">
+                    <div class="card-body">
                         <div class="tab-content h-100" id="dashboardNavContent">
                             <!-- Dashboard Tab Pane 1-->
                             <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
                                 @if (DataLoaded)
 
+
+
                                 {
-                                    <Table TableId="bankTransactionTable" Items="@BankTransactionList" Context="BankTransaction">
+                                    <Table TableId="bankTransactionTable" Items="@BinancePortfolio.Balances" Context="Asset">
                                         <HeaderTemplate>
-                                            <th>Transaction Date</th>
-                                            <th>Description</th>
-                                            <th>TransactionType</th>
-                                            <th>Amount</th>
+                                            <th>Asset</th>
+                                            <th>Free</th>
+                                            <th>Value in USD</th>
                                         </HeaderTemplate>
                                         <RowTemplate>
-                                            <td>@BankTransaction.TransactionDate.ToString("dd/MM/yy")</td>
-                                            <td>@(BankTransaction.Description.Length > 20 ? BankTransaction.Description.Substring(0, 20) + "..." : BankTransaction.Description)</td>
-
-                                            @if (BankTransaction.TransactionType == "Debit")
-
-                                            {
-                                                <td><div class="badge bg-danger text-white rounded-pill">@BankTransaction.TransactionType</div></td>
-                                            }
-
-                                            else if (BankTransaction.TransactionType == "Credit")
-
-                                            {
-                                                <td><div class="badge bg-success text-white rounded-pill">@BankTransaction.TransactionType</div></td>
-                                            }
-
-                                            else
-
-                                            {
-                                                <td><div class="badge bg-warning text-white rounded-pill">@BankTransaction.TransactionType</div></td>
-                                            }
-                                            @if (BankTransaction.TransactionType == "Debit")
-
-                                            {
-                                                <td class="text-danger">@BankTransaction.TransactionAmount.ToString("N2")</td>
-                                            }
-
-                                            else if (BankTransaction.TransactionType == "Credit")
-
-                                            {
-                                                <td class="text-success">@BankTransaction.TransactionAmount.ToString("N2")</td>
-                                            }
-
-                                            else
-
-                                            {
-                                                <td class="text-warning">@BankTransaction.TransactionAmount.ToString("N2")</td>
-                                            }
+                                            <td>@Asset.Asset</td>
+                                            <td>@Asset.Free</td>
+                                            <td>@Asset.ValueInUSDT.ToString("N2")</td>
                                         </RowTemplate>
                                     </Table>
                                 }
@@ -115,165 +83,33 @@
                             <!-- Dashboard Tab Pane 2-->
                             <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
                                 @if (DataLoaded)
+
                                 {
-                                    <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
+                                    <Table TableId="dashboardTable" Items="@BinancePortfolio.Trades" Context="Trade">
                                         <HeaderTemplate>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Address</th>
-                                            <th>Phone</th>
+                                            <th>Symbol</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th>QuoteQty</th>
+                                            <th>IsBuyer</th>
+                                            <th>IsBuyer</th>
                                         </HeaderTemplate>
                                         <RowTemplate>
-                                            <td>@customer.Name</td>
-                                            <td>@customer.Email</td>
-                                            <td>@customer.Address</td>
-                                            <td>@customer.Phone</td>
+                                            <td>@Trade.Symbol</td>
+                                            <td>@Trade.Price</td>
+                                            <td>@Trade.Qty</td>
+                                            <td>@Trade.QuoteQty</td>
+                                            <td>@Trade.IsBuyer</td>
+                                            <td>@Trade.IsBuyer</td>
                                         </RowTemplate>
                                     </Table>
                                 }
                             </div>
                         </div>
                     </div>
-                    @*  </div>
-                <!-- Illustration dashboard card example-->
-                <div class="card mb-4">
-                <div class="card-body py-5">
-                <div class="d-flex flex-column justify-content-center">
-                <img class="img-fluid mb-4" src="assets/img/illustrations/data-report.svg" alt="" style="height: 10rem" />
-                <div class="text-center px-0 px-lg-5">
-                <h5>New reports are here! Generate custom reports now!</h5>
-                <p class="mb-4">Our new report generation system is now online. You can start creating custom reporting for any documents available on your account.</p>
-                <a class="btn btn-primary p-3" href="#!">Get Started</a>
-                </div>
-                </div>
-                </div>
-                </div>
-                <div class="row">
-                <Column class="col-xl-6 mb-4">
-                <!-- Pie chart with legend example-->
-                <Card class="h-100">
-                <CardHeader>Traffic Sources</CardHeader>
-                <CardBody>
-                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
-                </CardBody>
-                </Card>
-                </Column>
-                </div> *@
-                    @*  <div class="row">
-                <div class="col-xl-6 mb-4">
-                <!-- Dashboard activity timeline example-->
-                <div class="card card-header-actions h-100">
-                <div class="card-header">
-                Recent Activity
-                <div class="dropdown no-caret">
-                <button class="btn btn-transparent-dark btn-icon dropdown-toggle" id="dropdownMenuButton" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="text-gray-500" data-feather="more-vertical"></i></button>
-                <div class="dropdown-menu dropdown-menu-end animated--fade-in-up" aria-labelledby="dropdownMenuButton">
-                <h6 class="dropdown-header">Filter Activity:</h6>
-                <a class="dropdown-item" href="#!"><span class="badge bg-green-soft text-green my-1">Commerce</span></a>
-                <a class="dropdown-item" href="#!"><span class="badge bg-blue-soft text-blue my-1">Reporting</span></a>
-                <a class="dropdown-item" href="#!"><span class="badge bg-yellow-soft text-yellow my-1">Server</span></a>
-                <a class="dropdown-item" href="#!"><span class="badge bg-purple-soft text-purple my-1">Users</span></a>
-                </div>
-                </div>
-                </div>
-                <div class="card-body">
-                <div class="timeline timeline-xs">
-                <!-- Timeline Item 1-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">27 min</div>
-                <div class="timeline-item-marker-indicator bg-green"></div>
-                </div>
-                <div class="timeline-item-content">
-                New order placed!
-                <a class="fw-bold text-dark" href="#!">Order #2912</a>
-                has been successfully placed.
-                </div>
-                </div>
-                <!-- Timeline Item 2-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">58 min</div>
-                <div class="timeline-item-marker-indicator bg-blue"></div>
-                </div>
-                <div class="timeline-item-content">
-                Your
-                <a class="fw-bold text-dark" href="#!">weekly report</a>
-                has been generated and is ready to view.
-                </div>
-                </div>
-                <!-- Timeline Item 3-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">2 hrs</div>
-                <div class="timeline-item-marker-indicator bg-purple"></div>
-                </div>
-                <div class="timeline-item-content">
-                New user
-                <a class="fw-bold text-dark" href="#!">Valerie Luna</a>
-                has registered
-                </div>
-                </div>
-                <!-- Timeline Item 4-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">1 day</div>
-                <div class="timeline-item-marker-indicator bg-yellow"></div>
-                </div>
-                <div class="timeline-item-content">Server activity monitor alert</div>
-                </div>
-                <!-- Timeline Item 5-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">1 day</div>
-                <div class="timeline-item-marker-indicator bg-green"></div>
-                </div>
-                <div class="timeline-item-content">
-                New order placed!
-                <a class="fw-bold text-dark" href="#!">Order #2911</a>
-                has been successfully placed.
-                </div>
-                </div>
-                <!-- Timeline Item 6-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">1 day</div>
-                <div class="timeline-item-marker-indicator bg-purple"></div>
-                </div>
-                <div class="timeline-item-content">
-                Details for
-                <a class="fw-bold text-dark" href="#!">Marketing and Planning Meeting</a>
-                have been updated.
-                </div>
-                </div>
-                <!-- Timeline Item 7-->
-                <div class="timeline-item">
-                <div class="timeline-item-marker">
-                <div class="timeline-item-marker-text">2 days</div>
-                <div class="timeline-item-marker-indicator bg-green"></div>
-                </div>
-                <div class="timeline-item-content">
-                New order placed!
-                <a class="fw-bold text-dark" href="#!">Order #2910</a>
-                has been successfully placed.
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <Column class="col-xl-6 mb-4">
-                <!-- Pie chart with legend example-->
-                <Card class="h-100">
-                <CardHeader>Traffic Sources</CardHeader>
-                <CardBody>
-                <MudBlazor.MudChart ChartType="MudBlazor.ChartType.Donut" Width="300px" Height="300px" @bind-SelectedIndex="ChartIndex" InputData="@ChartData" InputLabels="@ChartLabels"></MudBlazor.MudChart>
-                </CardBody>
-                </Card>
-                </Column> *@
                 </div>
             </div>
-            <div class="col-xxl-4">
+@*             <div class="col-xxl-4">
                 <div class="row">
                     <div class="col-xl-6 col-xxl-12">
                         <div class="card card-header-actions mb-4">
@@ -320,7 +156,7 @@
                     </div>
 
                 </div>
-            </div>
+            </div> *@
         </Row>
         <Row>
             <div class="col-xl-6 mb-4">
@@ -345,14 +181,19 @@
                                     <option value="forex">Forex</option>
                                 </select>
                                 @if (SelectedMarket == "cryptocurrency")
+
                                 {
                                     <CryptocurrencyScreener />
                                 }
+
                                 else if (SelectedMarket == "forex")
+
                                 {
                                     <ForexScreener />
                                 }
+
                                 else
+
                                 {
                                     <StockScreener MarketType="@SelectedMarket" />
                                 }
@@ -368,7 +209,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <br />
                 </div>
             </div>
             <div class="col-xl-6 mb-4">
@@ -379,87 +220,5 @@
                 </div>
             </div>
         </Row>
-        @*  <Row>
-    <div class="col-xl-6 mb-4">
-    <div class="card mb-4">
-    <div class="card-header border-bottom">
-    <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
-    <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Last Bank Transactions</a></li>
-    <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Activities</a></li>
-    </ul>
-    </div>
-    <div class="card-body" style="min-height: 666px;">
-    <div class="tab-content h-100" id="dashboardNavContent">
-    <!-- Dashboard Tab Pane 1-->
-    <div class="tab-pane fade show active" id="bank-transaction" role="tabpanel" aria-labelledby="overview-pill">
-    <StockScreener />
-    </div>
-    <!-- Dashboard Tab Pane 2-->
-    <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
-    <CryptocurrencyScreener />
-    </div>
-    </div>
-    </div>
-
-    </div>
-    </div>
-    </Row> *@
-
-
-        @*  <Row>
-    <div class="card card-header-actions h-100">
-    <div class="card-body">
-    <SfGrid DataSource="@CoinPriceList" AllowPaging="true">
-    <GridColumns>
-    <GridColumn HeaderText="Logo" Width="60">
-    <Template>
-    <img src="@((context as CoinPriceModel).LogoUrl)" width="32" />
-    </Template>
-    </GridColumn>
-    <GridColumn Field="Name" HeaderText="Name" Width="150"></GridColumn>
-    <GridColumn Field="Symbol" HeaderText="Symbol" Width="100"></GridColumn>
-    <GridColumn Field="Price" HeaderText="Price" Format="C2" Width="120"></GridColumn>
-    <GridColumn Field="PercentChange1h" HeaderText="1h %" Format="N2" Width="80"></GridColumn>
-    <GridColumn Field="PercentChange24h" HeaderText="24h %" Format="N2" Width="80"></GridColumn>
-    <GridColumn Field="PercentChange7d" HeaderText="7d %" Format="N2" Width="80"></GridColumn>
-    <GridColumn Field="MarketCap" HeaderText="Market Cap" Format="C0" Width="150"></GridColumn>
-    <GridColumn Field="Volume24h" HeaderText="Volume (24h)" Format="C0" Width="150"></GridColumn>
-    <GridColumn Field="CirculatingSupply" HeaderText="Supply" Format="N0" Width="120"></GridColumn>
-    </GridColumns>
-    </SfGrid>
-    </div>
-    </div>
-    </Row> *@
-
-        @*  <div class="card card-header-actions h-100 w-100">
-    <div class="card-body">
-    <Table TableId="coinPricesTable" Items="@CoinPriceList" Context="coin">
-    <HeaderTemplate>
-    <th>Logo</th>
-    <th>Name</th>
-    <th>Symbol</th>
-    <th>Price</th>
-    <th>1h %</th>
-    <th>24h %</th>
-    <th>7d %</th>
-    <th>Market Cap</th>
-    <th>Volume (24h)</th>
-    <th>Supply</th>
-    </HeaderTemplate>
-    <RowTemplate>
-    <td><img src="@coin.LogoUrl" width="32" /></td>
-    <td>@coin.Name</td>
-    <td>@coin.Symbol</td>
-    <td>@coin.Price.ToString("C2")</td>
-    <td>@coin.PercentChange1h.ToString("N2")</td>
-    <td>@coin.PercentChange24h.ToString("N2")</td>
-    <td>@coin.PercentChange7d.ToString("N2")</td>
-    <td>@coin.MarketCap.ToString("C0")</td>
-    <td>@coin.Volume24h.ToString("C0")</td>
-    <td>@coin.CirculatingSupply.ToString("N0")</td>
-    </RowTemplate>
-    </Table>
-    </div>
-    </div> *@
     </div>
 }

@@ -11,7 +11,7 @@
     <Row>
         <Column>
             <Card>
-                <CardHeader>Create Bank Transaction</CardHeader>
+                <CardHeader>Upload Bank Transaction</CardHeader>
                 <CardBody>
                     <EditForm Model="UploadBankTransaction" OnValidSubmit="PostBankTransaction">
                         <DataAnnotationsValidator />
@@ -26,7 +26,7 @@
                                 </div>
                             </Column>
                         </Row>
-                        <ButtonSubmit Label="Create" class="btn btn-primary" />
+                        <ButtonSubmit Label="Upload Transaction" class="btn btn-primary" />
                         <ButtonLink Label="Cancel" Url="@($"BankAccountDetail/{Id}")" class="btn btn-outline-primary" />
                     </EditForm>
                 </CardBody>

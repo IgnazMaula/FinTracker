@@ -24,7 +24,7 @@ namespace FinTracker.Pages
 
         protected List<string> CurrencyList = new List<string>
         {
-            "IDR", "USD", "EUR", "JPY", "GBP", "AUD", 
+            "IDR", "USD", "EUR", "JPY", "GBP", "AUD",
             "CAD", "CNY", "SGD", "HKD", "KRW", "RUB",
         };
 
@@ -139,6 +139,68 @@ namespace FinTracker.Pages
         }
         #endregion
 
+        #region Investment Account Helper Methods
+        //-----------------------------------------------------------------
+        // Investment Account Helper Methods
+        //-----------------------------------------------------------------
+        protected async Task<(List<InvestmentAccountModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetInvestmentAccountListDataAsync(string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<InvestmentAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentAccountUrl"]}", queryString);
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetInvestmentAccountDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<InvestmentAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentAccountUrl"]}/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostInvestmentAccountDataAsync(InvestmentAccountModel request)
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<InvestmentAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentAccountUrl"]}", request);
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PutInvestmentAccountDataAsync(Guid id, InvestmentAccountModel request)
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PutEntity<InvestmentAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentAccountUrl"]}", id, request);
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentAccountModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> DeleteInvestmentAccountDataAsync(Guid id)
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.DeleteEntity<InvestmentAccountModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentAccountUrl"]}", id);
+            return (model, urlLookupResult, statusCode);
+        }
+        #endregion
+
+        #region Investment Transaction Helper Methods
+        //-----------------------------------------------------------------
+        // Investment Transaction Helper Methods
+        //-----------------------------------------------------------------
+        protected async Task<(List<InvestmentTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetInvestmentTransactionListDataAsync(string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<InvestmentTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentTransactionUrl"]}", queryString);
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetInvestmentTransactionDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<InvestmentTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentTransactionUrl"]}/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(List<InvestmentTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetInvestmentTransactionByInvestmentIdDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<InvestmentTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentTransactionUrl"]}/ByInvestmentId/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(List<MonthlyTransactionModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetMonthlyInvestmentTransactionByUserIdDataAsync(Guid id, string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<MonthlyTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentTransactionUrl"]}/GetMonthlyInvestmentTransactionByUserId/{id}{queryString}");
+            return (model, urlLookupResult, statusCode);
+        }
+        protected async Task<(InvestmentTransactionModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> PostInvestmentTransactionDataAsync(InvestmentTransactionModel request)
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.PostEntity<InvestmentTransactionModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:InvestmentTransactionUrl"]}", request);
+            return (model, urlLookupResult, statusCode);
+        }
+        #endregion
+
         #region DCA Calculator Helper Methods
         //-----------------------------------------------------------------
         // DCA Calculator Helper Methods
@@ -181,6 +243,12 @@ namespace FinTracker.Pages
         protected async Task<(List<CoinPriceModel> model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetCryptocurrencyListAsync(string queryString = "")
         {
             var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntityList<CoinPriceModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:CryptocurrencyUrl"]}", queryString);
+            return (model, urlLookupResult, statusCode);
+        }
+
+        protected async Task<(BinancePortfolioModel model, RepositoryHelper.UrlLookupResult urlLookupResult, HttpStatusCode statusCode)> GetBinancePortfolioDataAsync(string queryString = "")
+        {
+            var (model, urlLookupResult, statusCode) = await RepositoryHelper.GetEntity<BinancePortfolioModel>($"{Configuration["UrlSettings:BaseUrl"]}{Configuration["UrlSettings:BinancePortfolioUrl"]}{queryString}");
             return (model, urlLookupResult, statusCode);
         }
         #endregion

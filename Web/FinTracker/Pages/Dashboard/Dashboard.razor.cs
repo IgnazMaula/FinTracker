@@ -24,8 +24,9 @@ namespace FinTracker.Pages.Dashboard
 
         //Chart
         private int ChartIndex = -1;
-        public double[] ChartData = new double[3];
-        public string[] ChartLabels = { "Saving", "Investment", "Reserve" };
+        public double[] ChartData = new double[6];
+        public string[] ChartLabels = { "BTC", "USDT", "ETH", "SOL", "LINK", "BNB" };
+        private string SelectedMarket = "cryptocurrency";
 
         protected override async Task OnInitializedAsync()
         {
@@ -34,9 +35,9 @@ namespace FinTracker.Pages.Dashboard
             await GetBankAccount();
             await GetDashboardData();
             await GetCryptoCurrencyList();
-            //await GetCustomer();
-
             DataLoaded = true;
+
+
         }
 
         private async Task GetDashboardData()
@@ -46,19 +47,15 @@ namespace FinTracker.Pages.Dashboard
             {
                 DashboardData = result;
 
-                ChartData[0] = DashboardData.CustomerCount;
-                ChartData[1] = DashboardData.ProductCount;
-                ChartData[2] = DashboardData.LocationCount;
+                ChartData[0] = 60.52;
+                ChartData[1] = 18.24;
+                ChartData[2] = 15.33;
+                ChartData[3] = 3.46;
+                ChartData[4] = 2.45;
+                ChartData[5] = 0.01;
             }
             else { await Toast.ShowError("Failed to fetch data"); }
         }
-
-        //private async Task GetCustomer()
-        //{
-        //    var result = await HttpClient.GetFromJsonAsync<List<CustomerModel>>("sample-data/customer.json");
-        //    if (result != null) { CustomerList = result; }
-        //    else { await Toast.ShowError("Failed to fetch data"); }
-        //}
 
         private async Task GetBankAccount()
         {
@@ -70,7 +67,7 @@ namespace FinTracker.Pages.Dashboard
 
         private async Task GetBankTransactions()
         {
-            var (model, urlLookupResult, statusCode) = await GetBankTransactionListDataAsync();
+            var (model, urlLookupResult, statusCode) = await GetBankTransactionByBankIdDataAsync(new Guid("a9134c3f-b36d-4c31-9dc1-6b56884e2382"));
             if (statusCode == HttpStatusCode.OK) { BankTransactionList = model; PageStatus = string.Empty; PageIsValid = true; }
             else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
             StateHasChanged();

@@ -1,0 +1,82 @@
+﻿@page "/InvestmentAccountDetail/{Id:guid}"
+@inherits BasePage
+@inject IJSRuntime JS
+
+<PageHeader Title="InvestmentAccount" Icon="user-plus">
+    <ButtonLink Label="Upload Investment Transaction" Url="@($"CreateInvestmentTransaction/{Id}")" class="btn btn-sm btn-primary" Icon="plus-circle" />
+    <ButtonLink Label="Back" Url="InvestmentAccounts" class="btn btn-sm btn-outline-primary" Icon="arrow-left" />
+</PageHeader>
+
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Investment Account Detail</CardHeader>
+                <CardBody>
+                    <Row>
+                        <Column class="col-md-3">
+                            <InfoForm Label="Name" Value="@InvestmentAccount.Name" />
+                        </Column>
+                        <Column class="col-md-3">
+                            <InfoForm Label="Investment Name" Value="@InvestmentAccount.InvestmentName" />
+                        </Column>
+                        <Column class="col-md-3">
+                            <InfoForm Label="Account No" Value="@InvestmentAccount.AccountNo" />
+                        </Column>
+                        <Column class="col-sm-3">
+                            <InfoForm Label="CurrentBalance" Value="@(InvestmentAccount.Currency + ' ' + InvestmentAccount.CurrentBalance.ToString("N2"))" />
+                        </Column>
+                    </Row>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>
+
+@if (DataLoaded)
+{
+    <Container>
+        <Card>
+            <CardHeader>Investment Account Transactions</CardHeader>
+            <CardBody>
+                <Table TableId="bankTransactionTable" Items="@InvestmentTransactionList" Context="InvestmentTransaction">
+                    <HeaderTemplate>
+                        <th>Transaction Date</th>
+                        <th>Description</th>
+                        <th>TransactionType</th>
+                        <th>Amount</th>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <td>@InvestmentTransaction.TransactionDate.ToString("dd/MM/yy")</td>
+                        <td>@(InvestmentTransaction.Description.Length > 50 ? InvestmentTransaction.Description.Substring(0, 50) + "..." : InvestmentTransaction.Description)</td>
+
+                        @if (InvestmentTransaction.TransactionType == "Debit")
+                        {
+                            <td><div class="badge bg-danger text-white rounded-pill">@InvestmentTransaction.TransactionType</div></td>
+                        }
+                        else if (InvestmentTransaction.TransactionType == "Credit")
+                        {
+                            <td><div class="badge bg-success text-white rounded-pill">@InvestmentTransaction.TransactionType</div></td>
+                        }
+                        else
+                        {
+                            <td><div class="badge bg-warning text-white rounded-pill">@InvestmentTransaction.TransactionType</div></td>
+                        }
+                        @if (InvestmentTransaction.TransactionType == "Debit")
+                        {
+                            <td class="text-danger">@InvestmentTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                        else if (InvestmentTransaction.TransactionType == "Credit")
+                        {
+                            <td class="text-success">@InvestmentTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                        else
+                        {
+                            <td class="text-warning">@InvestmentTransaction.TransactionAmount.ToString("N2")</td>
+                        }
+                    </RowTemplate>
+                </Table>
+            </CardBody>
+        </Card>
+    </Container>
+}

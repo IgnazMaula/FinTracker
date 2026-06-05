@@ -85,7 +85,7 @@
                         <!-- Dashboard card navigation-->
                         <ul class="nav nav-tabs card-header-tabs" id="dashboardNav" role="tablist">
                             <li class="nav-item me-1"><a class="nav-link active" id="bank-transaction-pill" href="#bank-transaction" data-bs-toggle="tab" role="tab" aria-controls="bank-transaction" aria-selected="true">Latest Bank Transactions</a></li>
-                            <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Investment Activities</a></li>
+                            <li class="nav-item"><a class="nav-link" id="activities-pill" href="#activities" data-bs-toggle="tab" role="tab" aria-controls="activities" aria-selected="false">Asset List</a></li>
                         </ul>
                     </div>
                     <div class="card-body" style="min-height: 666px;">
@@ -148,22 +148,16 @@
                             <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-pill">
                                 @if (DataLoaded)
                                 {
-                                    <Table TableId="dashboardTable" Items="@CustomerList" Context="customer">
+                                    <Table TableId="assetList" Items="@BinancePortfolio.Balances" Context="Asset">
                                         <HeaderTemplate>
-                                            <th>Type</th>
-                                            <th>Date</th>
-                                            <th>Assets</th>
-                                            <th>Price</th>
-                                            <th>Amount</th>
-                                            <th>Notes</th>
+                                            <th>Asset</th>
+                                            <th>Free</th>
+                                            <th>Value in USD</th>
                                         </HeaderTemplate>
                                         <RowTemplate>
-                                            <td>@customer.Name</td>
-                                            <td>@customer.Email</td>
-                                            <td>@customer.Address</td>
-                                            <td>@customer.Phone</td>
-                                            <td>@customer.Name</td>
-                                            <td>@customer.Name</td>
+                                            <td>@Asset.Asset</td>
+                                            <td>@Asset.Free</td>
+                                            <td>@Asset.ValueInUSDT.ToString("N2")</td>
                                         </RowTemplate>
                                     </Table>
                                 }

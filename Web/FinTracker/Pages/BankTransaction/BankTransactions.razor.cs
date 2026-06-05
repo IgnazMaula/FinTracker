@@ -1,6 +1,5 @@
 ﻿using FinTracker.Common.Model;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System.Net;
 using System.Net.Http;

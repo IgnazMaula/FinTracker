@@ -1,4 +1,5 @@
 ﻿using FinTracker.Common.Model;
+using FinTracker.Common.Shared.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Net;
@@ -20,6 +21,7 @@ namespace FinTracker.Pages.Dashboard
         private List<BankTransactionModel> BankTransactionList = new List<BankTransactionModel>();
         private List<CoinPriceModel> CoinPriceList = new List<CoinPriceModel>();
         private List<MonthlyTransactionModel> BankMonthlyTransaction = new List<MonthlyTransactionModel>();
+        private BinancePortfolioModel BinancePortfolio = new BinancePortfolioModel();
 
 
         //Chart
@@ -30,14 +32,45 @@ namespace FinTracker.Pages.Dashboard
 
         protected override async Task OnInitializedAsync()
         {
+            GetChartData();
             await GetMonthlyTransactionByUserId();
             await GetBankTransactions();
             await GetBankAccount();
             await GetDashboardData();
+            await GetBinancePortfolio();
             await GetCryptoCurrencyList();
             DataLoaded = true;
 
 
+        }
+
+        private void GetChartData()
+        {
+            ChartData[0] = 60.52;
+            ChartData[1] = 18.24;
+            ChartData[2] = 15.33;
+            ChartData[3] = 3.46;
+            ChartData[4] = 2.45;
+            ChartData[5] = 0.01;
+
+            //// Calculate total
+            //double total = ChartData.Sum();
+
+            //// Update labels to show percentage + name
+            //ChartLabels = new string[ChartData.Length];
+            //string[] categories = { "BTC", "USDT", "ETH", "SOL", "LINK", "BNB" };
+            //for (int i = 0; i < ChartData.Length; i++)
+            //{
+            //    ChartLabels[i] = $"{categories[i]}: {ChartData[i] / total * 100:0.##}%";
+            //}
+        }
+
+        private async Task GetBinancePortfolio()
+        {
+            var (model, urlLookupResult, statusCode) = await GetBinancePortfolioDataAsync();
+            if (statusCode == HttpStatusCode.OK) { BinancePortfolio = model; PageStatus = string.Empty; PageIsValid = true; }
+            else { PageStatus = urlLookupResult.Message; ; PageIsValid = false; }
+            StateHasChanged();
         }
 
         private async Task GetDashboardData()
@@ -46,13 +79,6 @@ namespace FinTracker.Pages.Dashboard
             if (result != null)
             {
                 DashboardData = result;
-
-                ChartData[0] = 60.52;
-                ChartData[1] = 18.24;
-                ChartData[2] = 15.33;
-                ChartData[3] = 3.46;
-                ChartData[4] = 2.45;
-                ChartData[5] = 0.01;
             }
             else { await Toast.ShowError("Failed to fetch data"); }
         }

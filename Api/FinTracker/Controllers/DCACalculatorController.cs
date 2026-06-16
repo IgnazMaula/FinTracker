@@ -1,30 +1,27 @@
+using FinTracker.Application.Interfaces;
+using FinTracker.Application.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
-using FinTracker.Domain.Interfaces;
-using MediatR;
-using FinTracker.Application.Features.DCACalculators.Command;
-using System.IO;
-using Microsoft.AspNetCore.Authorization;
-using FinTracker.Application.Models.DTOs;
-using FinTracker.Domain.Entities;
-using FinTracker.Application.Features.DCACalculators.Command;
 
 namespace FinTracker.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DCACalculatorController : BaseApiController
+public class DCACalculatorController : ControllerBase
 {
+    private readonly IDCACalculatorService _dcaCalculatorService;
+
+    public DCACalculatorController(IDCACalculatorService dcaCalculatorService)
+    {
+        _dcaCalculatorService = dcaCalculatorService;
+    }
 
     [HttpPost]
-    public async Task<IActionResult> SubmitDCACalculator([FromBody] SubmitDCACalculatorCommand command)
+    public async Task<IActionResult> SubmitDCACalculator([FromBody] DCACalculatorRequest request)
     {
         try
         {
-            var result = await Mediator.Send(command);
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _dcaCalculatorService.SubmitAsync(request);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return Ok(result.Data);
         }
         catch (Exception ex)

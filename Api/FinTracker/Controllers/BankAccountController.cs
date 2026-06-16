@@ -1,30 +1,27 @@
+using FinTracker.Application.Interfaces;
+using FinTracker.Application.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
-using FinTracker.Domain.Interfaces;
-using MediatR;
-using FinTracker.Application.Features.BankAccounts.Query;
-using FinTracker.Application.Features.BankAccounts.Command;
-using System.IO;
-using Microsoft.AspNetCore.Authorization;
-using FinTracker.Application.Models.DTOs;
-using FinTracker.Domain.Entities;
 
 namespace FinTracker.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BankAccountController : BaseApiController
+public class BankAccountController : ControllerBase
 {
+    private readonly IBankAccountService _bankAccountService;
+
+    public BankAccountController(IBankAccountService bankAccountService)
+    {
+        _bankAccountService = bankAccountService;
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAllBankAccounts()
     {
         try
         {
-            var result = await Mediator.Send(new GetAllBankAccountsQuery());
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _bankAccountService.GetAllAsync();
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return Ok(result.Data);
         }
         catch (Exception ex)
@@ -38,12 +35,8 @@ public class BankAccountController : BaseApiController
     {
         try
         {
-            var query = new GetBankAccountByIdQuery(id);
-            var result = await Mediator.Send(query);
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _bankAccountService.GetByIdAsync(id);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return Ok(result.Data);
         }
         catch (Exception ex)
@@ -53,15 +46,12 @@ public class BankAccountController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBankAccount([FromBody] CreateBankAccountCommand command)
+    public async Task<IActionResult> CreateBankAccount([FromBody] CreateBankAccountRequest request)
     {
         try
         {
-            var result = await Mediator.Send(command);
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _bankAccountService.CreateAsync(request);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return CreatedAtAction(nameof(GetBankAccountById), new { id = result.Data.Id }, result.Data);
         }
         catch (Exception ex)
@@ -71,16 +61,12 @@ public class BankAccountController : BaseApiController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBankAccount(Guid id, [FromBody] UpdateBankAccountCommand command)
+    public async Task<IActionResult> UpdateBankAccount(Guid id, [FromBody] UpdateBankAccountRequest request)
     {
         try
         {
-            command.Id = id;
-            var result = await Mediator.Send(command);
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _bankAccountService.UpdateAsync(id, request);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return Ok(result.Data);
         }
         catch (Exception ex)
@@ -94,12 +80,8 @@ public class BankAccountController : BaseApiController
     {
         try
         {
-            var command = new DeleteBankAccountCommand(id);
-            var result = await Mediator.Send(command);
-
-            if (result.Status != 200)
-                return StatusCode(result.Status, new { message = result.Message });
-
+            var result = await _bankAccountService.DeleteAsync(id);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
             return NoContent();
         }
         catch (Exception ex)

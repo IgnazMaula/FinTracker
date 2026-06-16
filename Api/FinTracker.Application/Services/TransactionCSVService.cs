@@ -5,7 +5,6 @@ using FinTracker.Application.Interfaces;
 using FinTracker.Common.Shared.Enums;
 using FinTracker.Domain.Entities;
 using FinTracker.Domain.Interfaces;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 

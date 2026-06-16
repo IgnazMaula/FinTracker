@@ -1,135 +1,104 @@
-using Microsoft.AspNetCore.Mvc;
-using FinTracker.Domain.Interfaces;
-using MediatR;
-using FinTracker.Application.Features.BankTransactions.Query;
-using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using FinTracker.Domain.Entities;
 using FinTracker.Application.Interfaces;
-using FinTracker.Common.Shared.Model;
 using FinTracker.Utilities.Helper;
+using Microsoft.AspNetCore.Mvc;
 
-namespace FinTracker.Api.Controllers
+namespace FinTracker.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class BankTransactionController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BankTransactionController : ControllerBase
+    private readonly IBankTransactionService _bankTransactionService;
+    private readonly ITransactionCSVService _transactionCsvService;
+
+    public BankTransactionController(IBankTransactionService bankTransactionService, ITransactionCSVService transactionCSVService)
     {
-        private readonly IMediator _mediator;
-        private readonly ITransactionCSVService _transactionCsvService;
+        _bankTransactionService = bankTransactionService;
+        _transactionCsvService = transactionCSVService;
+    }
 
-        public BankTransactionController(IMediator mediator, ITransactionCSVService transactionCSVService)
+    [HttpGet]
+    public async Task<IActionResult> GetAllBankTransactions()
+    {
+        try
         {
-            _mediator = mediator;
-            _transactionCsvService = transactionCSVService;
+            var result = await _bankTransactionService.GetAllAsync();
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
+            return Ok(result.Data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetBankTransactionById(Guid id)
+    {
+        try
+        {
+            var result = await _bankTransactionService.GetByIdAsync(id);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
+            return Ok(result.Data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
+
+    [HttpGet("ByBankId/{id}")]
+    public async Task<IActionResult> GetBankTransactionByBankId(Guid id)
+    {
+        try
+        {
+            var result = await _bankTransactionService.GetByBankIdAsync(id);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
+            return Ok(result.Data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
+
+    [HttpGet("GetMonthlyBankTransactionByUserId/{id}")]
+    public async Task<IActionResult> GetMonthlyBankTransactionByUserId(Guid id)
+    {
+        try
+        {
+            var result = await _bankTransactionService.GetMonthlyByUserIdAsync(id);
+            if (result.Status != 200) return StatusCode(result.Status, new { message = result.Message });
+            return Ok(result.Data.MonthlyBankAccountTransaction);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
+
+    [HttpPost("Upload/{id}")]
+    public async Task<IActionResult> UploadCsv(Guid id, [FromForm] IFormFile? file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest(new { message = "No file uploaded." });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllBankTransactions()
+        try
         {
-            try
+            var (isValid, year) = YearMonthFormatValidator.ValidateAndExtractYear(file.FileName);
+            if (!isValid)
             {
-                var query = new GetAllBankTransactionsQuery();
-                var result = await _mediator.Send(query);
-
-                if (result.Status != 200)
-                    return StatusCode(result.Status, new { message = result.Message });
-
-                return Ok(result.Data);
+                return BadRequest(new { message = "Filename must be in 'YYYYMM' format." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
-            }
+
+            await _transactionCsvService.ProcessCsvAsync(file.OpenReadStream(), year, id);
+            return Ok(new { message = "File uploaded and processed successfully." });
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetBankTransactionById(Guid id)
+        catch (Exception ex)
         {
-            try
-            {
-                var query = new GetBankTransactionByIdQuery(id);
-                var result = await _mediator.Send(query);
-
-                if (result.Status != 200)
-                    return StatusCode(result.Status, new { message = result.Message });
-
-                return Ok(result.Data);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
-            }
+            return BadRequest(new { message = $"Error processing file: {ex.Message}" });
         }
-
-        [HttpGet("ByBankId/{id}")]
-        public async Task<IActionResult> GetBankTransactionByBankId(Guid id)
-        {
-            try
-            {
-                var query = new GetBankTransactionByBankIdQuery(id);
-                var result = await _mediator.Send(query);
-
-                if (result.Status != 200)
-                    return StatusCode(result.Status, new { message = result.Message });
-
-                return Ok(result.Data);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
-            }
-        }
-
-        [HttpGet("GetMonthlyBankTransactionByUserId/{id}")]
-        public async Task<IActionResult> GetMonthlyBankTransactionByUserId(Guid id)
-        {
-            try
-            {
-                var query = new GetMonthlyBankTransactionByUserIdQuery(id);
-                var result = await _mediator.Send(query);
-
-                if (result.Status != 200)
-                    return StatusCode(result.Status, new { message = result.Message });
-
-                return Ok(result.Data.MonthlyBankAccountTransaction);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
-            }
-        }
-
-        [HttpPost("Upload/{id}")]
-        public async Task<IActionResult> UploadCsv(Guid Id, [FromForm] IFormFile? file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest(new { message = "No file uploaded." });
-            }
-
-            try
-            {
-
-                var (isValid, year) = YearMonthFormatValidator.ValidateAndExtractYear(file.FileName);
-
-                if (!isValid)
-                {
-                    return BadRequest(new { message = "Filename must be in 'YYYYMM' format." });
-                }
-
-                await _transactionCsvService.ProcessCsvAsync(file.OpenReadStream(), year, Id);
-
-                return Ok(new { message = "File uploaded and processed successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = $"Error processing file: {ex.Message}" });
-            }
-        }
-
-
     }
 }
